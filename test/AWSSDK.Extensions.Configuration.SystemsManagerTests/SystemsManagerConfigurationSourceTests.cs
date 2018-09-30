@@ -5,12 +5,12 @@ using Xunit;
 
 namespace AWSSDK.Extensions.Configuration.SystemsManagerTests
 {
-    public class AWSSystemsManagerConfigurationSourceTests
+    public class SystemsManagerConfigurationSourceTests
     {
         [Fact]
         public void BuildSuccessTest()
         {
-            var source = new AWSSystemsManagerConfigurationSource
+            var source = new SystemsManagerConfigurationSource
             {
                 AwsOptions = new AWSOptions(),
                 Path = "/temp/"
@@ -19,7 +19,7 @@ namespace AWSSDK.Extensions.Configuration.SystemsManagerTests
 
             var result = source.Build(builder);
 
-            Assert.IsType<AWSSystemsManagerConfigurationProvider>(result);
+            Assert.IsType<SystemsManagerConfigurationProvider>(result);
         }
     }
 }

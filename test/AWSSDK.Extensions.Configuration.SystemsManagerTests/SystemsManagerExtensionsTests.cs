@@ -6,10 +6,10 @@ using Xunit;
 
 namespace AWSSDK.Extensions.Configuration.SystemsManagerTests
 {
-    public class AWSSystemsManagerExtensionsTests
+    public class SystemsManagerExtensionsTests
     {
         [Theory, MemberData(nameof(SourceExtensionData))]
-        public void AddSystemsManagerExtensionWithSourceTest(AWSOptions awsOptions, string path, bool optional, TimeSpan? reloadAfter, Action<AWSSystemsManagerExceptionContext> onLoadException, Type exceptionType, string exceptionMessage)
+        public void AddSystemsManagerExtensionWithSourceTest(AWSOptions awsOptions, string path, bool optional, TimeSpan? reloadAfter, Action<SystemsManagerExceptionContext> onLoadException, Type exceptionType, string exceptionMessage)
         {
             var builder = new ConfigurationBuilder();
 
@@ -36,7 +36,7 @@ namespace AWSSDK.Extensions.Configuration.SystemsManagerTests
         }
 
         [Theory, MemberData(nameof(WithAWSOptionsExtensionData))]
-        public void AddSystemsManagerWithAWSOptionsTest(AWSOptions awsOptions, string path, bool optional, TimeSpan? reloadAfter, Action<AWSSystemsManagerExceptionContext> onLoadException, Type exceptionType, string exceptionMessage)
+        public void AddSystemsManagerWithAWSOptionsTest(AWSOptions awsOptions, string path, bool optional, TimeSpan? reloadAfter, Action<SystemsManagerExceptionContext> onLoadException, Type exceptionType, string exceptionMessage)
         {
             var builder = new ConfigurationBuilder();
 
@@ -55,7 +55,7 @@ namespace AWSSDK.Extensions.Configuration.SystemsManagerTests
         }
 
         [Theory, MemberData(nameof(NoAWSOptionsExtensionData))]
-        public void AddSystemsManagerWithNoAWSOptionsTest(string path, bool optional, TimeSpan? reloadAfter, Action<AWSSystemsManagerExceptionContext> onLoadException, Type exceptionType, string exceptionMessage)
+        public void AddSystemsManagerWithNoAWSOptionsTest(string path, bool optional, TimeSpan? reloadAfter, Action<SystemsManagerExceptionContext> onLoadException, Type exceptionType, string exceptionMessage)
         {
             var builder = new ConfigurationBuilder();
 
@@ -73,8 +73,8 @@ namespace AWSSDK.Extensions.Configuration.SystemsManagerTests
             }
         }
 
-        public static TheoryData<AWSOptions, string, bool, TimeSpan?, Action<AWSSystemsManagerExceptionContext>, Type, string> SourceExtensionData =>
-            new TheoryData<AWSOptions, string, bool, TimeSpan?, Action<AWSSystemsManagerExceptionContext>, Type, string>
+        public static TheoryData<AWSOptions, string, bool, TimeSpan?, Action<SystemsManagerExceptionContext>, Type, string> SourceExtensionData =>
+            new TheoryData<AWSOptions, string, bool, TimeSpan?, Action<SystemsManagerExceptionContext>, Type, string>
             {
                 {null, null, false, null, null, typeof(ArgumentNullException), "Value cannot be null.\r\nParameter name: Path"},
                 {null, null, true, null, null, typeof(ArgumentNullException), "Value cannot be null.\r\nParameter name: Path"},
@@ -82,8 +82,8 @@ namespace AWSSDK.Extensions.Configuration.SystemsManagerTests
                 {null, "/aws/reference/secretsmanager/somevalue", false, null, null, typeof(ArgumentException), "Secrets Manager paths are not supported"}
             };
 
-        public static TheoryData<AWSOptions, string, bool, TimeSpan?, Action<AWSSystemsManagerExceptionContext>, Type, string> WithAWSOptionsExtensionData =>
-            new TheoryData<AWSOptions, string, bool, TimeSpan?, Action<AWSSystemsManagerExceptionContext>, Type, string>
+        public static TheoryData<AWSOptions, string, bool, TimeSpan?, Action<SystemsManagerExceptionContext>, Type, string> WithAWSOptionsExtensionData =>
+            new TheoryData<AWSOptions, string, bool, TimeSpan?, Action<SystemsManagerExceptionContext>, Type, string>
             {
                 {null, null, false, null, null, typeof(ArgumentNullException), "Value cannot be null.\r\nParameter name: awsOptions"},
                 {null, "/path", false, null, null, typeof(ArgumentNullException), "Value cannot be null.\r\nParameter name: awsOptions"},
@@ -93,8 +93,8 @@ namespace AWSSDK.Extensions.Configuration.SystemsManagerTests
 
             };
 
-        public static TheoryData<string, bool, TimeSpan?, Action<AWSSystemsManagerExceptionContext>, Type, string> NoAWSOptionsExtensionData =>
-            new TheoryData<string, bool, TimeSpan?, Action<AWSSystemsManagerExceptionContext>, Type, string>
+        public static TheoryData<string, bool, TimeSpan?, Action<SystemsManagerExceptionContext>, Type, string> NoAWSOptionsExtensionData =>
+            new TheoryData<string, bool, TimeSpan?, Action<SystemsManagerExceptionContext>, Type, string>
             {
                 {null, false, null, null, typeof(ArgumentNullException), "Value cannot be null.\r\nParameter name: Path"},
                 {"/path", false, null, null, null, null},

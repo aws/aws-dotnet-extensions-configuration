@@ -21,9 +21,9 @@ using Amazon.Extensions.NETCore.Setup;
 namespace Microsoft.Extensions.Configuration
 {
     /// <summary>
-    /// Extension methods for registering <see cref="AWSSystemsManagerConfigurationProvider"/> with <see cref="IConfigurationBuilder"/>.
+    /// Extension methods for registering <see cref="SystemsManagerConfigurationProvider"/> with <see cref="IConfigurationBuilder"/>.
     /// </summary>
-    public static class AWSSystemsManagerExtensions
+    public static class SystemsManagerExtensions
     {
         private const string SecretsManagerPath = "/aws/reference/secretsmanager/";
         private const string SecretsManagerExceptionMessage = "Secrets Manager paths are not supported";
@@ -40,7 +40,7 @@ namespace Microsoft.Extensions.Configuration
         /// <exception cref="ArgumentNullException"><see cref="path"/> cannot be null</exception>
         /// <exception cref="ArgumentException">Secrets Manager paths are not supported (/aws/reference/secretsmanager/)</exception>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
-        public static IConfigurationBuilder AddSystemsManager(this IConfigurationBuilder builder, AWSOptions awsOptions, string path, bool optional = false, TimeSpan? reloadAfter = null, Action<AWSSystemsManagerExceptionContext> onLoadException = null)
+        public static IConfigurationBuilder AddSystemsManager(this IConfigurationBuilder builder, AWSOptions awsOptions, string path, bool optional = false, TimeSpan? reloadAfter = null, Action<SystemsManagerExceptionContext> onLoadException = null)
         {
             if (awsOptions == null) throw new ArgumentNullException(nameof(awsOptions));
 
@@ -65,7 +65,7 @@ namespace Microsoft.Extensions.Configuration
         /// <exception cref="ArgumentNullException"><see cref="path"/> cannot be null</exception>
         /// <exception cref="ArgumentException">Secrets Manager paths are not supported (/aws/reference/secretsmanager/)</exception>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
-        public static IConfigurationBuilder AddSystemsManager(this IConfigurationBuilder builder, string path, bool optional = false, TimeSpan? reloadAfter = null, Action<AWSSystemsManagerExceptionContext> onLoadException = null)
+        public static IConfigurationBuilder AddSystemsManager(this IConfigurationBuilder builder, string path, bool optional = false, TimeSpan? reloadAfter = null, Action<SystemsManagerExceptionContext> onLoadException = null)
         {
             var config = builder.Build();
             return builder.AddSystemsManager(config.GetAWSOptions(), path, optional, reloadAfter, onLoadException);
@@ -76,15 +76,15 @@ namespace Microsoft.Extensions.Configuration
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
         /// <param name="configureSource">Configures the source.</param>
-        /// <exception cref="ArgumentNullException"><see cref="AWSSystemsManagerConfigurationSource.Path"/> cannot be null</exception>
+        /// <exception cref="ArgumentNullException"><see cref="SystemsManagerConfigurationSource.Path"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="configureSource"/> cannot be null</exception>
         /// <exception cref="ArgumentException">Secrets Manager paths are not supported (/aws/reference/secretsmanager/)</exception>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
-        public static IConfigurationBuilder AddSystemsManager(this IConfigurationBuilder builder, Action<AWSSystemsManagerConfigurationSource> configureSource)
+        public static IConfigurationBuilder AddSystemsManager(this IConfigurationBuilder builder, Action<SystemsManagerConfigurationSource> configureSource)
         {
             if (configureSource == null) throw new ArgumentNullException(nameof(configureSource));
 
-            var source = new AWSSystemsManagerConfigurationSource();
+            var source = new SystemsManagerConfigurationSource();
             configureSource(source);
 
             if (string.IsNullOrWhiteSpace(source.Path)) throw new ArgumentNullException(nameof(source.Path));

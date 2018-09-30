@@ -8,7 +8,7 @@ using Xunit;
 
 namespace AWSSDK.Extensions.Configuration.SystemsManagerTests
 {
-    public class AWSSystemsManagerConfigurationProviderTests
+    public class SystemsManagerConfigurationProviderTests
     {
         [Fact]
         public void ProcessParametersTest()
@@ -22,7 +22,7 @@ namespace AWSSDK.Extensions.Configuration.SystemsManagerTests
                 new Parameter {Name = "/start/path/p1/p2/p3-2", Value = "p1:p2:p3-2"}
             };
             
-            var data = AWSSystemsManagerConfigurationProvider.ProcessParameters(parameters, path);
+            var data = SystemsManagerConfigurationProvider.ProcessParameters(parameters, path);
             
             Assert.All(data, item => Assert.Equal(item.Value, item.Key));
         }
@@ -37,14 +37,14 @@ namespace AWSSDK.Extensions.Configuration.SystemsManagerTests
                 new Parameter {Name = "/start/path/p1/p2/p3-1", Value = "p1:p2:p3-1"}, 
                 new Parameter {Name = "/start/path/p1/p2/p3-2", Value = "p1:p2:p3-2"}
             };
-            var source = new AWSSystemsManagerConfigurationSource
+            var source = new SystemsManagerConfigurationSource
             {
                 AwsOptions = new AWSOptions(),
                 Path = "/start/path"
             };
-            var processor = new Mock<IAWSSystemsManagerProcessor>();
+            var processor = new Mock<ISystemsManagerProcessor>();
             processor.Setup(p => p.GetParametersByPathAsync(source.AwsOptions, source.Path)).ReturnsAsync(parameters);
-            var provider = new AWSSystemsManagerConfigurationProvider(source, processor.Object);
+            var provider = new SystemsManagerConfigurationProvider(source, processor.Object);
             
             provider.Load();
 

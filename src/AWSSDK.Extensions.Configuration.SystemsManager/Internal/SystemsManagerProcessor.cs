@@ -21,12 +21,12 @@ using Amazon.SimpleSystemsManagement.Model;
 
 namespace Amazon.Extensions.Configuration.SystemsManager.Internal
 {
-    public interface IAWSSystemsManagerProcessor
+    public interface ISystemsManagerProcessor
     {
         Task<List<Parameter>> GetParametersByPathAsync(AWSOptions awsOptions, string path);
     }
 
-    public class AWSSystemsManagerProcessor : IAWSSystemsManagerProcessor
+    public class SystemsManagerProcessor : ISystemsManagerProcessor
     {
         public async Task<List<Parameter>> GetParametersByPathAsync(AWSOptions awsOptions, string path)
         {

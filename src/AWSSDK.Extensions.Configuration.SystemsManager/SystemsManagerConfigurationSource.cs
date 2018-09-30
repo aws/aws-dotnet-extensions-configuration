@@ -23,7 +23,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager
     /// <summary>
     /// Represents AWS Systems Manager Parameter Store variables as an <see cref="T:Microsoft.Extensions.Configuration.IConfigurationSource" />.
     /// </summary>
-    public class AWSSystemsManagerConfigurationSource : IConfigurationSource
+    public class SystemsManagerConfigurationSource : IConfigurationSource
     {
         /// <summary>
         /// A Path used to filter parameters.
@@ -46,19 +46,19 @@ namespace Amazon.Extensions.Configuration.SystemsManager
         public TimeSpan? ReloadAfter { get; set; }
 
         /// <summary>
-        /// Will be called if an uncaught exception occurs in <see cref="AWSSystemsManagerConfigurationProvider"/>.Load.
+        /// Will be called if an uncaught exception occurs in <see cref="SystemsManagerConfigurationProvider"/>.Load.
         /// </summary>
-        public Action<AWSSystemsManagerExceptionContext> OnLoadException { get; set; }
+        public Action<SystemsManagerExceptionContext> OnLoadException { get; set; }
 
         /// <inheritdoc />
         /// <summary>
-        /// Builds the <see cref="T:Microsoft.Extensions.Configuration.AWSSystemsManagerConfigurationProvider" /> for this source.
+        /// Builds the <see cref="T:Microsoft.Extensions.Configuration.SystemsManagerConfigurationProvider" /> for this source.
         /// </summary>
         /// <param name="builder">The <see cref="T:Microsoft.Extensions.Configuration.IConfigurationBuilder" />.</param>
-        /// <returns>A <see cref="T:Microsoft.Extensions.Configuration.AWSSystemsManagerConfigurationProvider" /></returns>
+        /// <returns>A <see cref="T:Microsoft.Extensions.Configuration.SystemsManagerConfigurationProvider" /></returns>
         public IConfigurationProvider Build(IConfigurationBuilder builder)
         {
-            return new AWSSystemsManagerConfigurationProvider(this);
+            return new SystemsManagerConfigurationProvider(this);
         }
     }
 }

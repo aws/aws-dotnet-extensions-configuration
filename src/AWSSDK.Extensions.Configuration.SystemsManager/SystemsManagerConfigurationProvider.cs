@@ -29,18 +29,18 @@ namespace Amazon.Extensions.Configuration.SystemsManager
     /// <summary>
     /// An AWS Systems Manager Parameter Store based <see cref="IConfigurationProvider" />.
     /// </summary>
-    public class AWSSystemsManagerConfigurationProvider : ConfigurationProvider
+    public class SystemsManagerConfigurationProvider : ConfigurationProvider
     {
-        private readonly IAWSSystemsManagerProcessor _awsSystemsManagerProcessor;
+        private readonly ISystemsManagerProcessor _systemsManagerProcessor;
 
-        public AWSSystemsManagerConfigurationSource Source { get; }
+        public SystemsManagerConfigurationSource Source { get; }
 
         /// <inheritdoc />
         /// <summary>
         /// Initializes a new instance with the specified source.
         /// </summary>
         /// <param name="source">The <see cref="IConfigurationSource"/> used to retrieve values from AWS Systems Manager Parameter Store</param>
-        public AWSSystemsManagerConfigurationProvider(AWSSystemsManagerConfigurationSource source) : this(source, new AWSSystemsManagerProcessor())
+        public SystemsManagerConfigurationProvider(SystemsManagerConfigurationSource source) : this(source, new SystemsManagerProcessor())
         {
         }
 
@@ -49,11 +49,11 @@ namespace Amazon.Extensions.Configuration.SystemsManager
         /// Initializes a new instance with the specified source.
         /// </summary>
         /// <param name="source">The <see cref="IConfigurationSource"/> used to retrieve values from AWS Systems Manager Parameter Store</param>
-        /// <param name="awsSystemsManagerProcessor">The <see cref="IAWSSystemsManagerProcessor"/> used to retrieve values from AWS Systems Manager Parameter Store</param>
-        public AWSSystemsManagerConfigurationProvider(AWSSystemsManagerConfigurationSource source, IAWSSystemsManagerProcessor awsSystemsManagerProcessor)
+        /// <param name="systemsManagerProcessor">The <see cref="ISystemsManagerProcessor"/> used to retrieve values from AWS Systems Manager Parameter Store</param>
+        public SystemsManagerConfigurationProvider(SystemsManagerConfigurationSource source, ISystemsManagerProcessor systemsManagerProcessor)
         {
             Source = source ?? throw new ArgumentNullException(nameof(source));
-            _awsSystemsManagerProcessor = awsSystemsManagerProcessor;
+            _systemsManagerProcessor = systemsManagerProcessor;
 
             if (source.AwsOptions == null) throw new ArgumentNullException(nameof(source.AwsOptions));
             if (source.Path == null) throw new ArgumentNullException(nameof(source.Path));
@@ -81,7 +81,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager
             {
                 var path = Source.Path;
                 var awsOptions = Source.AwsOptions;
-                var parameters = await _awsSystemsManagerProcessor.GetParametersByPathAsync(awsOptions, path);
+                var parameters = await _systemsManagerProcessor.GetParametersByPathAsync(awsOptions, path);
 
                 Data = ProcessParameters(parameters, path);
 
@@ -94,7 +94,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager
                 var ignoreException = false;
                 if (Source.OnLoadException != null)
                 {
-                    var exceptionContext = new AWSSystemsManagerExceptionContext
+                    var exceptionContext = new SystemsManagerExceptionContext
                     {
                         Provider = this,
                         Exception = ex

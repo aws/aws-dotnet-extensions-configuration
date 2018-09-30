@@ -17,13 +17,13 @@ using System;
 
 namespace Amazon.Extensions.Configuration.SystemsManager
 {
-    /// <summary>Contains information about an AWSSystemsManager load exception.</summary>
-    public class AWSSystemsManagerExceptionContext
+    /// <summary>Contains information about an Systems Manager load exception.</summary>
+    public class SystemsManagerExceptionContext
     {
         /// <summary>
-        /// The <see cref="T:Microsoft.Extensions.Configuration.AWSSystemsManagerConfigurationProvider" /> that caused the exception.
+        /// The <see cref="T:Microsoft.Extensions.Configuration.SystemsManagerConfigurationProvider" /> that caused the exception.
         /// </summary>
-        public AWSSystemsManagerConfigurationProvider Provider { get; set; }
+        public SystemsManagerConfigurationProvider Provider { get; set; }
 
         /// <summary>The exception that occured in Load.</summary>
         public Exception Exception { get; set; }
