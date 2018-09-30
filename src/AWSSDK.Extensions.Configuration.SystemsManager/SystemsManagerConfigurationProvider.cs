@@ -91,7 +91,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager
             {
                 if (Source.Optional) return;
 
-                var ignoreException = false;
+                var ignoreException = reload;
                 if (Source.OnLoadException != null)
                 {
                     var exceptionContext = new SystemsManagerExceptionContext
@@ -102,8 +102,6 @@ namespace Amazon.Extensions.Configuration.SystemsManager
                     Source.OnLoadException(exceptionContext);
                     ignoreException = exceptionContext.Ignore;
                 }
-
-                if (reload) return;
 
                 if (!ignoreException)
                     throw;
