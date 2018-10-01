@@ -17,7 +17,7 @@ using System;
 
 namespace Amazon.Extensions.Configuration.SystemsManager
 {
-    /// <summary>Contains information about an Systems Manager load exception.</summary>
+    /// <summary>Contains information about a Systems Manager load exception.</summary>
     public class SystemsManagerExceptionContext
     {
         /// <summary>

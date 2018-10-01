@@ -4,14 +4,25 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>AWSSDK.Extensions.Configuration.SystemsManager</AssemblyName>
     <RootNamespace>Amazon.Extensions.Configuration.SystemsManager</RootNamespace>
-    <ApplicationIcon />
     <OutputType>Library</OutputType>
-    <StartupObject />
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>AWSSDK.Extensions.Configuration.SystemsManager</PackageId>
+    <Title>.NET Configuration Extensions for AWS Systems Manager</Title>
+    <Product>AWSSDK.Extensions.Configuration.SystemsManager</Product>
+    <Description>.NET Configuration Extensions for AWS Systems Manager</Description>
+    <Authors>Amazon Web Services;Ken Hundley</Authors>
+    <Copyright>2018</Copyright>
+    <PackageTags>AWS;Amazon;aws-sdk-v3;SimpleSystemsManagement;configuration</PackageTags>
+    <PackageProjectUrl>https://github.com/aws/aws-dotnet-extensions-configuration/</PackageProjectUrl>
+    <PackageLicenseUrl>http://aws.amazon.com/apache2.0/</PackageLicenseUrl>
+    <PackageIconUrl>https://sdk-for-net.amazonwebservices.com/images/AWSLogo128x128.png</PackageIconUrl>
+    <RepositoryUrl>https://github.com/aws/aws-dotnet-extensions-configuration/</RepositoryUrl>
+    <Company>Amazon Web Services</Company>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.3.*" />
-    <PackageReference Include="AWSSDK.SimpleSystemsManagement" Version="3.3.*" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.*" />
+    <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.3.0" />
+    <PackageReference Include="AWSSDK.SimpleSystemsManagement" Version="3.3.10" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
   </ItemGroup>
 </Project>
