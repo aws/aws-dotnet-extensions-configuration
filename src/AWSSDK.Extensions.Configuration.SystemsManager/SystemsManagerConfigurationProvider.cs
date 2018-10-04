@@ -97,7 +97,8 @@ namespace Amazon.Extensions.Configuration.SystemsManager
                     var exceptionContext = new SystemsManagerExceptionContext
                     {
                         Provider = this,
-                        Exception = ex
+                        Exception = ex,
+                        Reload = reload
                     };
                     Source.OnLoadException(exceptionContext);
                     ignoreException = exceptionContext.Ignore;
@@ -113,7 +114,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager
             return key.Replace("/", ConfigurationPath.KeyDelimiter);
         }
 
-        public static IDictionary<string, string> ProcessParameters(List<Parameter> parameters, string path) =>
+        public static IDictionary<string, string> ProcessParameters(IEnumerable<Parameter> parameters, string path) =>
             parameters
                 .Select(parameter => new
                 {

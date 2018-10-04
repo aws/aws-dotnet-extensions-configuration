@@ -30,5 +30,8 @@ namespace Amazon.Extensions.Configuration.SystemsManager
 
         /// <summary>If true, the exception will not be rethrown.</summary>
         public bool Ignore { get; set; }
+
+        /// <summary>If true, the exception was raised on a reload event</summary>
+        public bool Reload { get; set; }
     }
 }
