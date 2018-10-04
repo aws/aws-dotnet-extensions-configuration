@@ -39,7 +39,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
                     var response = await client.GetParametersByPathAsync(new GetParametersByPathRequest { Path = path, Recursive = true, WithDecryption = true, NextToken = nextToken });
                     nextToken = response.NextToken;
                     parameters.AddRange(response.Parameters);
-                } while (nextToken != null);
+                } while (!string.IsNullOrEmpty(nextToken));
 
                 return parameters;
             }
