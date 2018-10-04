@@ -31,9 +31,8 @@ namespace Amazon.Extensions.Configuration.SystemsManager
     /// </summary>
     public class SystemsManagerConfigurationProvider : ConfigurationProvider
     {
-        private readonly ISystemsManagerProcessor _systemsManagerProcessor;
-
         public SystemsManagerConfigurationSource Source { get; }
+        private ISystemsManagerProcessor SystemsManagerProcessor { get; }
 
         /// <inheritdoc />
         /// <summary>
@@ -53,7 +52,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager
         public SystemsManagerConfigurationProvider(SystemsManagerConfigurationSource source, ISystemsManagerProcessor systemsManagerProcessor)
         {
             Source = source ?? throw new ArgumentNullException(nameof(source));
-            _systemsManagerProcessor = systemsManagerProcessor;
+            SystemsManagerProcessor = systemsManagerProcessor;
 
             if (source.AwsOptions == null) throw new ArgumentNullException(nameof(source.AwsOptions));
             if (source.Path == null) throw new ArgumentNullException(nameof(source.Path));
@@ -81,7 +80,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager
             {
                 var path = Source.Path;
                 var awsOptions = Source.AwsOptions;
-                var parameters = await _systemsManagerProcessor.GetParametersByPathAsync(awsOptions, path);
+                var parameters = await SystemsManagerProcessor.GetParametersByPathAsync(awsOptions, path);
 
                 Data = ProcessParameters(parameters, path);
 

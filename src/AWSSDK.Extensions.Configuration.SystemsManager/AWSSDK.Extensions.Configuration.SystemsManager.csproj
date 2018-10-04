@@ -10,7 +10,7 @@
     <Title>.NET Configuration Extensions for AWS Systems Manager</Title>
     <Product>AWSSDK.Extensions.Configuration.SystemsManager</Product>
     <Description>.NET Configuration Extensions for AWS Systems Manager</Description>
-    <Authors>Amazon Web Services;Ken Hundley</Authors>
+    <Authors>Amazon Web Services</Authors>
     <Copyright>2018</Copyright>
     <PackageTags>AWS;Amazon;aws-sdk-v3;SimpleSystemsManagement;configuration</PackageTags>
     <PackageProjectUrl>https://github.com/aws/aws-dotnet-extensions-configuration/</PackageProjectUrl>

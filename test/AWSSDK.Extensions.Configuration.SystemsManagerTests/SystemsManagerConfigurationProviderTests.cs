@@ -10,19 +10,20 @@ namespace AWSSDK.Extensions.Configuration.SystemsManagerTests
 {
     public class SystemsManagerConfigurationProviderTests
     {
+        private readonly List<Parameter> _parameters = new List<Parameter>
+        {
+            new Parameter {Name = "/start/path/p1/p2-1", Value = "p1:p2-1"},
+            new Parameter {Name = "/start/path/p1/p2-2", Value = "p1:p2-2"},
+            new Parameter {Name = "/start/path/p1/p2/p3-1", Value = "p1:p2:p3-1"},
+            new Parameter {Name = "/start/path/p1/p2/p3-2", Value = "p1:p2:p3-2"}
+        };
+
+        private readonly string _path = "/start/path";
+
         [Fact]
         public void ProcessParametersTest()
         {
-            var path = "/start/path";
-            var parameters = new List<Parameter>
-            {
-                new Parameter {Name = "/start/path/p1/p2-1", Value = "p1:p2-1"}, 
-                new Parameter {Name = "/start/path/p1/p2-2", Value = "p1:p2-2"}, 
-                new Parameter {Name = "/start/path/p1/p2/p3-1", Value = "p1:p2:p3-1"}, 
-                new Parameter {Name = "/start/path/p1/p2/p3-2", Value = "p1:p2:p3-2"}
-            };
-            
-            var data = SystemsManagerConfigurationProvider.ProcessParameters(parameters, path);
+            var data = SystemsManagerConfigurationProvider.ProcessParameters(_parameters, _path);
             
             Assert.All(data, item => Assert.Equal(item.Value, item.Key));
         }
@@ -30,25 +31,19 @@ namespace AWSSDK.Extensions.Configuration.SystemsManagerTests
         [Fact]
         public void LoadTest()
         {
-            var parameters = new List<Parameter>
-            {
-                new Parameter {Name = "/start/path/p1/p2-1", Value = "p1:p2-1"}, 
-                new Parameter {Name = "/start/path/p1/p2-2", Value = "p1:p2-2"}, 
-                new Parameter {Name = "/start/path/p1/p2/p3-1", Value = "p1:p2:p3-1"}, 
-                new Parameter {Name = "/start/path/p1/p2/p3-2", Value = "p1:p2:p3-2"}
-            };
             var source = new SystemsManagerConfigurationSource
             {
                 AwsOptions = new AWSOptions(),
-                Path = "/start/path"
+                Path = _path
             };
+
             var processor = new Mock<ISystemsManagerProcessor>();
-            processor.Setup(p => p.GetParametersByPathAsync(source.AwsOptions, source.Path)).ReturnsAsync(parameters);
+            processor.Setup(p => p.GetParametersByPathAsync(source.AwsOptions, source.Path)).ReturnsAsync(_parameters);
             var provider = new SystemsManagerConfigurationProvider(source, processor.Object);
             
             provider.Load();
 
-            foreach (var parameter in parameters)
+            foreach (var parameter in _parameters)
             {
                 Assert.True(provider.TryGet(parameter.Value, out _));
             }
