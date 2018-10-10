@@ -18,11 +18,18 @@
     <PackageIconUrl>https://sdk-for-net.amazonwebservices.com/images/AWSLogo128x128.png</PackageIconUrl>
     <RepositoryUrl>https://github.com/aws/aws-dotnet-extensions-configuration/</RepositoryUrl>
     <Company>Amazon Web Services</Company>
+
+    <CodeAnalysisRuleSet>../ruleset.xml</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.3.0.*" />
     <PackageReference Include="AWSSDK.SimpleSystemsManagement" Version="3.3.10.*" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NetCore.Analyzers" Version="2.6.2" />
+    <PackageReference Include="Microsoft.CodeQuality.Analyzers" Version="2.6.2" />
   </ItemGroup>
 </Project>
