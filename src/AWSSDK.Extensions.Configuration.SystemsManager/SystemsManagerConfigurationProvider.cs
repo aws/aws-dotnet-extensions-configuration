@@ -64,7 +64,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager
                     var cancellationTokenSource = new CancellationTokenSource(source.ReloadAfter.Value);
                     var cancellationChangeToken = new CancellationChangeToken(cancellationTokenSource.Token);
                     return cancellationChangeToken;
-                }, async () => await LoadAsync(true));
+                }, async () => await LoadAsync(true).ConfigureAwait(false));
             }
         }
 
@@ -72,7 +72,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager
         /// <summary>
         /// Loads the AWS Systems Manager Parameters.
         /// </summary>
-        public override void Load() => LoadAsync(false).GetAwaiter().GetResult();
+        public override void Load() => LoadAsync(false).ConfigureAwait(false).GetAwaiter().GetResult();
 
         private async Task LoadAsync(bool reload)
         {
@@ -80,7 +80,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager
             {
                 var path = Source.Path;
                 var awsOptions = Source.AwsOptions;
-                var parameters = await SystemsManagerProcessor.GetParametersByPathAsync(awsOptions, path);
+                var parameters = await SystemsManagerProcessor.GetParametersByPathAsync(awsOptions, path).ConfigureAwait(false);
 
                 Data = ProcessParameters(parameters, path);
 
