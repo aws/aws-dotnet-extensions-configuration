@@ -36,7 +36,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
                 string nextToken = null;
                 do
                 {
-                    var response = await client.GetParametersByPathAsync(new GetParametersByPathRequest { Path = path, Recursive = true, WithDecryption = true, NextToken = nextToken });
+                    var response = await client.GetParametersByPathAsync(new GetParametersByPathRequest { Path = path, Recursive = true, WithDecryption = true, NextToken = nextToken }).ConfigureAwait(false);
                     nextToken = response.NextToken;
                     parameters.AddRange(response.Parameters);
                 } while (!string.IsNullOrEmpty(nextToken));
