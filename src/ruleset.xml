@@ -1,0 +1,12 @@
+<RuleSet Name="RoslynAnalyzer ruleset" ToolsVersion="10.0">
+  <Rules AnalyzerId="Microsoft.CodeQuality.Analyzers" RuleNamespace="Microsoft.CodeQuality.Analyzers">
+    <!--
+        Suppress verbose warning for nameof() usage.
+        https://github.com/dotnet/roslyn-analyzers/issues/1561
+    -->
+    <Rule Id="CA2208" Action="None" />
+
+    <!-- Raise missing .ConfigureAwait() to a compile time error. -->
+    <Rule Id="CA2007" Action="Error" />
+  </Rules>
+</RuleSet>
