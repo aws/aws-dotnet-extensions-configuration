@@ -37,11 +37,12 @@ namespace Microsoft.Extensions.Configuration
         /// <param name="optional">Whether the AWS Systems Manager Parameters are optional.</param>
         /// <param name="reloadAfter">Initiate reload after TimeSpan</param>
         /// <param name="onLoadException">Delegate to call on Exception</param>
+        /// <param name="parameterProcessor">Implementation of <see cref="IParameterProcessor"/> used to process <see cref="Parameter"/> results. Defaults to <see cref="DefaultParameterProcessor"/>.</param>
         /// <exception cref="ArgumentNullException"><see cref="path"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="awsOptions"/> cannot be null</exception>
         /// <exception cref="ArgumentException"><see cref="path"/> does not support Secrets Manager prefix (/aws/reference/secretsmanager/)</exception>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
-        public static IConfigurationBuilder AddSystemsManager(this IConfigurationBuilder builder, AWSOptions awsOptions, string path, bool optional = false, TimeSpan? reloadAfter = null, Action<SystemsManagerExceptionContext> onLoadException = null)
+        public static IConfigurationBuilder AddSystemsManager(this IConfigurationBuilder builder, AWSOptions awsOptions, string path, bool optional = false, TimeSpan? reloadAfter = null, Action<SystemsManagerExceptionContext> onLoadException = null, IParameterProcessor parameterProcessor = null)
         {
             if (awsOptions == null) throw new ArgumentNullException(nameof(awsOptions));
 
@@ -52,6 +53,7 @@ namespace Microsoft.Extensions.Configuration
                 source.Optional = optional;
                 source.ReloadAfter = reloadAfter;
                 source.OnLoadException = onLoadException;
+                source.ParameterProcessor = parameterProcessor;
             });
         }
 
@@ -63,13 +65,14 @@ namespace Microsoft.Extensions.Configuration
         /// <param name="optional">Whether the AWS Systems Manager Parameters are optional.</param>
         /// <param name="reloadAfter">Initiate reload after TimeSpan</param>
         /// <param name="onLoadException">Delegate to call on Exception</param>
+        /// <param name="parameterProcessor">Implementation of <see cref="IParameterProcessor"/> used to process <see cref="Parameter"/> results. Defaults to <see cref="DefaultParameterProcessor"/>.</param>
         /// <exception cref="ArgumentNullException"><see cref="path"/> cannot be null</exception>
         /// <exception cref="ArgumentException"><see cref="path"/> does not support Secrets Manager prefix (/aws/reference/secretsmanager/)</exception>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
-        public static IConfigurationBuilder AddSystemsManager(this IConfigurationBuilder builder, string path, bool optional = false, TimeSpan? reloadAfter = null, Action<SystemsManagerExceptionContext> onLoadException = null)
+        public static IConfigurationBuilder AddSystemsManager(this IConfigurationBuilder builder, string path, bool optional = false, TimeSpan? reloadAfter = null, Action<SystemsManagerExceptionContext> onLoadException = null, IParameterProcessor parameterProcessor = null)
         {
             var config = builder.Build();
-            return builder.AddSystemsManager(config.GetAWSOptions(), path, optional, reloadAfter, onLoadException);
+            return builder.AddSystemsManager(config.GetAWSOptions(), path, optional, reloadAfter, onLoadException, parameterProcessor);
         }
 
         /// <summary>
