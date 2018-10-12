@@ -21,7 +21,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager
     public class SystemsManagerExceptionContext
     {
         /// <summary>
-        /// The <see cref="T:Microsoft.Extensions.Configuration.SystemsManagerConfigurationProvider" /> that caused the exception.
+        /// The <see cref="SystemsManagerConfigurationProvider" /> that caused the exception.
         /// </summary>
         public SystemsManagerConfigurationProvider Provider { get; set; }
 

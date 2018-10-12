@@ -15,13 +15,14 @@
 
 using System;
 using Amazon.Extensions.NETCore.Setup;
+using Amazon.SimpleSystemsManagement.Model;
 using Microsoft.Extensions.Configuration;
 
 namespace Amazon.Extensions.Configuration.SystemsManager
 {
     /// <inheritdoc />
     /// <summary>
-    /// Represents AWS Systems Manager Parameter Store variables as an <see cref="T:Microsoft.Extensions.Configuration.IConfigurationSource" />.
+    /// Represents AWS Systems Manager Parameter Store variables as an <see cref="IConfigurationSource" />.
     /// </summary>
     public class SystemsManagerConfigurationSource : IConfigurationSource
     {
@@ -50,12 +51,17 @@ namespace Amazon.Extensions.Configuration.SystemsManager
         /// </summary>
         public Action<SystemsManagerExceptionContext> OnLoadException { get; set; }
 
+        /// <summary>
+        /// Implementation of <see cref="IParameterProcessor"/> used to process <see cref="Parameter"/> results. Defaults to <see cref="DefaultParameterProcessor"/>.
+        /// </summary>
+        public IParameterProcessor ParameterProcessor { get; set; }
+
         /// <inheritdoc />
         /// <summary>
-        /// Builds the <see cref="T:Microsoft.Extensions.Configuration.SystemsManagerConfigurationProvider" /> for this source.
+        /// Builds the <see cref="SystemsManagerConfigurationProvider" /> for this source.
         /// </summary>
-        /// <param name="builder">The <see cref="T:Microsoft.Extensions.Configuration.IConfigurationBuilder" />.</param>
-        /// <returns>A <see cref="T:Microsoft.Extensions.Configuration.SystemsManagerConfigurationProvider" /></returns>
+        /// <param name="builder">The <see cref="IConfigurationBuilder" />.</param>
+        /// <returns>A <see cref="SystemsManagerConfigurationProvider" /></returns>
         public IConfigurationProvider Build(IConfigurationBuilder builder)
         {
             return new SystemsManagerConfigurationProvider(this);

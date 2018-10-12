@@ -33,6 +33,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager
     {
         public SystemsManagerConfigurationSource Source { get; }
         private ISystemsManagerProcessor SystemsManagerProcessor { get; }
+        private IParameterProcessor ParameterProcessor { get; }
 
         /// <inheritdoc />
         /// <summary>
@@ -66,6 +67,8 @@ namespace Amazon.Extensions.Configuration.SystemsManager
                     return cancellationChangeToken;
                 }, async () => await LoadAsync(true).ConfigureAwait(false));
             }
+
+            ParameterProcessor = source.ParameterProcessor ?? new DefaultParameterProcessor();
         }
 
         /// <inheritdoc />
@@ -108,16 +111,12 @@ namespace Amazon.Extensions.Configuration.SystemsManager
             }
         }
 
-        private static string NormalizeKey(string key)
-        {
-            return key.Replace("/", ConfigurationPath.KeyDelimiter);
-        }
-
-        public static IDictionary<string, string> ProcessParameters(IEnumerable<Parameter> parameters, string path) =>
+        public IDictionary<string, string> ProcessParameters(IEnumerable<Parameter> parameters, string path) =>
             parameters
+                .Where(parameter => ParameterProcessor.IncludeParameter(parameter, path))
                 .Select(parameter => new
                 {
-                    Key = NormalizeKey(parameter.Name.Substring(path.Length).TrimStart('/')),
+                    Key = ParameterProcessor.GetKey(parameter, path),
                     parameter.Value
                 })
                 .ToDictionary(parameter => parameter.Key, parameter => parameter.Value, StringComparer.OrdinalIgnoreCase);
