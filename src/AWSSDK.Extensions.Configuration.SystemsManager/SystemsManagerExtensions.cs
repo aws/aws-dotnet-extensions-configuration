@@ -25,9 +25,6 @@ namespace Microsoft.Extensions.Configuration
     /// </summary>
     public static class SystemsManagerExtensions
     {
-        private const string SecretsManagerPath = "/aws/reference/secretsmanager/";
-        private const string SecretsManagerExceptionMessage = "Secrets Manager paths are not supported";
-
         /// <summary>
         /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from AWS Systems Manager Parameter Store with a specified path.
         /// </summary>
@@ -89,7 +86,6 @@ namespace Microsoft.Extensions.Configuration
             configureSource(source);
 
             if (string.IsNullOrWhiteSpace(source.Path)) throw new ArgumentNullException(nameof(source.Path));
-            if (source.Path.StartsWith(SecretsManagerPath, StringComparison.OrdinalIgnoreCase)) throw new ArgumentException(SecretsManagerExceptionMessage);
             if (source.AwsOptions != null) return builder.Add(source);
             
             var config = builder.Build();
