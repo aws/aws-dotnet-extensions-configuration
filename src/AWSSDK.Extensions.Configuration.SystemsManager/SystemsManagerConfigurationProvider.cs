@@ -53,7 +53,8 @@ namespace Amazon.Extensions.Configuration.SystemsManager
         public SystemsManagerConfigurationProvider(SystemsManagerConfigurationSource source, ISystemsManagerProcessor systemsManagerProcessor)
         {
             Source = source ?? throw new ArgumentNullException(nameof(source));
-            SystemsManagerProcessor = systemsManagerProcessor;
+            SystemsManagerProcessor = systemsManagerProcessor ?? throw new ArgumentNullException(nameof(systemsManagerProcessor));
+            ParameterProcessor = source.ParameterProcessor ?? new DefaultParameterProcessor();
 
             if (source.AwsOptions == null) throw new ArgumentNullException(nameof(source.AwsOptions));
             if (source.Path == null) throw new ArgumentNullException(nameof(source.Path));
@@ -67,8 +68,6 @@ namespace Amazon.Extensions.Configuration.SystemsManager
                     return cancellationChangeToken;
                 }, async () => await LoadAsync(true).ConfigureAwait(false));
             }
-
-            ParameterProcessor = source.ParameterProcessor ?? new DefaultParameterProcessor();
         }
 
         /// <inheritdoc />
