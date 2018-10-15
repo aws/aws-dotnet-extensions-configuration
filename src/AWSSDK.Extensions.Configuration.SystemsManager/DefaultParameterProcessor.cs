@@ -24,9 +24,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager
     /// </summary>
     public class DefaultParameterProcessor : IParameterProcessor
     {
-        /// <summary>
-        /// The delimiter ":" used to separate individual keys in a path.
-        /// </summary>
+        /// <inheritdoc cref="ConfigurationPath.KeyDelimiter"/>
         public static readonly string KeyDelimiter = ConfigurationPath.KeyDelimiter;
 
         public virtual bool IncludeParameter(Parameter parameter, string path) => true;
