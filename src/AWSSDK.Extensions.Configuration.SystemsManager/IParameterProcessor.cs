@@ -24,7 +24,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager
     public interface IParameterProcessor
     {
         /// <summary>
-        /// Responsible for deciding if a parameter should be processed
+        /// Decides if a <see cref="Parameter"/> should be included for processing
         /// </summary>
         /// <param name="parameter"><see cref="Parameter"/> to be processed</param>
         /// <param name="path">Path used when retrieving the <see cref="Parameter"/></param>
