@@ -16,6 +16,7 @@
 using System;
 using Amazon.Extensions.Configuration.SystemsManager;
 using Amazon.Extensions.NETCore.Setup;
+using Amazon.SimpleSystemsManagement.Model;
 
 // ReSharper disable once CheckNamespace
 namespace Microsoft.Extensions.Configuration
