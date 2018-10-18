@@ -19,14 +19,14 @@ namespace AWSSDK.Extensions.Configuration.SystemsManagerTests
             new Parameter {Name = "/start/path/p1/p2/p3-2", Value = "p1:p2:p3-2"}
         };
 
-        private readonly string _path = "/start/path";
+        private const string Path = "/start/path";
 
         [Fact]
         public void NormalizeKeyTest()
         {
             var parameterProcessor = new DefaultParameterProcessor();
 
-            var data = _parameters.Select(parameter => new {Key = parameterProcessor.GetKey(parameter, _path), parameter.Value});
+            var data = _parameters.Select(parameter => new {Key = parameterProcessor.GetKey(parameter, Path), parameter.Value});
             
             Assert.All(data, item => Assert.Equal(item.Value, item.Key));
         }
@@ -36,7 +36,7 @@ namespace AWSSDK.Extensions.Configuration.SystemsManagerTests
         {
             var parameterProcessor = new DefaultParameterProcessor();
 
-            var data = _parameters.Select(parameter => parameterProcessor.IncludeParameter(parameter, _path));
+            var data = _parameters.Select(parameter => parameterProcessor.IncludeParameter(parameter, Path));
 
             Assert.All(data, Assert.True);
         }
