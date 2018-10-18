@@ -57,11 +57,6 @@ namespace Amazon.Extensions.Configuration.SystemsManager
         public IParameterProcessor ParameterProcessor { get; set; }
 
         /// <inheritdoc />
-        /// <summary>
-        /// Builds the <see cref="SystemsManagerConfigurationProvider" /> for this source.
-        /// </summary>
-        /// <param name="builder">The <see cref="IConfigurationBuilder" />.</param>
-        /// <returns>A <see cref="SystemsManagerConfigurationProvider" /></returns>
         public IConfigurationProvider Build(IConfigurationBuilder builder)
         {
             return new SystemsManagerConfigurationProvider(this);

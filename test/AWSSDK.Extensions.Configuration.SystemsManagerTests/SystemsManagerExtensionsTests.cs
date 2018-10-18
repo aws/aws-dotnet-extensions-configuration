@@ -1,7 +1,7 @@
-﻿using System;
-using Amazon.Extensions.Configuration.SystemsManager;
+﻿using Amazon.Extensions.Configuration.SystemsManager;
 using Amazon.Extensions.NETCore.Setup;
 using Microsoft.Extensions.Configuration;
+using System;
 using Xunit;
 
 namespace AWSSDK.Extensions.Configuration.SystemsManagerTests
@@ -26,7 +26,7 @@ namespace AWSSDK.Extensions.Configuration.SystemsManagerTests
             if (exceptionType != null)
             {
                 var ex = Assert.Throws(exceptionType, ExecuteBuilder);
-                Assert.Equal(exceptionMessage, ex.Message);
+                Assert.Contains(exceptionMessage, ex.Message, StringComparison.Ordinal);
             }
             else
             {
@@ -36,16 +36,16 @@ namespace AWSSDK.Extensions.Configuration.SystemsManagerTests
         }
 
         [Theory, MemberData(nameof(WithAWSOptionsExtensionData))]
-        public void AddSystemsManagerWithAWSOptionsTest(AWSOptions awsOptions, string path, bool optional, TimeSpan? reloadAfter, Action<SystemsManagerExceptionContext> onLoadException, Type exceptionType, string exceptionMessage)
+        public void AddSystemsManagerWithAWSOptionsTest(Func<IConfigurationBuilder, IConfigurationBuilder> configurationBuilder, Type exceptionType, string exceptionMessage)
         {
             var builder = new ConfigurationBuilder();
 
-            IConfigurationBuilder ExecuteBuilder() => builder.AddSystemsManager(awsOptions, path, optional, reloadAfter, onLoadException);
+            IConfigurationBuilder ExecuteBuilder() => configurationBuilder(builder);
 
             if (exceptionType != null)
             {
                 var ex = Assert.Throws(exceptionType, ExecuteBuilder);
-                Assert.Equal(exceptionMessage, ex.Message);
+                Assert.Contains(exceptionMessage, ex.Message, StringComparison.Ordinal);
             }
             else
             {
@@ -55,16 +55,16 @@ namespace AWSSDK.Extensions.Configuration.SystemsManagerTests
         }
 
         [Theory, MemberData(nameof(NoAWSOptionsExtensionData))]
-        public void AddSystemsManagerWithNoAWSOptionsTest(string path, bool optional, TimeSpan? reloadAfter, Action<SystemsManagerExceptionContext> onLoadException, Type exceptionType, string exceptionMessage)
+        public void AddSystemsManagerWithNoAWSOptionsTest(Func<IConfigurationBuilder, IConfigurationBuilder> configurationBuilder, Type exceptionType, string exceptionMessage)
         {
             var builder = new ConfigurationBuilder();
 
-            IConfigurationBuilder ExecuteBuilder() => builder.AddSystemsManager(path, optional, reloadAfter, onLoadException);
+            IConfigurationBuilder ExecuteBuilder() => configurationBuilder(builder);
 
             if (exceptionType != null)
             {
                 var ex = Assert.Throws(exceptionType, ExecuteBuilder);
-                Assert.Equal(exceptionMessage, ex.Message);
+                Assert.Contains(exceptionMessage, ex.Message, StringComparison.Ordinal);
             }
             else
             {
@@ -76,29 +76,37 @@ namespace AWSSDK.Extensions.Configuration.SystemsManagerTests
         public static TheoryData<AWSOptions, string, bool, TimeSpan?, Action<SystemsManagerExceptionContext>, Type, string> SourceExtensionData =>
             new TheoryData<AWSOptions, string, bool, TimeSpan?, Action<SystemsManagerExceptionContext>, Type, string>
             {
-                {null, null, false, null, null, typeof(ArgumentNullException), "Value cannot be null.\r\nParameter name: Path"},
-                {null, null, true, null, null, typeof(ArgumentNullException), "Value cannot be null.\r\nParameter name: Path"},
+                {null, null, false, null, null, typeof(ArgumentNullException), "Parameter name: Path"},
+                {null, null, true, null, null, typeof(ArgumentNullException), "Parameter name: Path"},
                 {null, "/path", false, null, null, null, null},
                 {null, "/aws/reference/secretsmanager/somevalue", false, null, null, typeof(ArgumentException), "Secrets Manager paths are not supported"}
             };
 
-        public static TheoryData<AWSOptions, string, bool, TimeSpan?, Action<SystemsManagerExceptionContext>, Type, string> WithAWSOptionsExtensionData =>
-            new TheoryData<AWSOptions, string, bool, TimeSpan?, Action<SystemsManagerExceptionContext>, Type, string>
-            {
-                {null, null, false, null, null, typeof(ArgumentNullException), "Value cannot be null.\r\nParameter name: awsOptions"},
-                {null, "/path", false, null, null, typeof(ArgumentNullException), "Value cannot be null.\r\nParameter name: awsOptions"},
-                {new AWSOptions(), null, false, null, null, typeof(ArgumentNullException), "Value cannot be null.\r\nParameter name: Path"},
-                {new AWSOptions(), "/path", false, null, null, null, null},
-                {new AWSOptions(), "/aws/reference/secretsmanager/somevalue", false, null, null, typeof(ArgumentException), "Secrets Manager paths are not supported"}
+        public static TheoryData<Func<IConfigurationBuilder, IConfigurationBuilder>, Type, string> WithAWSOptionsExtensionData => new TheoryData<Func<IConfigurationBuilder, IConfigurationBuilder>, Type, string>
+        {
+            {builder => builder.AddSystemsManager(null, null), typeof(ArgumentNullException), "Parameter name: path"},
+            {builder => builder.AddSystemsManager("/path", null), typeof(ArgumentNullException), "Parameter name: awsOptions"},
+            {builder => builder.AddSystemsManager(null, new AWSOptions()), typeof(ArgumentNullException), "Parameter name: path"},
+            {builder => builder.AddSystemsManager("/aws/reference/secretsmanager/somevalue", new AWSOptions()), typeof(ArgumentException), "Secrets Manager paths are not supported"},
+            {builder => builder.AddSystemsManager("/path", new AWSOptions(), true), null, null},
+            {builder => builder.AddSystemsManager("/path", new AWSOptions(), false), null, null},
+            {builder => builder.AddSystemsManager("/path", new AWSOptions(), TimeSpan.Zero), null, null},
+            {builder => builder.AddSystemsManager("/path", new AWSOptions(), TimeSpan.Zero), null, null},
+            {builder => builder.AddSystemsManager("/path", new AWSOptions(), true, TimeSpan.Zero), null, null},
+            {builder => builder.AddSystemsManager("/path", new AWSOptions(), false, TimeSpan.Zero), null, null}
+        };
 
-            };
-
-        public static TheoryData<string, bool, TimeSpan?, Action<SystemsManagerExceptionContext>, Type, string> NoAWSOptionsExtensionData =>
-            new TheoryData<string, bool, TimeSpan?, Action<SystemsManagerExceptionContext>, Type, string>
-            {
-                {null, false, null, null, typeof(ArgumentNullException), "Value cannot be null.\r\nParameter name: Path"},
-                {"/path", false, null, null, null, null},
-                {"/aws/reference/secretsmanager/somevalue", false, null, null, typeof(ArgumentException), "Secrets Manager paths are not supported"}
-            };
+        public static TheoryData<Func<IConfigurationBuilder, IConfigurationBuilder>, Type, string> NoAWSOptionsExtensionData => new TheoryData<Func<IConfigurationBuilder, IConfigurationBuilder>, Type, string>
+        {
+            {builder => builder.AddSystemsManager(null as string), typeof(ArgumentNullException), "Parameter name: path"},
+            {builder => builder.AddSystemsManager("/path"), null, null},
+            {builder => builder.AddSystemsManager("/aws/reference/secretsmanager/somevalue"), typeof(ArgumentException), "Secrets Manager paths are not supported"},
+            {builder => builder.AddSystemsManager("/path", true), null, null},
+            {builder => builder.AddSystemsManager("/path", false), null, null},
+            {builder => builder.AddSystemsManager("/path", TimeSpan.Zero), null, null},
+            {builder => builder.AddSystemsManager("/path", TimeSpan.Zero), null, null},
+            {builder => builder.AddSystemsManager("/path", true, TimeSpan.Zero), null, null},
+            {builder => builder.AddSystemsManager("/path", false, TimeSpan.Zero), null, null}
+        };
     }
 }
