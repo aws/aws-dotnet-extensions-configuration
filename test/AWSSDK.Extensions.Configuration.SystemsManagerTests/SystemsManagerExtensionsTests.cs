@@ -9,7 +9,7 @@ namespace AWSSDK.Extensions.Configuration.SystemsManagerTests
     public class SystemsManagerExtensionsTests
     {
         [Theory, MemberData(nameof(SourceExtensionData))]
-        public void AddSystemsManagerExtensionWithSourceTest(AWSOptions awsOptions, string path, bool optional, TimeSpan? reloadAfter, Action<SystemsManagerExceptionContext> onLoadException, Type exceptionType, string exceptionMessage)
+        public void AddSystemsManagerExtensionWithSourceTest(string path, AWSOptions awsOptions, bool optional, TimeSpan? reloadAfter, Action<SystemsManagerExceptionContext> onLoadException, Type exceptionType, string exceptionMessage)
         {
             var builder = new ConfigurationBuilder();
 
@@ -35,8 +35,10 @@ namespace AWSSDK.Extensions.Configuration.SystemsManagerTests
             }
         }
 
-        [Theory, MemberData(nameof(WithAWSOptionsExtensionData))]
-        public void AddSystemsManagerWithAWSOptionsTest(Func<IConfigurationBuilder, IConfigurationBuilder> configurationBuilder, Type exceptionType, string exceptionMessage)
+        [Theory]
+        [MemberData(nameof(WithAWSOptionsExtensionData))]
+        [MemberData(nameof(NoAWSOptionsExtensionData))]
+        public void AddSystemsManagerInlineTest(Func<IConfigurationBuilder, IConfigurationBuilder> configurationBuilder, Type exceptionType, string exceptionMessage)
         {
             var builder = new ConfigurationBuilder();
 
@@ -54,32 +56,13 @@ namespace AWSSDK.Extensions.Configuration.SystemsManagerTests
             }
         }
 
-        [Theory, MemberData(nameof(NoAWSOptionsExtensionData))]
-        public void AddSystemsManagerWithNoAWSOptionsTest(Func<IConfigurationBuilder, IConfigurationBuilder> configurationBuilder, Type exceptionType, string exceptionMessage)
-        {
-            var builder = new ConfigurationBuilder();
-
-            IConfigurationBuilder ExecuteBuilder() => configurationBuilder(builder);
-
-            if (exceptionType != null)
-            {
-                var ex = Assert.Throws(exceptionType, ExecuteBuilder);
-                Assert.Contains(exceptionMessage, ex.Message, StringComparison.Ordinal);
-            }
-            else
-            {
-                var result = ExecuteBuilder();
-                Assert.Equal(builder, result);
-            }
-        }
-
-        public static TheoryData<AWSOptions, string, bool, TimeSpan?, Action<SystemsManagerExceptionContext>, Type, string> SourceExtensionData =>
-            new TheoryData<AWSOptions, string, bool, TimeSpan?, Action<SystemsManagerExceptionContext>, Type, string>
+        public static TheoryData<string, AWSOptions, bool, TimeSpan?, Action<SystemsManagerExceptionContext>, Type, string> SourceExtensionData =>
+            new TheoryData<string, AWSOptions, bool, TimeSpan?, Action<SystemsManagerExceptionContext>, Type, string>
             {
                 {null, null, false, null, null, typeof(ArgumentNullException), "Parameter name: Path"},
                 {null, null, true, null, null, typeof(ArgumentNullException), "Parameter name: Path"},
-                {null, "/path", false, null, null, null, null},
-                {null, "/aws/reference/secretsmanager/somevalue", false, null, null, typeof(ArgumentException), "Secrets Manager paths are not supported"}
+                {"/path", null, false, null, null, null, null},
+                {"/aws/reference/secretsmanager/somevalue", null, false, null, null, typeof(ArgumentException), "Secrets Manager paths are not supported"}
             };
 
         public static TheoryData<Func<IConfigurationBuilder, IConfigurationBuilder>, Type, string> WithAWSOptionsExtensionData => new TheoryData<Func<IConfigurationBuilder, IConfigurationBuilder>, Type, string>

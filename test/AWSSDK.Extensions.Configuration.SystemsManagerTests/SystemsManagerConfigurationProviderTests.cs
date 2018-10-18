@@ -18,7 +18,7 @@ namespace AWSSDK.Extensions.Configuration.SystemsManagerTests
             new Parameter {Name = "/start/path/p1/p2/p3-2", Value = "p1:p2:p3-2"}
         };
 
-        private readonly string _path = "/start/path";
+        private const string Path = "/start/path";
 
         private readonly SystemsManagerConfigurationProvider _provider;
         private readonly Mock<ISystemsManagerProcessor> _systemsManagerProcessorMock;
@@ -33,7 +33,7 @@ namespace AWSSDK.Extensions.Configuration.SystemsManagerTests
             {
                 ParameterProcessor = _parameterProcessorMock.Object,
                 AwsOptions = new AWSOptions(), 
-                Path = _path
+                Path = Path
             };
             _provider = new SystemsManagerConfigurationProvider(_source, _systemsManagerProcessorMock.Object);
         }
@@ -43,11 +43,11 @@ namespace AWSSDK.Extensions.Configuration.SystemsManagerTests
         {
             foreach (var parameter in _parameters)
             {
-                _parameterProcessorMock.Setup(processor => processor.IncludeParameter(parameter, _path)).Returns(true);
-                _parameterProcessorMock.Setup(processor => processor.GetKey(parameter, _path)).Returns(parameter.Value);
+                _parameterProcessorMock.Setup(processor => processor.IncludeParameter(parameter, Path)).Returns(true);
+                _parameterProcessorMock.Setup(processor => processor.GetKey(parameter, Path)).Returns(parameter.Value);
             }
 
-            var data = _provider.ProcessParameters(_parameters, _path);
+            var data = _provider.ProcessParameters(_parameters, Path);
             
             Assert.All(data, item => Assert.Equal(item.Value, item.Key));
 
@@ -60,8 +60,8 @@ namespace AWSSDK.Extensions.Configuration.SystemsManagerTests
             _systemsManagerProcessorMock.Setup(p => p.GetParametersByPathAsync(_source.AwsOptions, _source.Path)).ReturnsAsync(_parameters);
             foreach (var parameter in _parameters)
             {
-                _parameterProcessorMock.Setup(processor => processor.IncludeParameter(parameter, _path)).Returns(true);
-                _parameterProcessorMock.Setup(processor => processor.GetKey(parameter, _path)).Returns(parameter.Value);
+                _parameterProcessorMock.Setup(processor => processor.IncludeParameter(parameter, Path)).Returns(true);
+                _parameterProcessorMock.Setup(processor => processor.GetKey(parameter, Path)).Returns(parameter.Value);
             }
             
             _provider.Load();
