@@ -39,9 +39,9 @@ namespace HostBuilderExample
 }
 ```
 
-# Opening Issues
+# Getting Help
 
-Please use these community resources for getting help. We use the [GitHub issues][sdk-issues] for tracking bugs and feature requests and have limited bandwidth to address them.
+Please use these community resources for getting help. We use the [GitHub issues](https://github.com/aws/aws-dotnet-extensions-configuration/issues) for tracking bugs and feature requests and have limited bandwidth to address them.
 
 * Ask a question on [StackOverflow](http://stackoverflow.com/) and tag it with `aws` and `.net`
 * Come join the AWS .NET community chat on [gitter](https://gitter.im/aws/aws-sdk-net)
