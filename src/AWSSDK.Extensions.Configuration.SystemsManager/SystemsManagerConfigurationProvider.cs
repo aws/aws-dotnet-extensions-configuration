@@ -116,7 +116,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager
                 .Select(parameter => new
                 {
                     Key = ParameterProcessor.GetKey(parameter, path),
-                    parameter.Value
+                    Value = ParameterProcessor.GetValue(parameter, path),
                 })
                 .ToDictionary(parameter => parameter.Key, parameter => parameter.Value, StringComparer.OrdinalIgnoreCase);
     }
