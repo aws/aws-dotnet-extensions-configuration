@@ -13,7 +13,7 @@ The library introduces the following dependencies:
 
 # Getting Started
 
-Follow the examples below to see how the library can be integrated into your application.
+Follow the examples below to see how the library can be integrated into your application.  This extension adheres to the same practices and conventions of [Configuration in ASP.NET Core](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-2.1).
 
 ## ASP.NET Core Example
 The most common use case for this library is for your ASP.NETCore application to pull configuration from Parameter Store.  You can easily add this functionality by adding 1 line of code:
