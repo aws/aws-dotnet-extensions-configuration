@@ -15,6 +15,27 @@ The library introduces the following dependencies:
 
 Follow the examples below to see how the library can be integrated into your application.
 
+## ASP.NET Core Example
+The most common use case for this library is for your ASP.NETCore application to pull configuration from Parameter Store.  You can easily add this functionality by adding 1 line of code:
+
+```csharp
+public class Program
+{
+    public static void Main(string[] args)
+    {
+        CreateWebHostBuilder(args).Build().Run();
+    }
+
+    public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+        WebHost.CreateDefaultBuilder(args)
+            .ConfigureAppConfiguration(builder =>
+            {
+                builder.AddSystemsManager("/my-application/");
+            })
+            .UseStartup<Startup>();
+}
+```
+
 ## HostBuilder Example
 Microsoft introduced [.NET Generic Host](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/generic-host?view=aspnetcore-2.1) to de-couple HTTP pipeline from the Web Host API.  The Generic Host library allows you to write non-HTTP services using configuration, dependency injection, and logging features.  The sample code below shows you how to use the the AWS .NET Configuration Extension library:
 
@@ -28,10 +49,7 @@ namespace HostBuilderExample
             {
                 config.AddSystemsManager("/my-application/");
             })
-            .ConfigureServices((sc) =>
-            {
-                // add services here
-            })
+            .ConfigureServices((sc) => { ... })
             .Build();
 
         await host.RunAsync();
