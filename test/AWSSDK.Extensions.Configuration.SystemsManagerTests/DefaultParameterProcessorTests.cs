@@ -1,10 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Amazon.Extensions.Configuration.SystemsManager;
-using Amazon.Extensions.Configuration.SystemsManager.Internal;
-using Amazon.Extensions.NETCore.Setup;
 using Amazon.SimpleSystemsManagement.Model;
-using Moq;
 using Xunit;
 
 namespace AWSSDK.Extensions.Configuration.SystemsManagerTests
