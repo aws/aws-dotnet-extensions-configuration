@@ -30,7 +30,7 @@ namespace Samples
                     var awsOptions = new AWSOptions {Profile = "default", Region = RegionEndpoint.USEast1};
 
                     //populates some sample data to be used by this example project
-                    config.PopulateSampleDataForThisProject(context, awsOptions);
+                    PopulateSampleDataForThisProject(context, awsOptions);
 
                     //add systems manager parameter store paths
                     config.AddSystemsManager($"/dotnet-aws-samples/{env.ApplicationName}/common", awsOptions);
@@ -42,7 +42,7 @@ namespace Samples
         /// <summary>
         /// This exists only to populate some sample data to be used by this example project
         /// </summary>
-        public static void PopulateSampleDataForThisProject(this IConfigurationBuilder builder, WebHostBuilderContext context, AWSOptions awsOptions)
+        public static void PopulateSampleDataForThisProject(WebHostBuilderContext context, AWSOptions awsOptions)
         {
             var env = context.HostingEnvironment;
 
