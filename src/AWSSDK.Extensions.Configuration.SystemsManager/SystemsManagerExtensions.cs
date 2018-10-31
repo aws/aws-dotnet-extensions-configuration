@@ -27,8 +27,7 @@ namespace Microsoft.Extensions.Configuration
     {
         private const string SecretsManagerPath = "/aws/reference/secretsmanager/";
         private const string SecretsManagerExceptionMessage = "Secrets Manager paths are not supported";
-
-        private static AWSOptions _awsOptions;
+        private const string AwsOptionsConfigurationKey = "AWS_CONFIGBUILDER_AWSOPTIONS";
 
         /// <summary>
         /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from AWS Systems Manager Parameter Store with a specified path.
@@ -190,13 +189,7 @@ namespace Microsoft.Extensions.Configuration
             if (source.Path.StartsWith(SecretsManagerPath, StringComparison.OrdinalIgnoreCase)) throw new ArgumentException(SecretsManagerExceptionMessage);
             if (source.AwsOptions != null) return builder.Add(source);
 
-            if (_awsOptions == null)
-            {
-                var config = builder.Build();
-                _awsOptions = config.GetAWSOptions();
-            }
-
-            source.AwsOptions = _awsOptions;
+            source.AwsOptions = builder.GetAwsOptions();
             return builder.Add(source);
         }
 
@@ -209,6 +202,28 @@ namespace Microsoft.Extensions.Configuration
                 configurationSource.Optional = optional;
                 configurationSource.ReloadAfter = reloadAfter;
             };
+        }
+
+        private static AWSOptions GetAwsOptions(this IConfigurationBuilder builder)
+        {
+            if (builder.Properties.TryGetValue(AwsOptionsConfigurationKey, out var value) && value is AWSOptions existingOptions)
+            {
+                return existingOptions;
+            }
+
+            var config = builder.Build();
+            var newOptions = config.GetAWSOptions();
+
+            if (builder.Properties.ContainsKey(AwsOptionsConfigurationKey))
+            {
+                builder.Properties[AwsOptionsConfigurationKey] = newOptions;
+            }
+            else
+            {
+                builder.Properties.Add(AwsOptionsConfigurationKey, newOptions);    
+            }
+
+            return newOptions;
         }
     }
 }
