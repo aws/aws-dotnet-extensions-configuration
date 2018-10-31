@@ -220,7 +220,7 @@ namespace Microsoft.Extensions.Configuration
             }
             else
             {
-                builder.Properties.Add(AwsOptionsConfigurationKey, newOptions);    
+                builder.Properties.Add(AwsOptionsConfigurationKey, newOptions);
             }
 
             return newOptions;
