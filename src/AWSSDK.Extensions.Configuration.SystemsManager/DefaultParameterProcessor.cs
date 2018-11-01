@@ -33,5 +33,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager
         {
             return parameter.Name.Substring(path.Length).TrimStart('/').Replace("/", KeyDelimiter);
         }
+
+        public string GetValue(Parameter parameter, string path) => parameter.Value;
     }
 }
