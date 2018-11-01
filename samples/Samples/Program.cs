@@ -22,10 +22,8 @@ namespace Samples
                 {
                     var env = context.HostingEnvironment;
 
-                    // Add configuration information for the AWS SDK to use (required before any calls to AddSystemsManager)
-                    // NOTE: You may need to adjust these default settings depending on your environment
-                    // More Details: https://docs.aws.amazon.com/sdk-for-net/v3/developer-guide/net-dg-config-netcore.html
-                    config.AddJsonFile("aws.json");
+                    // NOTE: A default AWS SDK configuration has been added to appsettings.Development.json.
+                    // More Details can be found at: https://docs.aws.amazon.com/sdk-for-net/v3/developer-guide/net-dg-config-netcore.html
 
                     // Add systems manager parameter store paths
                     config.AddSystemsManager($"/dotnet-aws-samples/systems-manager-sample/common");
