@@ -8,34 +8,8 @@ namespace AWSSDK.Extensions.Configuration.SystemsManagerTests
 {
     public class SystemsManagerExtensionsTests
     {
-        [Theory, MemberData(nameof(SourceExtensionData))]
-        public void AddSystemsManagerExtensionWithSourceTest(string path, AWSOptions awsOptions, bool optional, TimeSpan? reloadAfter, Action<SystemsManagerExceptionContext> onLoadException, Type exceptionType, string exceptionMessage)
-        {
-            var builder = new ConfigurationBuilder();
-
-            IConfigurationBuilder ExecuteBuilder() =>
-                builder.AddSystemsManager(source =>
-                {
-                    source.AwsOptions = awsOptions;
-                    source.Path = path;
-                    source.Optional = optional;
-                    source.ReloadAfter = reloadAfter;
-                    source.OnLoadException = onLoadException;
-                });
-
-            if (exceptionType != null)
-            {
-                var ex = Assert.Throws(exceptionType, ExecuteBuilder);
-                Assert.Contains(exceptionMessage, ex.Message, StringComparison.Ordinal);
-            }
-            else
-            {
-                var result = ExecuteBuilder();
-                Assert.Equal(builder, result);
-            }
-        }
-
         [Theory]
+        [MemberData(nameof(SourceExtensionData))]
         [MemberData(nameof(WithAWSOptionsExtensionData))]
         [MemberData(nameof(NoAWSOptionsExtensionData))]
         public void AddSystemsManagerInlineTest(Func<IConfigurationBuilder, IConfigurationBuilder> configurationBuilder, Type exceptionType, string exceptionMessage)
@@ -56,14 +30,13 @@ namespace AWSSDK.Extensions.Configuration.SystemsManagerTests
             }
         }
 
-        public static TheoryData<string, AWSOptions, bool, TimeSpan?, Action<SystemsManagerExceptionContext>, Type, string> SourceExtensionData =>
-            new TheoryData<string, AWSOptions, bool, TimeSpan?, Action<SystemsManagerExceptionContext>, Type, string>
-            {
-                {null, null, false, null, null, typeof(ArgumentNullException), "Parameter name: Path"},
-                {null, null, true, null, null, typeof(ArgumentNullException), "Parameter name: Path"},
-                {"/path", null, false, null, null, null, null},
-                {"/aws/reference/secretsmanager/somevalue", null, false, null, null, typeof(ArgumentException), "Secrets Manager paths are not supported"}
-            };
+        public static TheoryData<Func<IConfigurationBuilder, IConfigurationBuilder>, Type, string> SourceExtensionData => new TheoryData<Func<IConfigurationBuilder, IConfigurationBuilder>, Type, string>
+        {
+            {builder => builder.AddSystemsManager(CreateSource(null, null, false, null, null)), typeof(ArgumentNullException), "Parameter name: Path"},
+            {builder => builder.AddSystemsManager(CreateSource(null, null, true, null, null)), typeof(ArgumentNullException), "Parameter name: Path"},
+            {builder => builder.AddSystemsManager(CreateSource("/path", null, false, null, null)), null, null},
+            {builder => builder.AddSystemsManager(CreateSource("/aws/reference/secretsmanager/somevalue", null, false, null, null)), typeof(ArgumentException), "Secrets Manager paths are not supported"}
+        };
 
         public static TheoryData<Func<IConfigurationBuilder, IConfigurationBuilder>, Type, string> WithAWSOptionsExtensionData => new TheoryData<Func<IConfigurationBuilder, IConfigurationBuilder>, Type, string>
         {
@@ -91,5 +64,17 @@ namespace AWSSDK.Extensions.Configuration.SystemsManagerTests
             {builder => builder.AddSystemsManager("/path", true, TimeSpan.Zero), null, null},
             {builder => builder.AddSystemsManager("/path", false, TimeSpan.Zero), null, null}
         };
+
+        private static Action<SystemsManagerConfigurationSource> CreateSource(string path, AWSOptions awsOptions, bool optional, TimeSpan? reloadAfter, Action<SystemsManagerExceptionContext> onLoadException)
+        {
+            return source =>
+            {
+                source.Path = path;
+                source.AwsOptions = awsOptions;
+                source.Optional = optional;
+                source.ReloadAfter = reloadAfter;
+                source.OnLoadException = onLoadException;
+            };
+        }
     }
 }

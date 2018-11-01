@@ -42,7 +42,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager
         public bool Optional { get; set; }
 
         /// <summary>
-        /// Paramaters will be reloaded from the AWS Systems Manager Parameter Store after the specified timeframe
+        /// Parameters will be reloaded from the AWS Systems Manager Parameter Store after the specified time frame
         /// </summary>
         public TimeSpan? ReloadAfter { get; set; }
 

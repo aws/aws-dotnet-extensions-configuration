@@ -1,10 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Amazon.Extensions.Configuration.SystemsManager;
-using Amazon.Extensions.Configuration.SystemsManager.Internal;
-using Amazon.Extensions.NETCore.Setup;
 using Amazon.SimpleSystemsManagement.Model;
-using Moq;
 using Xunit;
 
 namespace AWSSDK.Extensions.Configuration.SystemsManagerTests
@@ -22,13 +19,23 @@ namespace AWSSDK.Extensions.Configuration.SystemsManagerTests
         private const string Path = "/start/path";
 
         [Fact]
-        public void NormalizeKeyTest()
+        public void GetKeyTest()
         {
             var parameterProcessor = new DefaultParameterProcessor();
 
             var data = _parameters.Select(parameter => new {Key = parameterProcessor.GetKey(parameter, Path), parameter.Value});
             
             Assert.All(data, item => Assert.Equal(item.Value, item.Key));
+        }
+
+        [Fact]
+        public void GetValueTest()
+        {
+            var parameterProcessor = new DefaultParameterProcessor();
+
+            var data = _parameters.Select(parameter => new {ParameterValue = parameter.Value, ProcessorValue = parameterProcessor.GetValue(parameter, Path)});
+            
+            Assert.All(data, item => Assert.Equal(item.ParameterValue, item.ProcessorValue));
         }
 
         [Fact]

@@ -30,6 +30,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager
         /// <param name="path">Path used when retrieving the <see cref="Parameter"/></param>
         /// <returns>Boolean that determines if the Parameter wil be processed further</returns>
         bool IncludeParameter(Parameter parameter, string path);
+
         /// <summary>
         /// Normalizes the key to be compatible with <see cref="IConfiguration"/>.
         /// </summary>
@@ -37,5 +38,13 @@ namespace Amazon.Extensions.Configuration.SystemsManager
         /// <param name="path">Path used when retrieving the <see cref="Parameter"/></param>
         /// <returns>The normalized key</returns>
         string GetKey(Parameter parameter, string path);
+        
+        /// <summary>
+        /// Gets the value to be returned by <see cref="IConfiguration"/>.
+        /// </summary>
+        /// <param name="parameter"><see cref="Parameter"/> to be processed</param>
+        /// <param name="path">Path used when retrieving the <see cref="Parameter"/></param>
+        /// <returns>The configuration value</returns>
+        string GetValue(Parameter parameter, string path);
     }
 }

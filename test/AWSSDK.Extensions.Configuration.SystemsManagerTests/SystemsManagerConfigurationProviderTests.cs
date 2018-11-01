@@ -45,6 +45,7 @@ namespace AWSSDK.Extensions.Configuration.SystemsManagerTests
             {
                 _parameterProcessorMock.Setup(processor => processor.IncludeParameter(parameter, Path)).Returns(true);
                 _parameterProcessorMock.Setup(processor => processor.GetKey(parameter, Path)).Returns(parameter.Value);
+                _parameterProcessorMock.Setup(processor => processor.GetValue(parameter, Path)).Returns(parameter.Value);
             }
 
             var data = _provider.ProcessParameters(_parameters, Path);
