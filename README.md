@@ -1,9 +1,9 @@
 ![.NET on AWS Banner](./logo.png ".NET on AWS")
 
-# AWS .NET Configuration Extension for Systems Manager
-[![AWSSDK.Extensions.Configuration.SystemsManager](https://img.shields.io/nuget/v/AWSSDK.Extensions.Configuration.SystemsManager.svg)](https://www.nuget.org/packages/AWSSDK.Extensions.Configuration.SystemsManager)
+# AWS .NET Configuration Extension for Systems Manager - In Development
+This software is in development and we do not recommend using this software in production environment.
 
-<strong>AWSSDK.Extensions.Configuration.SystemsManager</strong> is a library that simplifies using [AWS SSM](https://aws.amazon.com/systems-manager/)'s [Parameter Store](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-paramstore.html) as a source for configuration information for .NET Core applications.  This project was contributed by [@KenHundley](https://github.com/KenHundley).
+Configuration Extension for Systems Manager library simplifies using [AWS SSM](https://aws.amazon.com/systems-manager/)'s [Parameter Store](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-paramstore.html) as a source for configuration information for .NET Core applications.  This project was contributed by [@KenHundley](https://github.com/KenHundley).
 
 The library introduces the following dependencies:
 
@@ -16,7 +16,7 @@ The library introduces the following dependencies:
 Follow the examples below to see how the library can be integrated into your application.  This extension adheres to the same practices and conventions of [Configuration in ASP.NET Core](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-2.1).
 
 ## ASP.NET Core Example
-The most common use case for this library is for your ASP.NETCore application to pull configuration from Parameter Store.  You can easily add this functionality by adding 1 line of code:
+The most common use case for this library is to pull configuration from Parameter Store.  You can easily add this functionality by adding 1 line of code:
 
 ```csharp
 public class Program
@@ -59,7 +59,7 @@ namespace HostBuilderExample
 
 # Getting Help
 
-Please use these community resources for getting help. We use the [GitHub issues](https://github.com/aws/aws-dotnet-extensions-configuration/issues) for tracking bugs and feature requests and have limited bandwidth to address them.
+You can use the following community resources to get help. We use the [GitHub issues](https://github.com/aws/aws-dotnet-extensions-configuration/issues) for tracking bugs and feature requests and have limited bandwidth to address them.
 
 * Ask a question on [StackOverflow](http://stackoverflow.com/) and tag it with `aws` and `.net`
 * Come join the AWS .NET community chat on [gitter](https://gitter.im/aws/aws-sdk-net)
