@@ -1,6 +1,6 @@
 ![.NET on AWS Banner](./logo.png ".NET on AWS")
 
-# AWS .NET Configuration Extension for Systems Manager - In Development
+# AWS .NET Configuration Extension for Systems Manager
 This software is in development and we do not recommend using this software in production environment.
 
 Configuration Extension for Systems Manager library simplifies using [AWS SSM](https://aws.amazon.com/systems-manager/)'s [Parameter Store](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-paramstore.html) as a source for configuration information for .NET Core applications.  This project was contributed by [@KenHundley](https://github.com/KenHundley).
