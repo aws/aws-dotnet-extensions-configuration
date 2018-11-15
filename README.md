@@ -1,7 +1,7 @@
 ![.NET on AWS Banner](./logo.png ".NET on AWS")
 
 # AWS .NET Configuration Extension for Systems Manager
-This software is in development and we do not recommend using this software in production environment.
+<strong>This software is in development and we do not recommend using this software in production environment.</strong>
 
 Configuration Extension for Systems Manager library simplifies using [AWS SSM](https://aws.amazon.com/systems-manager/)'s [Parameter Store](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-paramstore.html) as a source for configuration information for .NET Core applications.  This project was contributed by [@KenHundley](https://github.com/KenHundley).
 
@@ -57,22 +57,27 @@ namespace HostBuilderExample
 }
 ```
 
+## Samples
+
+For more complete examples, take a look at sample projects available in [samples directory](https://github.com/aws/aws-dotnet-extensions-configuration/tree/master/samples).
+
+
 # Getting Help
 
-You can use the following community resources to get help. We use the [GitHub issues](https://github.com/aws/aws-dotnet-extensions-configuration/issues) for tracking bugs and feature requests and have limited bandwidth to address them.
+We use the [GitHub issues](https://github.com/aws/aws-dotnet-extensions-configuration/issues) for tracking bugs and feature requests and have limited bandwidth to address them.
 
-* Ask a question on [StackOverflow](http://stackoverflow.com/) and tag it with `aws` and `.net`
-* Come join the AWS .NET community chat on [gitter](https://gitter.im/aws/aws-sdk-net)
-* Open a support ticket with [AWS Support](https://console.aws.amazon.com/support/home)
-* If it turns out that you may have found a bug, please open an [issue](https://github.com/aws/aws-dotnet-extensions-configuration/issues/new)
+If you think you may have found a bug, please open an [issue](https://github.com/aws/aws-dotnet-extensions-configuration/issues/new)
 
 # Contributing
 
 We welcome community contributions and pull requests. See
-[CONTRIBUTING](./CONTRIBUTING.md) for information on how to set up a development
+[CONTRIBUTING.md](./CONTRIBUTING.md) for information on how to set up a development
 environment and submit code.
 
 # Additional Resources
+
+[AWS .NET GitHub Home Page](https://github.com/aws/dotnet)  
+GitHub home for .NET development on AWS. You'll find libraries, tools, and resources to help you build .NET applications and services on AWS.
 
 [AWS Developer Center - Explore .NET on AWS](https://aws.amazon.com/developer/language/net/)  
 Find all the .NET code samples, step-by-step guides, videos, blog content, tools, and information about live events that you need in one place. 
