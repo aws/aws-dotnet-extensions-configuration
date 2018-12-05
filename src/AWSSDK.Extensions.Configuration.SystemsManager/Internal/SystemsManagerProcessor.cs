@@ -14,8 +14,10 @@
  */
 
 using System.Collections.Generic;
+using System.Reflection;
 using System.Threading.Tasks;
 using Amazon.Extensions.NETCore.Setup;
+using Amazon.Runtime;
 using Amazon.SimpleSystemsManagement;
 using Amazon.SimpleSystemsManagement.Model;
 
@@ -32,6 +34,11 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
         {
             using (var client = awsOptions.CreateServiceClient<IAmazonSimpleSystemsManagement>())
             {
+                if(client is AmazonSimpleSystemsManagementClient impl)
+                {
+                    impl.BeforeRequestEvent += ServiceClientBeforeRequestEvent;
+                }
+
                 var parameters = new List<Parameter>();
                 string nextToken = null;
                 do
@@ -43,6 +50,19 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
 
                 return parameters;
             }
+        }
+
+        const string UserAgentHeader = "User-Agent";
+        static readonly string _assemblyVersion = typeof(SystemsManagerProcessor).GetTypeInfo().Assembly.GetName().Version.ToString();
+
+        void ServiceClientBeforeRequestEvent(object sender, RequestEventArgs e)
+        {
+            var args = e as Amazon.Runtime.WebServiceRequestEventArgs;
+            if (args == null || !args.Headers.ContainsKey(UserAgentHeader))
+                return;
+
+
+            args.Headers[UserAgentHeader] = args.Headers[UserAgentHeader] + " SSMConfigProvider/" + _assemblyVersion;
         }
     }
 }
