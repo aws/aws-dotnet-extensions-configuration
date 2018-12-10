@@ -16,7 +16,6 @@ using System;
 using Amazon.Extensions.Configuration.SystemsManager;
 using Amazon.Extensions.NETCore.Setup;
 using Microsoft.Extensions.Configuration;
-using System;
 using Xunit;
 
 namespace Amazon.Extensions.Configuration.SystemsManager.Tests
