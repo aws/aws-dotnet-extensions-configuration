@@ -22,14 +22,15 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Xunit;
-
-namespace AWSSDK.Extensions.Configuration.SystemsManager.Integ
+namespace Amazon.Extensions.Configuration.SystemsManager.Integ
 {
-    public class IntegTestFixture : IAsyncLifetime
+    public class IntegTestFixture : IDisposable
     {
         public const string ParameterPrefix = @"/configuration-extension-testdata/ssm/";
-        public AWSOptions AWSOptions { get; private set; }
+
+        public AWSOptions AWSOptions { get; private set; }        
+
+        private bool disposed = false;
 
         public IDictionary<string, string> TestData { get; } = new Dictionary<string, string>
         {
@@ -37,11 +38,32 @@ namespace AWSSDK.Extensions.Configuration.SystemsManager.Integ
             {"hello2", "world2"},
         };
 
-        public async Task InitializeAsync()
+        public IntegTestFixture()
         {
             AWSOptions = new AWSOptions();
             AWSOptions.Region = Amazon.RegionEndpoint.USWest2;
 
+            seedTestData();
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposed) return;
+            if (disposing)
+            {
+                cleanupTestData();
+            }
+            disposed = true;
+        }
+
+        private void seedTestData()
+        {
             bool success = false;
             using (var client = AWSOptions.CreateServiceClient<IAmazonSimpleSystemsManagement>())
             {
@@ -56,8 +78,7 @@ namespace AWSSDK.Extensions.Configuration.SystemsManager.Integ
                         Type = ParameterType.String
                     }));
                 };
-
-                await Task.WhenAll(tasks.ToArray()).ConfigureAwait(false);
+                Task.WaitAll(tasks.ToArray());
 
                 // due to eventual consistency, wait for 5 sec increments for 3 times to verify
                 // test data is correctly set before executing tests.
@@ -66,18 +87,15 @@ namespace AWSSDK.Extensions.Configuration.SystemsManager.Integ
                 {
                     int count = 0;
                     GetParametersByPathResponse response;
-                    string nextToken = null;
                     do
                     {
-                        response = await client.GetParametersByPathAsync(new GetParametersByPathRequest
+                        response = client.GetParametersByPathAsync(new GetParametersByPathRequest
                         {
-                            Path = ParameterPrefix,
-                            NextToken = nextToken
-                        }).ConfigureAwait(false);
+                            Path = ParameterPrefix
+                        }).Result;
 
                         count += response.Parameters.Count;
-                        nextToken = response.NextToken;
-                    } while (!string.IsNullOrEmpty(nextToken));
+                    } while (!string.IsNullOrEmpty(response.NextToken));
 
                     success = (count == TestData.Count);
 
@@ -89,7 +107,7 @@ namespace AWSSDK.Extensions.Configuration.SystemsManager.Integ
                     else
                     {
                         Console.WriteLine($"Waiting on test data to be available. Waiting {count + 1}/{tries}");
-                        await Task.Delay(5 * 1000).ConfigureAwait(false);
+                        Thread.Sleep(5 * 1000);
                     }
                 }
             }
@@ -97,27 +115,24 @@ namespace AWSSDK.Extensions.Configuration.SystemsManager.Integ
             if (!success) throw new Exception("Failed to seed integration test data");
         }
 
-        public async Task DisposeAsync()
+        private void cleanupTestData()
         {
             Console.Write($"Delete all test parameters with prefix '{ParameterPrefix}'... ");
             using (var client = AWSOptions.CreateServiceClient<IAmazonSimpleSystemsManagement>())
             {
                 GetParametersByPathResponse response;
-                string nextToken = null;
                 do
                 {
-                    response =  await client.GetParametersByPathAsync(new GetParametersByPathRequest
+                    response = client.GetParametersByPathAsync(new GetParametersByPathRequest
                     {
-                        Path = ParameterPrefix,
-                        NextToken = nextToken
-                    }).ConfigureAwait(false);
-                    nextToken = response.NextToken;
+                        Path = ParameterPrefix
+                    }).Result;
 
-                    await client.DeleteParametersAsync(new DeleteParametersRequest
+                    client.DeleteParametersAsync(new DeleteParametersRequest
                     {
                         Names = response.Parameters.Select(p => p.Name).ToList()
-                    }).ConfigureAwait(false);
-                } while (!string.IsNullOrEmpty(nextToken));
+                    }).Wait();
+                } while (!string.IsNullOrEmpty(response.NextToken));
 
                 // no need to wait for eventual consistency here given we are not running tests back-to-back
             }

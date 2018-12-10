@@ -2,13 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <AssemblyName>AWSSDK.Extensions.Configuration.SystemsManager</AssemblyName>
+    <AssemblyName>Amazon.Extensions.Configuration.SystemsManager</AssemblyName>
     <RootNamespace>Amazon.Extensions.Configuration.SystemsManager</RootNamespace>
     <OutputType>Library</OutputType>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageId>AWSSDK.Extensions.Configuration.SystemsManager</PackageId>
+    <PackageId>Amazon.Extensions.Configuration.SystemsManager</PackageId>
     <Title>.NET Configuration Extensions for AWS Systems Manager</Title>
-    <Product>AWSSDK.Extensions.Configuration.SystemsManager</Product>
+    <Product>Amazon.Extensions.Configuration.SystemsManager</Product>
     <Description>.NET Configuration Extensions for AWS Systems Manager</Description>
     <Authors>Amazon Web Services</Authors>
     <Copyright>2018</Copyright>

@@ -7,11 +7,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{00A2C0BE-917
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{31D7A0E9-FAC1-4EC5-8F77-CA21B8A4F9F0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AWSSDK.Extensions.Configuration.SystemsManager", "src\AWSSDK.Extensions.Configuration.SystemsManager\AWSSDK.Extensions.Configuration.SystemsManager.csproj", "{EC9A4865-6217-4E8D-98EC-12A0F2061F04}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Amazon.Extensions.Configuration.SystemsManager", "src\Amazon.Extensions.Configuration.SystemsManager\Amazon.Extensions.Configuration.SystemsManager.csproj", "{EC9A4865-6217-4E8D-98EC-12A0F2061F04}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AWSSDK.Extensions.Configuration.SystemsManager.Tests", "test\AWSSDK.Extensions.Configuration.SystemsManager.Tests\AWSSDK.Extensions.Configuration.SystemsManager.Tests.csproj", "{E8C9EC1F-E466-4100-B55C-569127918CC3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Amazon.Extensions.Configuration.SystemsManager.Tests", "test\Amazon.Extensions.Configuration.SystemsManager.Tests\Amazon.Extensions.Configuration.SystemsManager.Tests.csproj", "{E8C9EC1F-E466-4100-B55C-569127918CC3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AWSSDK.Extensions.Configuration.SystemsManager.Integ", "test\AWSSDK.Extensions.Configuration.SystemsManager.Integ\AWSSDK.Extensions.Configuration.SystemsManager.Integ.csproj", "{60C9F6C0-C13E-45AA-BC1F-C7E8BEA2E022}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Amazon.Extensions.Configuration.SystemsManager.Integ", "test\Amazon.Extensions.Configuration.SystemsManager.Integ\Amazon.Extensions.Configuration.SystemsManager.Integ.csproj", "{60C9F6C0-C13E-45AA-BC1F-C7E8BEA2E022}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

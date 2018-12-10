@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\AWSSDK.Extensions.Configuration.SystemsManager\AWSSDK.Extensions.Configuration.SystemsManager.csproj" />
+    <ProjectReference Include="..\..\src\Amazon.Extensions.Configuration.SystemsManager\Amazon.Extensions.Configuration.SystemsManager.csproj" />
   </ItemGroup>
 
 </Project>
