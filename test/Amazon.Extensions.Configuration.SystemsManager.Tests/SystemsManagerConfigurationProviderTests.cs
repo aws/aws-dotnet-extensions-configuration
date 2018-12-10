@@ -21,7 +21,7 @@ using Amazon.SimpleSystemsManagement.Model;
 using Moq;
 using Xunit;
 
-namespace AWSSDK.Extensions.Configuration.SystemsManager.Tests
+namespace Amazon.Extensions.Configuration.SystemsManager.Tests
 {
     public class SystemsManagerConfigurationProviderTests
     {

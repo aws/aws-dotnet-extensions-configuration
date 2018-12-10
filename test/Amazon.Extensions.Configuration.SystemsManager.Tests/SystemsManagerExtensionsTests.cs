@@ -19,7 +19,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using Xunit;
 
-namespace AWSSDK.Extensions.Configuration.SystemsManager.Tests
+namespace Amazon.Extensions.Configuration.SystemsManager.Tests
 {
     public class SystemsManagerExtensionsTests
     {

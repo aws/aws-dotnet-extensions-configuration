@@ -17,7 +17,7 @@ using System;
 using Microsoft.Extensions.Configuration;
 using Xunit;
 
-namespace AWSSDK.Extensions.Configuration.SystemsManager.Integ
+namespace Amazon.Extensions.Configuration.SystemsManager.Integ
 {
     public class ConfigurationBuilderIntegrationTests : IClassFixture<IntegTestFixture>
     {

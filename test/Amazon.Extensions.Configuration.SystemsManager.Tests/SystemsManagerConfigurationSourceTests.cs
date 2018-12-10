@@ -18,7 +18,7 @@ using Amazon.Extensions.NETCore.Setup;
 using Microsoft.Extensions.Configuration;
 using Xunit;
 
-namespace AWSSDK.Extensions.Configuration.SystemsManager.Tests
+namespace Amazon.Extensions.Configuration.SystemsManager.Tests
 {
     public class SystemsManagerConfigurationSourceTests
     {
