@@ -62,12 +62,6 @@ namespace HostBuilderExample
 For more complete examples, take a look at sample projects available in [samples directory](https://github.com/aws/aws-dotnet-extensions-configuration/tree/master/samples).
 
 
-# Getting Help
-
-We use the [GitHub issues](https://github.com/aws/aws-dotnet-extensions-configuration/issues) for tracking bugs and feature requests and have limited bandwidth to address them.
-
-If you think you may have found a bug, please open an [issue](https://github.com/aws/aws-dotnet-extensions-configuration/issues/new)
-
 # Reloading in AWS Lambda
 
 The `reloadAfter` parameter on `AddSystemsManager()` enables automatic reloading of configuration data from Parameter Store as a background task.
@@ -92,6 +86,13 @@ var configurations = configurationBuilder.Build();
 
 configurations.WaitForSystemsManagerReloadToComplete(TimeSpan.FromSeconds(5));
 ```
+
+# Getting Help
+
+We use the [GitHub issues](https://github.com/aws/aws-dotnet-extensions-configuration/issues) for tracking bugs and feature requests and have limited bandwidth to address them.
+
+If you think you may have found a bug, please open an [issue](https://github.com/aws/aws-dotnet-extensions-configuration/issues/new)
+
 
 # Contributing
 
