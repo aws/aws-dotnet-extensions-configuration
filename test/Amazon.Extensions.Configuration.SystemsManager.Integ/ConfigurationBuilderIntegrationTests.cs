@@ -38,6 +38,9 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Integ
             Assert.All(fixture.TestData, (pair) => {
                 Assert.Equal(pair.Value, configurations[pair.Key]);
             });
+
+            // Since there is no reload going on this should return back immediately.
+            configurations.WaitForSystemsManagerReloadToComplete(TimeSpan.FromHours(1));
         }
 
         [Fact]
