@@ -62,11 +62,37 @@ namespace HostBuilderExample
 For more complete examples, take a look at sample projects available in [samples directory](https://github.com/aws/aws-dotnet-extensions-configuration/tree/master/samples).
 
 
+# Reloading in AWS Lambda
+
+The `reloadAfter` parameter on `AddSystemsManager()` enables automatic reloading of configuration data from Parameter Store as a background task.
+
+In AWS Lambda, background tasks are paused after processing a Lambda event.  This could disrupt the provider from 
+retrieving the latest configuration data from Parameter Store. To ensure the reload is performed within a Lambda event,
+we recommend calling the extension method `WaitForSystemsManagerReloadToComplete` from the `IConfiguration` object in 
+your Lambda function. This method will immediately return unless a reload is currently being performed.  The `WaitForSystemsManagerReloadToComplete` extension method to `IConfiguration` is available when you add the a
+`using Amazon.Extensions.Configuration.SystemsManager` statement.  See the example below:
+
+
+```csharp
+using Amazon.Extensions.Configuration.SystemsManager
+
+...
+
+var configurationBuilder = new ConfigurationBuilder();
+configurationBuilder.AddSystemsManager(IntegTestFixture.ParameterPrefix, fixture.AWSOptions);
+var configurations = configurationBuilder.Build();
+
+...
+
+configurations.WaitForSystemsManagerReloadToComplete(TimeSpan.FromSeconds(5));
+```
+
 # Getting Help
 
 We use the [GitHub issues](https://github.com/aws/aws-dotnet-extensions-configuration/issues) for tracking bugs and feature requests and have limited bandwidth to address them.
 
 If you think you may have found a bug, please open an [issue](https://github.com/aws/aws-dotnet-extensions-configuration/issues/new)
+
 
 # Contributing
 
