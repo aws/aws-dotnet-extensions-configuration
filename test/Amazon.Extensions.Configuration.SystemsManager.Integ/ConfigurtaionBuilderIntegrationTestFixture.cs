@@ -28,7 +28,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Integ
     {
         public const string ParameterPrefix = @"/configuration-extension-testdata/ssm/";
 
-        public AWSOptions AWSOptions { get; private set; }        
+        public AWSOptions AWSOptions { get; private set; }
 
         private bool disposed = false;
 
