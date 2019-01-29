@@ -113,7 +113,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager
 
                 var newData = ProcessParameters(parameters, path);
 
-                if (!Data.DictionaryEqual(newData))
+                if (!Data.EquivalentTo(newData))
                 {
                     Data = newData;
 

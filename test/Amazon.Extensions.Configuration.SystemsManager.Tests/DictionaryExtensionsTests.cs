@@ -7,13 +7,13 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
     public class DictionaryExtensionsTests
     {
         [Theory]
-        [MemberData(nameof(DictionaryEqualsData))]
-        public void TestDictionaryEquals(IDictionary<string, string> first, IDictionary<string, string> second, bool equals)
+        [MemberData(nameof(EquivalentToData))]
+        public void TestEquivalentTo(IDictionary<string, string> first, IDictionary<string, string> second, bool equals)
         {
-            Assert.Equal(equals, first.DictionaryEqual(second));
+            Assert.Equal(equals, first.EquivalentTo(second));
         }
 
-        public static TheoryData<IDictionary<string, string>, IDictionary<string, string>, bool> DictionaryEqualsData => new TheoryData<IDictionary<string, string>, IDictionary<string, string>, bool>
+        public static TheoryData<IDictionary<string, string>, IDictionary<string, string>, bool> EquivalentToData => new TheoryData<IDictionary<string, string>, IDictionary<string, string>, bool>
         {
             {new Dictionary<string, string>(), new Dictionary<string, string>(), true},
             {new Dictionary<string, string>(), null, false},
