@@ -19,9 +19,9 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
 {
     public static class DictionaryExtensions
     {
-        public static bool DictionaryEqual<TKey, TValue>(this IDictionary<TKey, TValue> first, IDictionary<TKey, TValue> second) => DictionaryEqual(first, second, null);
+        public static bool EquivalentTo<TKey, TValue>(this IDictionary<TKey, TValue> first, IDictionary<TKey, TValue> second) => EquivalentTo(first, second, null);
 
-        public static bool DictionaryEqual<TKey, TValue>(this IDictionary<TKey, TValue> first, IDictionary<TKey, TValue> second, IEqualityComparer<TValue> valueComparer)
+        public static bool EquivalentTo<TKey, TValue>(this IDictionary<TKey, TValue> first, IDictionary<TKey, TValue> second, IEqualityComparer<TValue> valueComparer)
         {
             if (first == second) return true;
             if (first == null || second == null) return false;
