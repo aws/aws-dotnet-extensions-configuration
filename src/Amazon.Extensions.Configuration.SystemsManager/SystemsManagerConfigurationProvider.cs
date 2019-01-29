@@ -111,9 +111,14 @@ namespace Amazon.Extensions.Configuration.SystemsManager
                 var awsOptions = Source.AwsOptions;
                 var parameters = await SystemsManagerProcessor.GetParametersByPathAsync(awsOptions, path).ConfigureAwait(false);
 
-                Data = ProcessParameters(parameters, path);
+                var newData = ProcessParameters(parameters, path);
 
-                OnReload();
+                if (!DictionaryEqual(Data, newData))
+                {
+                    Data = newData;
+
+                    OnReload();
+                }
             }
             catch (Exception ex)
             {
@@ -146,5 +151,23 @@ namespace Amazon.Extensions.Configuration.SystemsManager
                     Value = ParameterProcessor.GetValue(parameter, path),
                 })
                 .ToDictionary(parameter => parameter.Key, parameter => parameter.Value, StringComparer.OrdinalIgnoreCase);
+
+        private static bool DictionaryEqual<TKey, TValue>(IDictionary<TKey, TValue> first, IDictionary<TKey, TValue> second) => DictionaryEqual(first, second, null);
+
+        private static bool DictionaryEqual<TKey, TValue>(IDictionary<TKey, TValue> first, IDictionary<TKey, TValue> second, IEqualityComparer<TValue> valueComparer)
+        {
+            if (first == second) return true;
+            if (first == null || second == null) return false;
+            if (first.Count != second.Count) return false;
+
+            valueComparer = valueComparer ?? EqualityComparer<TValue>.Default;
+
+            foreach (var kvp in first)
+            {
+                if (!second.TryGetValue(kvp.Key, out var secondValue)) return false;
+                if (!valueComparer.Equals(kvp.Value, secondValue)) return false;
+            }
+            return true;
+        }
     }
 }

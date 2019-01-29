@@ -47,7 +47,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
             _source = new SystemsManagerConfigurationSource
             {
                 ParameterProcessor = _parameterProcessorMock.Object,
-                AwsOptions = new AWSOptions(), 
+                AwsOptions = new AWSOptions(),
                 Path = Path
             };
             _provider = new SystemsManagerConfigurationProvider(_source, _systemsManagerProcessorMock.Object);
@@ -64,7 +64,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
             }
 
             var data = _provider.ProcessParameters(_parameters, Path);
-            
+
             Assert.All(data, item => Assert.Equal(item.Value, item.Key));
 
             _parameterProcessorMock.VerifyAll();
@@ -79,7 +79,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
                 _parameterProcessorMock.Setup(processor => processor.IncludeParameter(parameter, Path)).Returns(true);
                 _parameterProcessorMock.Setup(processor => processor.GetKey(parameter, Path)).Returns(parameter.Value);
             }
-            
+
             _provider.Load();
 
             foreach (var parameter in _parameters)
