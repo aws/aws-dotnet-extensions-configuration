@@ -101,6 +101,8 @@ namespace Amazon.Extensions.Configuration.SystemsManager
         /// </summary>
         public override void Load() => LoadAsync(false).ConfigureAwait(false).GetAwaiter().GetResult();
 
+        // If 1) reload flag is set to true and 2) OnLoadException handler is not set, 
+        // all exceptions raised during OnReload() will be ignored.
         private async Task LoadAsync(bool reload)
         {
             try
