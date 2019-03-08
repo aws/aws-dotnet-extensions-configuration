@@ -13,7 +13,6 @@
  * permissions and limitations under the License.
  */
 
-using Amazon.Extensions.Configuration.SystemsManager;
 using Amazon.Extensions.NETCore.Setup;
 using Microsoft.Extensions.Configuration;
 using Xunit;

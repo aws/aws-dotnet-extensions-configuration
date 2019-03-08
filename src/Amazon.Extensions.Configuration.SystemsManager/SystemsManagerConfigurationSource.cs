@@ -47,6 +47,11 @@ namespace Amazon.Extensions.Configuration.SystemsManager
         public TimeSpan? ReloadAfter { get; set; }
 
         /// <summary>
+        /// Prepends the supplied Prefix to all result keys
+        /// </summary>
+        public string Prefix { get; set; }
+        
+        /// <summary>
         /// Will be called if an uncaught exception occurs in <see cref="SystemsManagerConfigurationProvider"/>.Load.
         /// </summary>
         public Action<SystemsManagerExceptionContext> OnLoadException { get; set; }

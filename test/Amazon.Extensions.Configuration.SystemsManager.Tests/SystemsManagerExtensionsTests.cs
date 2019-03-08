@@ -13,7 +13,6 @@
  * permissions and limitations under the License.
  */
 using System;
-using Amazon.Extensions.Configuration.SystemsManager;
 using Amazon.Extensions.NETCore.Setup;
 using Microsoft.Extensions.Configuration;
 using Xunit;
@@ -49,7 +48,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
             {builder => builder.AddSystemsManager(CreateSource(null, null, false, null, null)), typeof(ArgumentNullException), "Parameter name: Path"},
             {builder => builder.AddSystemsManager(CreateSource(null, null, true, null, null)), typeof(ArgumentNullException), "Parameter name: Path"},
             {builder => builder.AddSystemsManager(CreateSource("/path", null, false, null, null)), null, null},
-            {builder => builder.AddSystemsManager(CreateSource("/aws/reference/secretsmanager/somevalue", null, false, null, null)), typeof(ArgumentException), "Secrets Manager paths are not supported"}
+            {builder => builder.AddSystemsManager(CreateSource("/aws/reference/secretsmanager/somevalue", null, false, null, null)), null, null}
         };
 
         public static TheoryData<Func<IConfigurationBuilder, IConfigurationBuilder>, Type, string> WithAWSOptionsExtensionData => new TheoryData<Func<IConfigurationBuilder, IConfigurationBuilder>, Type, string>
@@ -57,7 +56,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
             {builder => builder.AddSystemsManager(null, null), typeof(ArgumentNullException), "Parameter name: path"},
             {builder => builder.AddSystemsManager("/path", null), typeof(ArgumentNullException), "Parameter name: awsOptions"},
             {builder => builder.AddSystemsManager(null, new AWSOptions()), typeof(ArgumentNullException), "Parameter name: path"},
-            {builder => builder.AddSystemsManager("/aws/reference/secretsmanager/somevalue", new AWSOptions()), typeof(ArgumentException), "Secrets Manager paths are not supported"},
+            {builder => builder.AddSystemsManager("/aws/reference/secretsmanager/somevalue", new AWSOptions()), null, null},
             {builder => builder.AddSystemsManager("/path", new AWSOptions(), true), null, null},
             {builder => builder.AddSystemsManager("/path", new AWSOptions(), false), null, null},
             {builder => builder.AddSystemsManager("/path", new AWSOptions(), TimeSpan.Zero), null, null},
@@ -70,7 +69,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
         {
             {builder => builder.AddSystemsManager(null as string), typeof(ArgumentNullException), "Parameter name: path"},
             {builder => builder.AddSystemsManager("/path"), null, null},
-            {builder => builder.AddSystemsManager("/aws/reference/secretsmanager/somevalue"), typeof(ArgumentException), "Secrets Manager paths are not supported"},
+            {builder => builder.AddSystemsManager("/aws/reference/secretsmanager/somevalue"), null, null},
             {builder => builder.AddSystemsManager("/path", true), null, null},
             {builder => builder.AddSystemsManager("/path", false), null, null},
             {builder => builder.AddSystemsManager("/path", TimeSpan.Zero), null, null},
