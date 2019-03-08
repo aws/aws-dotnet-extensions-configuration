@@ -42,13 +42,5 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Integ
             // Since there is no reload going on this should return back immediately.
             configurations.WaitForSystemsManagerReloadToComplete(TimeSpan.FromHours(1));
         }
-
-        [Fact]
-        public void TestInvalidPrefix()
-        {
-            var configurationBuilder = new ConfigurationBuilder();
-            Exception ex = Assert.Throws<ArgumentException>(() => configurationBuilder.AddSystemsManager(@"/aws/reference/secretsmanager/hello", fixture.AWSOptions));
-            Assert.Equal("Secrets Manager paths are not supported", ex.Message);
-        }
     }
 }

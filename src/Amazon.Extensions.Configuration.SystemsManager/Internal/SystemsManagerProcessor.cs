@@ -13,28 +13,48 @@
  * permissions and limitations under the License.
  */
 
-using System.Collections.Generic;
-using System.Reflection;
-using System.Threading.Tasks;
-using Amazon.Extensions.NETCore.Setup;
 using Amazon.Runtime;
 using Amazon.SimpleSystemsManagement;
 using Amazon.SimpleSystemsManagement.Model;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace Amazon.Extensions.Configuration.SystemsManager.Internal
 {
     public interface ISystemsManagerProcessor
     {
-        Task<IEnumerable<Parameter>> GetParametersByPathAsync(AWSOptions awsOptions, string path);
+        Task<IDictionary<string, string>> GetDataAsync();
     }
 
     public class SystemsManagerProcessor : ISystemsManagerProcessor
     {
-        public async Task<IEnumerable<Parameter>> GetParametersByPathAsync(AWSOptions awsOptions, string path)
+        private const string SecretsManagerPath = "/aws/reference/secretsmanager/";
+
+        private SystemsManagerConfigurationSource Source { get; }
+        private IParameterProcessor ParameterProcessor { get; }
+
+        public SystemsManagerProcessor(SystemsManagerConfigurationSource source)
         {
-            using (var client = awsOptions.CreateServiceClient<IAmazonSimpleSystemsManagement>())
+            Source = source;
+            ParameterProcessor = Source.ParameterProcessor ?? new DefaultParameterProcessor();
+        }
+
+        public async Task<IDictionary<string, string>> GetDataAsync()
+        {
+            return IsSecretsManagerPath(Source.Path) 
+                ? await GetParameterAsync().ConfigureAwait(false) 
+                : await GetParametersByPathAsync().ConfigureAwait(false);
+        }
+
+        private async Task<IDictionary<string, string>> GetParametersByPathAsync()
+        {
+            using (var client = Source.AwsOptions.CreateServiceClient<IAmazonSimpleSystemsManagement>())
             {
-                if(client is AmazonSimpleSystemsManagementClient impl)
+                if (client is AmazonSimpleSystemsManagementClient impl)
                 {
                     impl.BeforeRequestEvent += ServiceClientBeforeRequestEvent;
                 }
@@ -43,26 +63,64 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
                 string nextToken = null;
                 do
                 {
-                    var response = await client.GetParametersByPathAsync(new GetParametersByPathRequest { Path = path, Recursive = true, WithDecryption = true, NextToken = nextToken }).ConfigureAwait(false);
+                    var response = await client.GetParametersByPathAsync(new GetParametersByPathRequest { Path = Source.Path, Recursive = true, WithDecryption = true, NextToken = nextToken }).ConfigureAwait(false);
                     nextToken = response.NextToken;
                     parameters.AddRange(response.Parameters);
                 } while (!string.IsNullOrEmpty(nextToken));
 
-                return parameters;
+                return AddPrefix(ProcessParameters(parameters, Source.Path, ParameterProcessor), Source.Prefix);
             }
         }
 
-        const string UserAgentHeader = "User-Agent";
-        static readonly string _assemblyVersion = typeof(SystemsManagerProcessor).GetTypeInfo().Assembly.GetName().Version.ToString();
-
-        void ServiceClientBeforeRequestEvent(object sender, RequestEventArgs e)
+        private async Task<IDictionary<string, string>> GetParameterAsync()
         {
-            var args = e as Amazon.Runtime.WebServiceRequestEventArgs;
-            if (args == null || !args.Headers.ContainsKey(UserAgentHeader))
-                return;
+            using (var client = Source.AwsOptions.CreateServiceClient<IAmazonSimpleSystemsManagement>())
+            {
+                if (client is AmazonSimpleSystemsManagementClient impl)
+                {
+                    impl.BeforeRequestEvent += ServiceClientBeforeRequestEvent;
+                }
+
+                var response = await client.GetParameterAsync(new GetParameterRequest { Name = Source.Path, WithDecryption = true }).ConfigureAwait(false);
+                
+                if (!ParameterProcessor.IncludeParameter(response.Parameter, SecretsManagerPath)) return new Dictionary<string, string>();
+                
+                var prefix = Source.Prefix ?? ParameterProcessor.GetKey(response.Parameter, SecretsManagerPath);
+                return AddPrefix(JsonConfigurationParser.Parse(ParameterProcessor.GetValue(response.Parameter, SecretsManagerPath)), prefix);
+
+            }
+        }
+
+        public static bool IsSecretsManagerPath(string path) => path.StartsWith(SecretsManagerPath, StringComparison.OrdinalIgnoreCase);
+
+        public static IDictionary<string, string> AddPrefix(IDictionary<string, string> input, string prefix)
+        {
+            return string.IsNullOrEmpty(prefix)
+                ? input
+                : input.ToDictionary(pair => $"{prefix}{ConfigurationPath.KeyDelimiter}{pair.Key}", pair => pair.Value, StringComparer.OrdinalIgnoreCase);
+        }
 
 
-            args.Headers[UserAgentHeader] = args.Headers[UserAgentHeader] + " SSMConfigProvider/" + _assemblyVersion;
+        public static IDictionary<string, string> ProcessParameters(IEnumerable<Parameter> parameters, string path, IParameterProcessor parameterProcessor)
+        {
+            return parameters
+                .Where(parameter => parameterProcessor.IncludeParameter(parameter, path))
+                .Select(parameter => new
+                {
+                    Key = parameterProcessor.GetKey(parameter, path),
+                    Value = parameterProcessor.GetValue(parameter, path)
+                })
+                .ToDictionary(parameter => parameter.Key, parameter => parameter.Value, StringComparer.OrdinalIgnoreCase);
+        }
+
+        private const string UserAgentHeader = "User-Agent";
+        private static readonly string AssemblyVersion = typeof(SystemsManagerProcessor).GetTypeInfo().Assembly.GetName().Version.ToString();
+
+        private static void ServiceClientBeforeRequestEvent(object sender, RequestEventArgs e)
+        {
+            if (!(e is WebServiceRequestEventArgs args) || !args.Headers.ContainsKey(UserAgentHeader)) return;
+
+            args.Headers[UserAgentHeader] = args.Headers[UserAgentHeader] + " SSMConfigProvider/" + AssemblyVersion;
         }
     }
 }

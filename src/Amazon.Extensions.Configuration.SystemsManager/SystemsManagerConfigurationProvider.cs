@@ -15,11 +15,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Extensions.Configuration.SystemsManager.Internal;
-using Amazon.SimpleSystemsManagement.Model;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Primitives;
 
@@ -33,7 +31,6 @@ namespace Amazon.Extensions.Configuration.SystemsManager
     {
         public SystemsManagerConfigurationSource Source { get; }
         private ISystemsManagerProcessor SystemsManagerProcessor { get; }
-        private IParameterProcessor ParameterProcessor { get; }
 
         private ManualResetEvent ReloadTaskEvent { get; } = new ManualResetEvent(true);
 
@@ -42,9 +39,10 @@ namespace Amazon.Extensions.Configuration.SystemsManager
         /// Initializes a new instance with the specified source.
         /// </summary>
         /// <param name="source">The <see cref="IConfigurationSource"/> used to retrieve values from AWS Systems Manager Parameter Store</param>
-        public SystemsManagerConfigurationProvider(SystemsManagerConfigurationSource source) : this(source, new SystemsManagerProcessor())
+        public SystemsManagerConfigurationProvider(SystemsManagerConfigurationSource source) : this(source, new SystemsManagerProcessor(source))
         {
         }
+
 
         /// <inheritdoc />
         /// <summary>
@@ -56,7 +54,6 @@ namespace Amazon.Extensions.Configuration.SystemsManager
         {
             Source = source ?? throw new ArgumentNullException(nameof(source));
             SystemsManagerProcessor = systemsManagerProcessor ?? throw new ArgumentNullException(nameof(systemsManagerProcessor));
-            ParameterProcessor = source.ParameterProcessor ?? new DefaultParameterProcessor();
 
             if (source.AwsOptions == null) throw new ArgumentNullException(nameof(source.AwsOptions));
             if (source.Path == null) throw new ArgumentNullException(nameof(source.Path));
@@ -107,11 +104,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager
         {
             try
             {
-                var path = Source.Path;
-                var awsOptions = Source.AwsOptions;
-                var parameters = await SystemsManagerProcessor.GetParametersByPathAsync(awsOptions, path).ConfigureAwait(false);
-
-                var newData = ProcessParameters(parameters, path);
+                var newData = await SystemsManagerProcessor.GetDataAsync().ConfigureAwait(false) ?? new Dictionary<string, string>();
 
                 if (!Data.EquivalentTo(newData))
                 {
@@ -141,15 +134,5 @@ namespace Amazon.Extensions.Configuration.SystemsManager
                     throw;
             }
         }
-
-        public IDictionary<string, string> ProcessParameters(IEnumerable<Parameter> parameters, string path) =>
-            parameters
-                .Where(parameter => ParameterProcessor.IncludeParameter(parameter, path))
-                .Select(parameter => new
-                {
-                    Key = ParameterProcessor.GetKey(parameter, path),
-                    Value = ParameterProcessor.GetValue(parameter, path)
-                })
-                .ToDictionary(parameter => parameter.Key, parameter => parameter.Value, StringComparer.OrdinalIgnoreCase);
     }
 }
