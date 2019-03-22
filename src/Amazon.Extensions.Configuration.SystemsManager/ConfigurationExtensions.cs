@@ -35,13 +35,14 @@ namespace Amazon.Extensions.Configuration.SystemsManager
         /// <param name="timeSpan"></param>
         public static void WaitForSystemsManagerReloadToComplete(this IConfiguration configuration, TimeSpan timeSpan)
         {
-            if(!(configuration is ConfigurationRoot configRoot)) return;
-
-            foreach(var provider in configRoot.Providers)
+            if (configuration is ConfigurationRoot configRoot)
             {
-                if(provider is SystemsManagerConfigurationProvider ssmProvider)
+                foreach (var provider in configRoot.Providers)
                 {
-                    ssmProvider.WaitForReloadToComplete(timeSpan);
+                    if (provider is SystemsManagerConfigurationProvider ssmProvider)
+                    {
+                        ssmProvider.WaitForReloadToComplete(timeSpan);
+                    }
                 }
             }
         }
