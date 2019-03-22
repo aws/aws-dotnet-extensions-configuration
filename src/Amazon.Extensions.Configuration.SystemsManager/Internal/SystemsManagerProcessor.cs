@@ -35,12 +35,11 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
         private const string SecretsManagerPath = "/aws/reference/secretsmanager/";
 
         private SystemsManagerConfigurationSource Source { get; }
-        private IParameterProcessor ParameterProcessor { get; }
 
         public SystemsManagerProcessor(SystemsManagerConfigurationSource source)
         {
             Source = source;
-            ParameterProcessor = Source.ParameterProcessor ?? new DefaultParameterProcessor();
+            Source.ParameterProcessor = Source.ParameterProcessor ?? new DefaultParameterProcessor();
         }
 
         public async Task<IDictionary<string, string>> GetDataAsync()
@@ -68,7 +67,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
                     parameters.AddRange(response.Parameters);
                 } while (!string.IsNullOrEmpty(nextToken));
 
-                return AddPrefix(ProcessParameters(parameters, Source.Path, ParameterProcessor), Source.Prefix);
+                return AddPrefix(ProcessParameters(parameters, Source.Path, Source.ParameterProcessor), Source.Prefix);
             }
         }
 
@@ -83,10 +82,10 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
 
                 var response = await client.GetParameterAsync(new GetParameterRequest { Name = Source.Path, WithDecryption = true }).ConfigureAwait(false);
                 
-                if (!ParameterProcessor.IncludeParameter(response.Parameter, SecretsManagerPath)) return new Dictionary<string, string>();
+                if (!Source.ParameterProcessor.IncludeParameter(response.Parameter, SecretsManagerPath)) return new Dictionary<string, string>();
                 
-                var prefix = Source.Prefix ?? ParameterProcessor.GetKey(response.Parameter, SecretsManagerPath);
-                return AddPrefix(JsonConfigurationParser.Parse(ParameterProcessor.GetValue(response.Parameter, SecretsManagerPath)), prefix);
+                var prefix = Source.Prefix ?? Source.ParameterProcessor.GetKey(response.Parameter, SecretsManagerPath);
+                return AddPrefix(JsonConfigurationParser.Parse(Source.ParameterProcessor.GetValue(response.Parameter, SecretsManagerPath)), prefix);
 
             }
         }
@@ -118,9 +117,10 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
 
         private static void ServiceClientBeforeRequestEvent(object sender, RequestEventArgs e)
         {
-            if (!(e is WebServiceRequestEventArgs args) || !args.Headers.ContainsKey(UserAgentHeader)) return;
-
-            args.Headers[UserAgentHeader] = args.Headers[UserAgentHeader] + " SSMConfigProvider/" + AssemblyVersion;
+            if (e is WebServiceRequestEventArgs args && args.Headers.ContainsKey(UserAgentHeader))
+            {
+                args.Headers[UserAgentHeader] = args.Headers[UserAgentHeader] + " SSMConfigProvider/" + AssemblyVersion;
+            }
         }
     }
 }
