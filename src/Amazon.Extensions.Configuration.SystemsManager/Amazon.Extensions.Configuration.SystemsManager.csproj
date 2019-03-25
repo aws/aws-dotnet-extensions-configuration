@@ -43,8 +43,8 @@
   </Choose>
 
   <ItemGroup>
-    <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.3.0.*" />
-    <PackageReference Include="AWSSDK.SimpleSystemsManagement" Version="3.3.10.*" />
+    <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.3.100.*" />
+    <PackageReference Include="AWSSDK.SimpleSystemsManagement" Version="3.3.100.*" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.*" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.*" />
   </ItemGroup>
