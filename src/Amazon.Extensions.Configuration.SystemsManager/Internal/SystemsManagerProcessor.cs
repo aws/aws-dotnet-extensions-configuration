@@ -99,7 +99,6 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
                 : input.ToDictionary(pair => $"{prefix}{ConfigurationPath.KeyDelimiter}{pair.Key}", pair => pair.Value, StringComparer.OrdinalIgnoreCase);
         }
 
-
         public static IDictionary<string, string> ProcessParameters(IEnumerable<Parameter> parameters, string path, IParameterProcessor parameterProcessor)
         {
             return parameters
