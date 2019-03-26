@@ -35,9 +35,11 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
         private const string SecretsManagerPath = "/aws/reference/secretsmanager/";
 
         private SystemsManagerConfigurationSource Source { get; }
+        private Func<IEnumerable<Parameter>, string, IParameterProcessor, IDictionary<string, string>> ProcessParameters { get; }
 
-        public SystemsManagerProcessor(SystemsManagerConfigurationSource source)
+        public SystemsManagerProcessor(SystemsManagerConfigurationSource source, Func<IEnumerable<Parameter>, string, IParameterProcessor, IDictionary<string, string>> processParameters)
         {
+            ProcessParameters = processParameters;
             Source = source;
             Source.ParameterProcessor = Source.ParameterProcessor ?? new DefaultParameterProcessor();
         }
@@ -86,7 +88,6 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
                 
                 var prefix = Source.Prefix ?? Source.ParameterProcessor.GetKey(response.Parameter, SecretsManagerPath);
                 return AddPrefix(JsonConfigurationParser.Parse(Source.ParameterProcessor.GetValue(response.Parameter, SecretsManagerPath)), prefix);
-
             }
         }
 
@@ -97,18 +98,6 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
             return string.IsNullOrEmpty(prefix)
                 ? input
                 : input.ToDictionary(pair => $"{prefix}{ConfigurationPath.KeyDelimiter}{pair.Key}", pair => pair.Value, StringComparer.OrdinalIgnoreCase);
-        }
-
-        public static IDictionary<string, string> ProcessParameters(IEnumerable<Parameter> parameters, string path, IParameterProcessor parameterProcessor)
-        {
-            return parameters
-                .Where(parameter => parameterProcessor.IncludeParameter(parameter, path))
-                .Select(parameter => new
-                {
-                    Key = parameterProcessor.GetKey(parameter, path),
-                    Value = parameterProcessor.GetValue(parameter, path)
-                })
-                .ToDictionary(parameter => parameter.Key, parameter => parameter.Value, StringComparer.OrdinalIgnoreCase);
         }
 
         private const string UserAgentHeader = "User-Agent";

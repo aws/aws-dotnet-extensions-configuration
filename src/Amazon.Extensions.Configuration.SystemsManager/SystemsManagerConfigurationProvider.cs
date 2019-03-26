@@ -15,9 +15,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Extensions.Configuration.SystemsManager.Internal;
+using Amazon.SimpleSystemsManagement.Model;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Primitives;
 
@@ -39,7 +41,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager
         /// Initializes a new instance with the specified source.
         /// </summary>
         /// <param name="source">The <see cref="IConfigurationSource"/> used to retrieve values from AWS Systems Manager Parameter Store</param>
-        public SystemsManagerConfigurationProvider(SystemsManagerConfigurationSource source) : this(source, new SystemsManagerProcessor(source))
+        public SystemsManagerConfigurationProvider(SystemsManagerConfigurationSource source) : this(source, new SystemsManagerProcessor(source, ProcessParameters))
         {
         }
 
@@ -133,6 +135,18 @@ namespace Amazon.Extensions.Configuration.SystemsManager
                 if (!ignoreException)
                     throw;
             }
+        }
+
+        public static IDictionary<string, string> ProcessParameters(IEnumerable<Parameter> parameters, string path, IParameterProcessor parameterProcessor)
+        {
+            return parameters
+                .Where(parameter => parameterProcessor.IncludeParameter(parameter, path))
+                .Select(parameter => new
+                {
+                    Key = parameterProcessor.GetKey(parameter, path),
+                    Value = parameterProcessor.GetValue(parameter, path)
+                })
+                .ToDictionary(parameter => parameter.Key, parameter => parameter.Value, StringComparer.OrdinalIgnoreCase);
         }
     }
 }
