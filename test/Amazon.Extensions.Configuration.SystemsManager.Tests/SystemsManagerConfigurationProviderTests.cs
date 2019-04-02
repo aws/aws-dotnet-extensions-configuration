@@ -60,7 +60,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
                 _parameterProcessorMock.Setup(processor => processor.GetKey(parameter, Path)).Returns(parameter.Value);
             }
 
-            var getData = SystemsManagerConfigurationProvider.ProcessParameters(_parameters, Path, _parameterProcessorMock.Object);
+            var getData = SystemsManagerProcessor.ProcessParameters(_parameters, Path, _parameterProcessorMock.Object);
 
             _systemsManagerProcessorMock.Setup(p => p.GetDataAsync()).ReturnsAsync(() => getData);
 
