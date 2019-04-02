@@ -41,7 +41,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager
         /// Initializes a new instance with the specified source.
         /// </summary>
         /// <param name="source">The <see cref="IConfigurationSource"/> used to retrieve values from AWS Systems Manager Parameter Store</param>
-        public SystemsManagerConfigurationProvider(SystemsManagerConfigurationSource source) : this(source, new SystemsManagerProcessor(source, ProcessParameters))
+        public SystemsManagerConfigurationProvider(SystemsManagerConfigurationSource source) : this(source, new SystemsManagerProcessor(source))
         {
         }
 
@@ -137,6 +137,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager
             }
         }
 
+        [Obsolete("This method has been moved into the internal namespace, and will be removed in a future release. Use ParameterProcessor instead")]
         public static IDictionary<string, string> ProcessParameters(IEnumerable<Parameter> parameters, string path, IParameterProcessor parameterProcessor)
         {
             return parameters

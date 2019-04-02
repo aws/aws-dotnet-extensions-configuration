@@ -36,7 +36,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
                 _parameterProcessorMock.Setup(processor => processor.GetValue(parameter, Path)).Returns(parameter.Value);
             }
 
-            var data = SystemsManagerConfigurationProvider.ProcessParameters(_parameters, Path, _parameterProcessorMock.Object);
+            var data = SystemsManagerProcessor.ProcessParameters(_parameters, Path, _parameterProcessorMock.Object);
 
             Assert.All(data, item => Assert.Equal(item.Value, item.Key));
 
