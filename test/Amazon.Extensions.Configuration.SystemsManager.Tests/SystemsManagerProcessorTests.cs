@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Amazon.Extensions.Configuration.SystemsManager.Internal;
 using Amazon.SimpleSystemsManagement.Model;
 using Moq;
-using Newtonsoft.Json;
 using Xunit;
 
 namespace Amazon.Extensions.Configuration.SystemsManager.Tests
@@ -69,6 +69,28 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
                 {
                     Assert.StartsWith($"{prefix}:", item.Key);
                 }
+            }
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("label")]
+        public void CreateLabelFilterTest(string label)
+        { 
+            var output = SystemsManagerProcessor.CreateLabelFilter(label);
+
+            if (label == null)
+            {
+                Assert.Null( output);
+            }
+            else
+            {
+                Assert.NotNull(output);
+                Assert.Single(output);
+                Assert.Equal("Label", output.Single().Key);
+                Assert.Equal("Equals", output.Single().Option);
+                Assert.Single(output.Single().Values);
+                Assert.Equal(label, output.Single().Values.Single());
             }
         }
     }

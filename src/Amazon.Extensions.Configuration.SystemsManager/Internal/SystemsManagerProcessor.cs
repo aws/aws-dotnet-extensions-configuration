@@ -44,8 +44,8 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
 
         public async Task<IDictionary<string, string>> GetDataAsync()
         {
-            return IsSecretsManagerPath(Source.Path) 
-                ? await GetParameterAsync().ConfigureAwait(false) 
+            return IsSecretsManagerPath(Source.Path)
+                ? await GetParameterAsync().ConfigureAwait(false)
                 : await GetParametersByPathAsync().ConfigureAwait(false);
         }
 
@@ -62,13 +62,32 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
                 string nextToken = null;
                 do
                 {
-                    var response = await client.GetParametersByPathAsync(new GetParametersByPathRequest { Path = Source.Path, Recursive = true, WithDecryption = true, NextToken = nextToken }).ConfigureAwait(false);
+                    var response = await client.GetParametersByPathAsync(new GetParametersByPathRequest
+                    {
+                        Path = Source.Path,
+                        Recursive = true,
+                        WithDecryption = true,
+                        NextToken = nextToken,
+                        ParameterFilters = CreateLabelFilter(Source.Label)
+                    }).ConfigureAwait(false);
                     nextToken = response.NextToken;
                     parameters.AddRange(response.Parameters);
                 } while (!string.IsNullOrEmpty(nextToken));
 
                 return AddPrefix(ProcessParameters(parameters, Source.Path, Source.ParameterProcessor), Source.Prefix);
             }
+        }
+
+        public static List<ParameterStringFilter> CreateLabelFilter(string label)
+        {
+            if (string.IsNullOrWhiteSpace(label))
+                return null;
+            return new List<ParameterStringFilter> { new ParameterStringFilter
+            {
+                Key="Label",
+                Option="Equals",
+                Values = new List<string>{label}
+            }};
         }
 
         private async Task<IDictionary<string, string>> GetParameterAsync()
@@ -81,9 +100,9 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
                 }
 
                 var response = await client.GetParameterAsync(new GetParameterRequest { Name = Source.Path, WithDecryption = true }).ConfigureAwait(false);
-                
+
                 if (!Source.ParameterProcessor.IncludeParameter(response.Parameter, SecretsManagerPath)) return new Dictionary<string, string>();
-                
+
                 var prefix = Source.Prefix ?? Source.ParameterProcessor.GetKey(response.Parameter, SecretsManagerPath);
                 return AddPrefix(JsonConfigurationParser.Parse(Source.ParameterProcessor.GetValue(response.Parameter, SecretsManagerPath)), prefix);
 

@@ -61,6 +61,11 @@ namespace Amazon.Extensions.Configuration.SystemsManager
         /// </summary>
         public IParameterProcessor ParameterProcessor { get; set; }
 
+        /// <summary>
+        /// if set, will be used with <see cref="Path"/> as an extra filter in the format "Path:Label"
+        /// </summary>
+        public string Label { get; set; }
+
         /// <inheritdoc />
         public IConfigurationProvider Build(IConfigurationBuilder builder)
         {
