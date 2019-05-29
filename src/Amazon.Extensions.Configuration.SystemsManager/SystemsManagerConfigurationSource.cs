@@ -62,7 +62,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager
         public IParameterProcessor ParameterProcessor { get; set; }
 
         /// <summary>
-        /// if set, will be used with <see cref="Path"/> as an extra filter in the format "Path:Label"
+        /// if set, will be used as an extra Parameter filter
         /// </summary>
         public string Label { get; set; }
 
