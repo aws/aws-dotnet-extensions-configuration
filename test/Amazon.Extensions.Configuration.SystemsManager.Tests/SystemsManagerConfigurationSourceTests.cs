@@ -35,5 +35,13 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
 
             Assert.IsType<SystemsManagerConfigurationProvider>(result);
         }
+
+        [Fact]
+        public void FiltersInitializedTest()
+        {
+            var source = new SystemsManagerConfigurationSource();
+
+            Assert.NotNull(source.Filters);
+        }
     }
 }

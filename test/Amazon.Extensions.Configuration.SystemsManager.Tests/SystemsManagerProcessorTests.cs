@@ -71,27 +71,5 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
                 }
             }
         }
-
-        [Theory]
-        [InlineData(null)]
-        [InlineData("label")]
-        public void CreateLabelFilterTest(string label)
-        { 
-            var output = SystemsManagerProcessor.CreateLabelFilter(label);
-
-            if (label == null)
-            {
-                Assert.Null( output);
-            }
-            else
-            {
-                Assert.NotNull(output);
-                Assert.Single(output);
-                Assert.Equal("Label", output.Single().Key);
-                Assert.Equal("Equals", output.Single().Option);
-                Assert.Single(output.Single().Values);
-                Assert.Equal(label, output.Single().Values.Single());
-            }
-        }
     }
 }
