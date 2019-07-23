@@ -13,6 +13,7 @@
  * permissions and limitations under the License.
  */
 
+using System;
 using Amazon.SimpleSystemsManagement.Model;
 using Microsoft.Extensions.Configuration;
 
@@ -31,7 +32,10 @@ namespace Amazon.Extensions.Configuration.SystemsManager
 
         public virtual string GetKey(Parameter parameter, string path)
         {
-            return parameter.Name.Substring(path.Length).TrimStart('/').Replace("/", KeyDelimiter);
+            var name = parameter.Name.StartsWith(path, StringComparison.OrdinalIgnoreCase) 
+                ? parameter.Name.Substring(path.Length) 
+                : parameter.Name;
+            return name.TrimStart('/').Replace("/", KeyDelimiter);
         }
 
         public virtual string GetValue(Parameter parameter, string path) => parameter.Value;
