@@ -14,6 +14,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using Amazon.Extensions.NETCore.Setup;
 using Amazon.SimpleSystemsManagement.Model;
 using Microsoft.Extensions.Configuration;
@@ -26,6 +27,11 @@ namespace Amazon.Extensions.Configuration.SystemsManager
     /// </summary>
     public class SystemsManagerConfigurationSource : IConfigurationSource
     {
+        public SystemsManagerConfigurationSource()
+        {
+            Filters = new List<ParameterStringFilter>();
+        }
+
         /// <summary>
         /// A Path used to filter parameters.
         /// </summary>
@@ -50,7 +56,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager
         /// Prepends the supplied Prefix to all result keys
         /// </summary>
         public string Prefix { get; set; }
-        
+
         /// <summary>
         /// Will be called if an uncaught exception occurs in <see cref="SystemsManagerConfigurationProvider"/>.Load.
         /// </summary>
@@ -60,6 +66,12 @@ namespace Amazon.Extensions.Configuration.SystemsManager
         /// Implementation of <see cref="IParameterProcessor"/> used to process <see cref="Parameter"/> results. Defaults to <see cref="DefaultParameterProcessor"/>.
         /// </summary>
         public IParameterProcessor ParameterProcessor { get; set; }
+
+        /// <summary> 
+        /// Filters to limit the request results.
+        /// You can't filter using the parameter name.
+        /// </summary>
+        public List<ParameterStringFilter> Filters { get; }
 
         /// <inheritdoc />
         public IConfigurationProvider Build(IConfigurationBuilder builder)
