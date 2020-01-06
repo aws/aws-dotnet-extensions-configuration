@@ -142,11 +142,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager
         {
             return parameters
                 .Where(parameter => parameterProcessor.IncludeParameter(parameter, path))
-                .Select(parameter => new
-                {
-                    Key = parameterProcessor.GetKey(parameter, path),
-                    Value = parameterProcessor.GetValue(parameter, path)
-                })
+                .SelectMany(parameter => parameterProcessor.Process(parameter, path))
                 .ToDictionary(parameter => parameter.Key, parameter => parameter.Value, StringComparer.OrdinalIgnoreCase);
         }
     }

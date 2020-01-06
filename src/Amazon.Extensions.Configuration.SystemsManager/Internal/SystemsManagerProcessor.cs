@@ -84,8 +84,9 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
 
                 if (!Source.ParameterProcessor.IncludeParameter(response.Parameter, SecretsManagerPath)) return new Dictionary<string, string>();
 
-                var prefix = Source.Prefix ?? Source.ParameterProcessor.GetKey(response.Parameter, SecretsManagerPath);
-                return AddPrefix(JsonConfigurationParser.Parse(Source.ParameterProcessor.GetValue(response.Parameter, SecretsManagerPath)), prefix);
+                // A secret should only be one value.
+                var parameter = Source.ParameterProcessor.Process(response.Parameter, SecretsManagerPath).Single();
+                return AddPrefix(JsonConfigurationParser.Parse(parameter.Value), Source.Prefix ?? parameter.Key);
 
             }
         }
@@ -103,11 +104,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
         {
             return parameters
                 .Where(parameter => parameterProcessor.IncludeParameter(parameter, path))
-                .Select(parameter => new
-                {
-                    Key = parameterProcessor.GetKey(parameter, path),
-                    Value = parameterProcessor.GetValue(parameter, path)
-                })
+                .SelectMany(parameter => parameterProcessor.Process(parameter,path))
                 .ToDictionary(parameter => parameter.Key, parameter => parameter.Value, StringComparer.OrdinalIgnoreCase);
         }
 

@@ -15,6 +15,8 @@
 
 using Amazon.SimpleSystemsManagement.Model;
 using Microsoft.Extensions.Configuration;
+using System;
+using System.Collections.Generic;
 
 namespace Amazon.Extensions.Configuration.SystemsManager
 {
@@ -32,19 +34,11 @@ namespace Amazon.Extensions.Configuration.SystemsManager
         bool IncludeParameter(Parameter parameter, string path);
 
         /// <summary>
-        /// Normalizes the key to be compatible with <see cref="IConfiguration"/>.
+        /// Converts a parameter to configuration pairs to provide for <see cref="IConfiguration"/>.
         /// </summary>
         /// <param name="parameter"><see cref="Parameter"/> to be processed</param>
         /// <param name="path">Path used when retrieving the <see cref="Parameter"/></param>
-        /// <returns>The normalized key</returns>
-        string GetKey(Parameter parameter, string path);
-        
-        /// <summary>
-        /// Gets the value to be returned by <see cref="IConfiguration"/>.
-        /// </summary>
-        /// <param name="parameter"><see cref="Parameter"/> to be processed</param>
-        /// <param name="path">Path used when retrieving the <see cref="Parameter"/></param>
-        /// <returns>The configuration value</returns>
-        string GetValue(Parameter parameter, string path);
+        /// <returns>The Configuration Pair</returns>
+        IEnumerable<KeyValuePair<string,string>> Process(Parameter input, string path);
     }
 }
