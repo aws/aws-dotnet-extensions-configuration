@@ -36,15 +36,12 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
 
         private readonly SystemsManagerConfigurationProvider _provider;
         private readonly Mock<ISystemsManagerProcessor> _systemsManagerProcessorMock;
-        private readonly Mock<IParameterProcessor> _parameterProcessorMock;
 
         public SystemsManagerConfigurationProviderTests()
         {
-            _parameterProcessorMock = new Mock<IParameterProcessor>();
             _systemsManagerProcessorMock = new Mock<ISystemsManagerProcessor>();
             var source = new SystemsManagerConfigurationSource
             {
-                ParameterProcessor = _parameterProcessorMock.Object,
                 AwsOptions = new AWSOptions(),
                 Path = Path
             };
@@ -54,13 +51,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
         [Fact]
         public void LoadTest()
         {
-            foreach (var parameter in _parameters)
-            {
-                _parameterProcessorMock.Setup(processor => processor.IncludeParameter(parameter, Path)).Returns(true);
-                _parameterProcessorMock.Setup(processor => processor.GetKey(parameter, Path)).Returns(parameter.Value);
-            }
-
-            var getData = SystemsManagerProcessor.ProcessParameters(_parameters, Path, _parameterProcessorMock.Object);
+            var getData = new DefaultParameterProcessor().ProcessParameters(_parameters, Path);
 
             _systemsManagerProcessorMock.Setup(p => p.GetDataAsync()).ReturnsAsync(() => getData);
 
@@ -71,7 +62,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
                 Assert.True(_provider.TryGet(parameter.Value, out _));
             }
 
-            _parameterProcessorMock.VerifyAll();
+            _systemsManagerProcessorMock.VerifyAll();
         }
     }
 }
