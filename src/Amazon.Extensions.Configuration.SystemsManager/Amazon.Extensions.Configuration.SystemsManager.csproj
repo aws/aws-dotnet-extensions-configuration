@@ -5,7 +5,7 @@
     <AssemblyName>Amazon.Extensions.Configuration.SystemsManager</AssemblyName>
     <RootNamespace>Amazon.Extensions.Configuration.SystemsManager</RootNamespace>
     <OutputType>Library</OutputType>
-    <VersionPrefix>1.3.0</VersionPrefix>
+    <VersionPrefix>2.0.0</VersionPrefix>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>Amazon.Extensions.Configuration.SystemsManager</PackageId>
     <Title>.NET Configuration Extensions for AWS Systems Manager</Title>
