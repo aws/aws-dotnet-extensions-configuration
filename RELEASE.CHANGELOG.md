@@ -1,3 +1,8 @@
+### Release 2020-10-09
+* **Amazon.Extensions.Configuration.SystemsManager (2.0.0)**
+    * Merged PR [#75](https://github.com/aws/aws-dotnet-extensions-configuration/pull/75) Update AWS SDK dependencies to 3.5. Thanks [Doug Ferris](https://github.com/doug-ferris)
+    * Update Newtonsoft.Json to version 12.
+
 ### Release 2019-07-23
 * **Amazon.Extensions.Configuration.SystemsManager (1.2.0)**
     * Merged PR [#41](https://github.com/aws/aws-dotnet-extensions-configuration/pull/41) Prevents stripping the first char when the Path is "/". Thanks [Ken Hundley](https://github.com/KenHundley)
