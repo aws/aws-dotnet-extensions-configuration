@@ -15,13 +15,18 @@
     <Copyright>2018-2019</Copyright>
     <PackageTags>AWS;Amazon;aws-sdk-v3;SimpleSystemsManagement;configuration</PackageTags>
     <PackageProjectUrl>https://github.com/aws/aws-dotnet-extensions-configuration/</PackageProjectUrl>
-    <PackageLicenseUrl>http://aws.amazon.com/apache2.0/</PackageLicenseUrl>
-    <PackageIconUrl>https://sdk-for-net.amazonwebservices.com/images/AWSLogo128x128.png</PackageIconUrl>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageIcon>icon.png</PackageIcon>
     <RepositoryUrl>https://github.com/aws/aws-dotnet-extensions-configuration/</RepositoryUrl>
     <Company>Amazon Web Services</Company>
 
     <CodeAnalysisRuleSet>../ruleset.xml</CodeAnalysisRuleSet>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../../LICENSE" Pack="true" PackagePath="" />
+    <None Include="../../icon.png" Pack="true" PackagePath="" />
+  </ItemGroup>
 
   <Choose>
     <When Condition=" '$(AWSKeyFile)' == '' ">
