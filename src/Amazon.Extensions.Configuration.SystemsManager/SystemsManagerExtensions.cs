@@ -155,7 +155,6 @@ namespace Microsoft.Extensions.Configuration
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
         /// <param name="path">The path that variable names must start with. The path will be removed from the variable names.</param>
-        /// <param name="reloadAfter">Initiate reload after TimeSpan</param>
         /// <exception cref="ArgumentNullException"><see cref="path"/> cannot be null</exception>
         /// <exception cref="ArgumentException"><see cref="path"/> does not support Secrets Manager prefix (/aws/reference/secretsmanager/)</exception>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>

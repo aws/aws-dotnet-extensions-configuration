@@ -39,6 +39,11 @@ namespace Amazon.Extensions.Configuration.SystemsManager.AppConfig
         /// AppConfig Configuration Profile Id.
         /// </summary>
         public string ConfigProfileId { get; set; }
+        
+        /// <summary>
+        /// AppConfig Client Id.
+        /// </summary>
+        public string ClientId { get; set; }
 
         /// <summary>
         /// <see cref="AWSOptions"/> used to create an AWS Systems Manager Client />.

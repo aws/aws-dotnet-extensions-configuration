@@ -25,14 +25,17 @@ namespace Amazon.Extensions.Configuration.SystemsManager.AppConfig
     public class AppConfigProcessor : ISystemsManagerProcessor
     {
         private AppConfigConfigurationSource Source { get; }
+        private string LastConfigVersion { get; set; }
+        private IDictionary<string, string> LastConfig { get; set; }
 
         public AppConfigProcessor(AppConfigConfigurationSource source)
         {
             if (source.ApplicationId == null) throw new ArgumentNullException(nameof(source.ApplicationId));
             if (source.EnvironmentId == null) throw new ArgumentNullException(nameof(source.EnvironmentId));
             if (source.ConfigProfileId == null) throw new ArgumentNullException(nameof(source.ConfigProfileId));
+            if (source.ClientId == null) throw new ArgumentNullException(nameof(source.ClientId));
             if (source.AwsOptions == null) throw new ArgumentNullException(nameof(source.AwsOptions));
-            
+
             Source = source;
         }
 
@@ -43,7 +46,8 @@ namespace Amazon.Extensions.Configuration.SystemsManager.AppConfig
                 Application = Source.ApplicationId,
                 Environment = Source.EnvironmentId,
                 Configuration = Source.ConfigProfileId,
-                ClientId = Guid.NewGuid().ToString()
+                ClientId = Source.ClientId,
+                ClientConfigurationVersion = LastConfigVersion
             };
 
             using (var client = Source.AwsOptions.CreateServiceClient<IAmazonAppConfig>())
@@ -55,7 +59,24 @@ namespace Amazon.Extensions.Configuration.SystemsManager.AppConfig
 
                 var response = await client.GetConfigurationAsync(request).ConfigureAwait(false);
 
-                return JsonConfigurationParser.Parse(response.Content);
+                if (response.ContentLength > 0)
+                {
+                    LastConfigVersion = response.ConfigurationVersion;
+                    LastConfig = ParseConfig(response);
+                }
+
+                return LastConfig;
+            }
+        }
+
+        private static IDictionary<string, string> ParseConfig(GetConfigurationResponse response)
+        {
+            switch (response.ContentType)
+            {
+                case "application/json":
+                    return JsonConfigurationParser.Parse(response.Content);
+                default:
+                    throw new NotImplementedException($"Not implemented AppConfig type: {response.ContentType}");
             }
         }
     }
