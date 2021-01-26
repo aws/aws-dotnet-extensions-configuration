@@ -104,31 +104,6 @@ This extension is using [AWSSDK.Extensions.NETCore.Setup](https://www.nuget.org/
 ...
 }
 ```
-Once the configurations are added, you can simply add your custom AWSOptions as the default options using `AddDefaultAWSOptions` in The `ConfigureServices` method in your application's `Startup` Class.
-
-```csharp
-public class Startup
-	{
-		public IConfiguration Configuration { get; }
-
-		public Startup(IConfiguration configuration)
-		{
-			Configuration = configuration;
-		}
-
-		public void ConfigureServices(IServiceCollection services)
-		{
-...
-			services.AddDefaultAWSOptions(Configuration.GetAWSOptions());
-...
-		}
-
-		public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IConfiguration configuration)
-		{
-...
-		}
-	}
- ```
  
  For more information and other configurable options please refer to [Configuring the AWS SDK for .NET with .NET Core](https://docs.aws.amazon.com/sdk-for-net/v3/developer-guide/net-dg-config-netcore.html).
  
