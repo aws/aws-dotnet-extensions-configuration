@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Hosting;
 
 namespace Samples
 {
@@ -15,21 +15,24 @@ namespace Samples
             CreateWebHostBuilder(args).Build().Run();
         }
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args)
+        public static IHostBuilder CreateWebHostBuilder(string[] args)
         {
-            return WebHost.CreateDefaultBuilder(args)
-                .ConfigureAppConfiguration((context, config) =>
-                {
-                    var env = context.HostingEnvironment;
+            return Host.CreateDefaultBuilder(args)
+                 .ConfigureWebHostDefaults(webBuilder =>
+                 {
+                     webBuilder.UseStartup<Startup>();
+                 }).ConfigureAppConfiguration((hostingContext, config) =>
+                 {
+                     var env = hostingContext.HostingEnvironment;
 
-                    // NOTE: A default AWS SDK configuration has been added to appsettings.Development.json.
-                    // More Details can be found at: https://docs.aws.amazon.com/sdk-for-net/v3/developer-guide/net-dg-config-netcore.html
+                     // NOTE: A default AWS SDK configuration has been added to appsettings.Development.json.
+                     // More Details can be found at: https://docs.aws.amazon.com/sdk-for-net/v3/developer-guide/net-dg-config-netcore.html
 
-                    // Add systems manager parameter store paths
-                    config.AddSystemsManager($"/dotnet-aws-samples/systems-manager-sample/common");
-                    config.AddSystemsManager($"/dotnet-aws-samples/systems-manager-sample/{env.EnvironmentName}", optional: true);
-                })
-                .UseStartup<Startup>();
+                     // Add systems manager parameter store paths
+                     config.AddSystemsManager($"/dotnet-aws-samples/systems-manager-sample/common");
+                     config.AddSystemsManager($"/dotnet-aws-samples/systems-manager-sample/{env.EnvironmentName}", optional: true);
+                 }); 
+
         }
     }
 }
