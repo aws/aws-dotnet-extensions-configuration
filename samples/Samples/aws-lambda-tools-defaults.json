@@ -12,5 +12,7 @@
     "framework"     : "netcoreapp3.1",
     "s3-prefix"     : "AWSServerless2/",
     "template"      : "serverless.template",
-    "template-parameters" : ""
+    "template-parameters" : "",
+    "s3-bucket"           : "beabrian",
+    "stack-name"          : "SampleWithPreFetch"
 }

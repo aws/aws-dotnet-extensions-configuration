@@ -10,9 +10,11 @@ namespace Samples
         public static async Task Main(string[] args)
         {
             //populates some sample data to be used by this example project
-            await PopulateSampleDataForThisProject().ConfigureAwait(false);
+            // await PopulateSampleDataForThisProject().ConfigureAwait(false);
 
-            CreateWebHostBuilder(args).Build().Run();
+            var x = CreateWebHostBuilder(args);
+            var y = x.Build();
+            y.Run();
         }
 
         public static IHostBuilder CreateWebHostBuilder(string[] args)
@@ -31,7 +33,7 @@ namespace Samples
                      // Add systems manager parameter store paths
                      config.AddSystemsManager($"/dotnet-aws-samples/systems-manager-sample/common");
                      config.AddSystemsManager($"/dotnet-aws-samples/systems-manager-sample/{env.EnvironmentName}", optional: true);
-                 }); 
+                 });
 
         }
     }

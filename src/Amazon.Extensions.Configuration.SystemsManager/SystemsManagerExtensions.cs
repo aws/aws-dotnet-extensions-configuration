@@ -187,7 +187,9 @@ namespace Microsoft.Extensions.Configuration
             if (source.AwsOptions != null) return builder.Add(source);
 
             source.AwsOptions = builder.GetAwsOptions();
+
             return builder.Add(source);
+
         }
 
         private static Action<SystemsManagerConfigurationSource> ConfigureSource(string path, AWSOptions awsOptions, bool optional = false, TimeSpan? reloadAfter = null)
