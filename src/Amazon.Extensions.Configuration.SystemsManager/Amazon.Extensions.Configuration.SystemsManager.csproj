@@ -5,14 +5,14 @@
     <AssemblyName>Amazon.Extensions.Configuration.SystemsManager</AssemblyName>
     <RootNamespace>Amazon.Extensions.Configuration.SystemsManager</RootNamespace>
     <OutputType>Library</OutputType>
-    <VersionPrefix>2.0.0</VersionPrefix>
+    <VersionPrefix>2.1.0</VersionPrefix>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>Amazon.Extensions.Configuration.SystemsManager</PackageId>
     <Title>.NET Configuration Extensions for AWS Systems Manager</Title>
     <Product>Amazon.Extensions.Configuration.SystemsManager</Product>
     <Description>.NET Configuration Extensions for AWS Systems Manager</Description>
     <Authors>Amazon Web Services</Authors>
-    <Copyright>2018-2019</Copyright>
+    <Copyright>2018-2021</Copyright>
     <PackageTags>AWS;Amazon;aws-sdk-v3;SimpleSystemsManagement;configuration</PackageTags>
     <PackageProjectUrl>https://github.com/aws/aws-dotnet-extensions-configuration/</PackageProjectUrl>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
@@ -44,8 +44,8 @@
   </Choose>
 
   <ItemGroup>
-    <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.3.101" />
-    <PackageReference Include="AWSSDK.SimpleSystemsManagement" Version="3.5.1.7" />
+    <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.7.0.1" />
+    <PackageReference Include="AWSSDK.SimpleSystemsManagement" Version="3.7.0.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.*" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.*" />
   </ItemGroup>
