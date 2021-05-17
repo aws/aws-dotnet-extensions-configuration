@@ -1,3 +1,7 @@
+### Release 2021-03-30
+* **Amazon.Extensions.Configuration.SystemsManager (2.1.0)**
+    * Update AWS SDK dependencies to version 3.7
+
 ### Release 2020-10-09
 * **Amazon.Extensions.Configuration.SystemsManager (2.0.0)**
     * Merged PR [#75](https://github.com/aws/aws-dotnet-extensions-configuration/pull/75) Update AWS SDK dependencies to 3.5. Thanks [Doug Ferris](https://github.com/doug-ferris)
