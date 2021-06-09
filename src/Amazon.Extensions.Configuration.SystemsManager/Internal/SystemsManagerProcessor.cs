@@ -90,7 +90,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
             }
         }
 
-        public static bool IsSecretsManagerPath(string path) => path.StartsWith(SecretsManagerPath, StringComparison.OrdinalIgnoreCase);
+        public static bool IsSecretsManagerPath(string path) => path != null && path.StartsWith(SecretsManagerPath, StringComparison.OrdinalIgnoreCase);
 
         public static IDictionary<string, string> AddPrefix(IDictionary<string, string> input, string prefix)
         {

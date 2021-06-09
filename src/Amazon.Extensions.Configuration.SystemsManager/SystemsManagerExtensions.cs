@@ -179,6 +179,7 @@ namespace Microsoft.Extensions.Configuration
         public static IConfigurationBuilder AddSystemsManager(this IConfigurationBuilder builder, Action<SystemsManagerConfigurationSource> configureSource)
         {
             if (configureSource == null) throw new ArgumentNullException(nameof(configureSource));
+            if (builder == null) throw new ArgumentNullException(nameof(builder));
 
             var source = new SystemsManagerConfigurationSource();
             configureSource(source);
