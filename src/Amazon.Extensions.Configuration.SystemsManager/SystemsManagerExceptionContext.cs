@@ -14,6 +14,7 @@
  */
 
 using System;
+using Microsoft.Extensions.Configuration;
 
 namespace Amazon.Extensions.Configuration.SystemsManager
 {
@@ -21,9 +22,9 @@ namespace Amazon.Extensions.Configuration.SystemsManager
     public class SystemsManagerExceptionContext
     {
         /// <summary>
-        /// The <see cref="SystemsManagerConfigurationProvider" /> that caused the exception.
+        /// The <see cref="IConfigurationProvider" /> that caused the exception.
         /// </summary>
-        public SystemsManagerConfigurationProvider Provider { get; set; }
+        public IConfigurationProvider Provider { get; set; }
 
         /// <summary>The exception that occured in Load.</summary>
         public Exception Exception { get; set; }

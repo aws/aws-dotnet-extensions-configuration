@@ -58,3 +58,6 @@ generator/.vs/**
 **/*.partial.csproj
 
 **/.DS_Store
+
+#JetBrains Rider user folders
+.idea/
