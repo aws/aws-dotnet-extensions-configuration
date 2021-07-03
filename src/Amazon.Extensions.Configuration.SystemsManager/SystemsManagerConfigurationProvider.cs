@@ -36,6 +36,13 @@ namespace Amazon.Extensions.Configuration.SystemsManager
 
         private ManualResetEvent ReloadTaskEvent { get; } = new ManualResetEvent(true);
 
+        // Flag is set when parameters have been fetched from SSM before the framework calls Load()
+        private bool DataHasBeenPreFetched = false;
+
+        // It is possible that that the pre-fetch is not complete when the framework calls Load()
+        // Therefore, lock LoadAsync() so the pre-fetch can complete before Load() continues.
+        private static readonly SemaphoreSlim Lock = new SemaphoreSlim(1, 1);
+
         /// <inheritdoc />
         /// <summary>
         /// Initializes a new instance with the specified source.
@@ -80,6 +87,9 @@ namespace Amazon.Extensions.Configuration.SystemsManager
                     }
                 });
             }
+
+            // Pre-fetch Parameter Store values from SSM to improve Lambda cold start times. 
+            LoadAsync(false, preFetch: true);
         }
 
         /// <summary>
@@ -102,10 +112,18 @@ namespace Amazon.Extensions.Configuration.SystemsManager
 
         // If 1) reload flag is set to true and 2) OnLoadException handler is not set, 
         // all exceptions raised during OnReload() will be ignored.
-        private async Task LoadAsync(bool reload)
+        private async Task LoadAsync(bool reload, bool preFetch = false)
         {
+            // Wait for any already running load operations to complete before starting another. 
+            // This can happen if the framework calls Load before the pre-fetch completes.
+            await Lock.WaitAsync().ConfigureAwait(false);
+
             try
             {
+                // Check if the Data has been prefetched. If this is a reload,
+                // ignore pre-fetched data. We only prefetch during initialization.
+                if (DataHasBeenPreFetched && !reload) return;
+
                 var newData = await SystemsManagerProcessor.GetDataAsync().ConfigureAwait(false) ?? new Dictionary<string, string>();
 
                 if (!Data.EquivalentTo(newData))
@@ -135,6 +153,13 @@ namespace Amazon.Extensions.Configuration.SystemsManager
                 if (!ignoreException)
                     throw;
             }
+            finally
+            {
+                // Always reset the flag and release the lock 
+                DataHasBeenPreFetched = preFetch;
+                Lock.Release();
+            }
+
         }
 
         [Obsolete("This method has been moved into the internal namespace, and will be removed in a future release. Use ParameterProcessor instead")]
