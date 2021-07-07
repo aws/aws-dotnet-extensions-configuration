@@ -1,159 +1,109 @@
-﻿/*
- * Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License").
- * You may not use this file except in compliance with the License.
- * A copy of the License is located at
- * 
- *  http://aws.amazon.com/apache2.0
- * 
- * or in the "license" file accompanying this file. This file is distributed
- * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- * express or implied. See the License for the specific language governing
- * permissions and limitations under the License.
- */
-
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
-using System.IO;
-using System.Linq;
+using System.Text.Json;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Amazon.Extensions.Configuration.SystemsManager.Internal
 {
-    public class JsonConfigurationParser : IDisposable
+    public class JsonConfigurationParser
     {
         private JsonConfigurationParser() { }
 
-        private readonly IDictionary<string, string> _data = new SortedDictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-        private readonly Stack<string> _context = new Stack<string>();
-        private string _currentPath;
-
-        private JsonTextReader _reader;
-
-        public static IDictionary<string, string> Parse(Stream input)
-        {
-            using (var reader = new StreamReader(input))
-            using (var parser = new JsonConfigurationParser())
-            {
-                return parser.ParseInput(reader);    
-            }
-        }
+        private readonly Dictionary<string, string> _data = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        private readonly Stack<string> _paths = new Stack<string>();
 
         public static IDictionary<string, string> Parse(string input)
         {
-            using (var reader = new StringReader(input))
-            using (var parser = new JsonConfigurationParser())
-            {
-                return parser.ParseInput(reader);    
-            }
+            return new JsonConfigurationParser().ParseString(input);
         }
 
-        private IDictionary<string, string> ParseInput(TextReader input)
+        private IDictionary<string, string> ParseString(string input)
         {
-            _data.Clear();
-            using (_reader = new JsonTextReader(input) {DateParseHandling = DateParseHandling.None})
+            var jsonDocumentOptions = new JsonDocumentOptions
             {
-                var jsonConfig = JObject.Load(_reader);
+                CommentHandling = JsonCommentHandling.Skip,
+                AllowTrailingCommas = true,
+            };
 
-                VisitJObject(jsonConfig);
-
-                return _data;
+            using (var doc = JsonDocument.Parse(input, jsonDocumentOptions))
+            {
+                if (doc.RootElement.ValueKind != JsonValueKind.Object)
+                {
+                    throw new FormatException($"Top-level JSON element must be an object. Instead, '{doc.RootElement.ValueKind}' was found.");
+                }
+                VisitElement(doc.RootElement);
             }
+
+            return _data;
         }
-        
-        private void VisitJObject(JObject jObject)
+
+        private void VisitElement(JsonElement element)
         {
-            foreach (var property in jObject.Properties())
+            var isEmpty = true;
+
+            foreach (var property in element.EnumerateObject())
             {
+                isEmpty = false;
                 EnterContext(property.Name);
-                VisitProperty(property);
+                VisitValue(property.Value);
                 ExitContext();
             }
-        }
 
-        private void VisitProperty(JProperty property)
-        {
-            VisitToken(property.Value);
-        }
-
-        private void VisitToken(JToken token)
-        {
-            switch (token.Type)
+            if (isEmpty && _paths.Count > 0)
             {
-                case JTokenType.Object:
-                    VisitJObject(token.Value<JObject>());
+                _data[_paths.Peek()] = null;
+            }
+        }
+
+        private void VisitValue(JsonElement value)
+        {
+            Debug.Assert(_paths.Count > 0);
+
+            switch (value.ValueKind)
+            {
+                case JsonValueKind.Object:
+                    VisitElement(value);
                     break;
 
-                case JTokenType.Array:
-                    VisitArray(token.Value<JArray>());
+                case JsonValueKind.Array:
+                    var index = 0;
+                    foreach (var arrayElement in value.EnumerateArray())
+                    {
+                        EnterContext(index.ToString(CultureInfo.CurrentCulture));
+                        VisitValue(arrayElement);
+                        ExitContext();
+                        index++;
+                    }
                     break;
 
-                case JTokenType.Integer:
-                case JTokenType.Float:
-                case JTokenType.String:
-                case JTokenType.Boolean:
-                case JTokenType.Bytes:
-                case JTokenType.Raw:
-                case JTokenType.Null:
-                    VisitPrimitive(token.Value<JValue>());
+                case JsonValueKind.Number:
+                case JsonValueKind.String:
+                case JsonValueKind.True:
+                case JsonValueKind.False:
+                case JsonValueKind.Null:
+                    var key = _paths.Peek();
+                    if (_data.ContainsKey(key))
+                    {
+                        throw new FormatException($"A duplicate key '{key}' was found.");
+                    }
+                    _data[key] = value.ToString();
                     break;
 
                 default:
-                    throw new FormatException($"Unsupported JSON token '{_reader.TokenType}' was found. SecretId '{_reader.Path}', line {_reader.LineNumber} position {_reader.LinePosition}.");
+                    throw new FormatException($"Unsupported JSON token '{value.ValueKind}' was found.");
             }
         }
 
-        private void VisitArray(JArray array)
-        {
-            for (var index = 0; index < array.Count; index++)
-            {
-                EnterContext(index.ToString(CultureInfo.InvariantCulture));
-                VisitToken(array[index]);
-                ExitContext();
-            }
-        }
+        private void EnterContext(string context) =>
+            _paths.Push(_paths.Count > 0 ?
+                _paths.Peek() + ConfigurationPath.KeyDelimiter + context :
+                context);
 
-        private void VisitPrimitive(JValue data)
-        {
-            var key = _currentPath;
-
-            if (_data.ContainsKey(key))
-            {
-                throw new FormatException($"A duplicate key '{key}' was found.");
-            }
-
-            _data[key] = data.Value == null ? null : data.ToString(CultureInfo.InvariantCulture);
-        }
-
-        private void EnterContext(string context)
-        {
-            _context.Push(context);
-            _currentPath = ConfigurationPath.Combine(_context.Reverse());
-        }
-
-        private void ExitContext()
-        {
-            _context.Pop();
-            _currentPath = ConfigurationPath.Combine(_context.Reverse());
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                ((IDisposable) _reader)?.Dispose();
-            }
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
+        private void ExitContext() => _paths.Pop();
     }
 }
