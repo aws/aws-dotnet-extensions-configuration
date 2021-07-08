@@ -13,6 +13,8 @@
  * permissions and limitations under the License.
  */
 
+using System;
+using System.Collections.Generic;
 using Amazon.SimpleSystemsManagement.Model;
 using Microsoft.Extensions.Configuration;
 
@@ -29,6 +31,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager
         /// <param name="parameter"><see cref="Parameter"/> to be processed</param>
         /// <param name="path">Path used when retrieving the <see cref="Parameter"/></param>
         /// <returns>Boolean that determines if the Parameter wil be processed further</returns>
+        [Obsolete("Include method is no longer used by the interface. Please override DefaultParameterProcessor class if you want to use this method.")]
         bool IncludeParameter(Parameter parameter, string path);
 
         /// <summary>
@@ -37,6 +40,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager
         /// <param name="parameter"><see cref="Parameter"/> to be processed</param>
         /// <param name="path">Path used when retrieving the <see cref="Parameter"/></param>
         /// <returns>The normalized key</returns>
+        [Obsolete("GetKey method is no longer used by the interface. Please override DefaultParameterProcessor class if you want to use this method.")]
         string GetKey(Parameter parameter, string path);
         
         /// <summary>
@@ -45,6 +49,15 @@ namespace Amazon.Extensions.Configuration.SystemsManager
         /// <param name="parameter"><see cref="Parameter"/> to be processed</param>
         /// <param name="path">Path used when retrieving the <see cref="Parameter"/></param>
         /// <returns>The configuration value</returns>
+        [Obsolete("GetValue method is no longer used by the interface. Please override DefaultParameterProcessor class if you want to use this method.")]
         string GetValue(Parameter parameter, string path);
+
+        /// <summary>
+        /// Process parameters from AWS Parameter Store into a dictionary for <see cref="IConfiguration"/>
+        /// </summary>
+        /// <param name="parameters">Enumeration of <see cref="Parameter"/>s to be processed</param>
+        /// <param name="path">Path used when retrieving the <see cref="Parameter"/></param>
+        /// <returns>Configuration values for <see cref="IConfiguration"/></returns>
+        IDictionary<string, string> ProcessParameters(IEnumerable<Parameter> parameters, string path);
     }
 }
