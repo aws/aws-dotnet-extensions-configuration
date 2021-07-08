@@ -57,7 +57,15 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
             foreach (var parameter in _parameters)
             {
                 _parameterProcessorMock.Setup(processor => processor.IncludeParameter(parameter, Path)).Returns(true);
-                _parameterProcessorMock.Setup(processor => processor.GetKey(parameter, Path)).Returns(parameter.Value);
+                _parameterProcessorMock.Setup(processor => processor.Process(parameter, Path))
+                                       .Returns(new List<KeyValuePair<string, string>>
+                                       {
+                                           {
+                                               new KeyValuePair<string, string>(
+                                                   parameter.Value,
+                                                   parameter.Value)
+                                           }
+                                       });
             }
 
             var getData = SystemsManagerProcessor.ProcessParameters(_parameters, Path, _parameterProcessorMock.Object);

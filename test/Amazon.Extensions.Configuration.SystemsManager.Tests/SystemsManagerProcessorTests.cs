@@ -32,8 +32,15 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
             foreach (var parameter in parameters)
             {
                 _parameterProcessorMock.Setup(processor => processor.IncludeParameter(parameter, path)).Returns(true);
-                _parameterProcessorMock.Setup(processor => processor.GetKey(parameter, path)).Returns(parameter.Value);
-                _parameterProcessorMock.Setup(processor => processor.GetValue(parameter, path)).Returns(parameter.Value);
+                _parameterProcessorMock.Setup(processor => processor.Process(parameter, path))
+                                       .Returns(new List<KeyValuePair<string, string>> 
+                                       { 
+                                           { 
+                                               new KeyValuePair<string, string>(
+                                                   parameter.Value,
+                                                   parameter.Value)
+                                           } 
+                                       });
             }
 
             var data = SystemsManagerProcessor.ProcessParameters(parameters, path, _parameterProcessorMock.Object);
@@ -57,8 +64,13 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
             foreach (var parameter in parameters)
             {
                 _parameterProcessorMock.Setup(processor => processor.IncludeParameter(parameter, path)).Returns(true);
-                _parameterProcessorMock.Setup(processor => processor.GetKey(parameter, path)).Returns(parameter.Value);
-                _parameterProcessorMock.Setup(processor => processor.GetValue(parameter, path)).Returns(parameter.Value);
+                _parameterProcessorMock.Setup(processor => processor.Process(parameter, path))
+                                       .Returns(new List<KeyValuePair<string, string>>
+                                       {
+                                           {
+                                               new KeyValuePair<string, string>(parameter.Value,parameter.Value)
+                                           }
+                                       }) ;
             }
 
             var data = SystemsManagerProcessor.ProcessParameters(parameters, path, _parameterProcessorMock.Object);

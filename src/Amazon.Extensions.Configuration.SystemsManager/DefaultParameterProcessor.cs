@@ -14,6 +14,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using Amazon.SimpleSystemsManagement.Model;
 using Microsoft.Extensions.Configuration;
 
@@ -39,5 +40,10 @@ namespace Amazon.Extensions.Configuration.SystemsManager
         }
 
         public virtual string GetValue(Parameter parameter, string path) => parameter.Value;
+
+        public virtual IEnumerable<KeyValuePair<string, string>> Process(Parameter parameter, string path)
+        {
+            return new List<KeyValuePair<string, string>> { { new KeyValuePair<string, string>(GetKey(parameter, path), GetValue(parameter, path)) } };
+        }
     }
 }
