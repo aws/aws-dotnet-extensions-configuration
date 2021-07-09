@@ -87,6 +87,26 @@ var configurations = configurationBuilder.Build();
 configurations.WaitForSystemsManagerReloadToComplete(TimeSpan.FromSeconds(5));
 ```
 
+# Configuring Systems Manager Client
+
+This extension is using [AWSSDK.Extensions.NETCore.Setup](https://www.nuget.org/packages/AWSSDK.Extensions.NETCore.Setup/) in order to get AWSOptions from `Configuration` object and create AWS Systems Manager Client. You can edit and override the configuration by adding AWSOptions to your configuration providers such as appsettings.json. Below is an example of a configuration provider:
+
+```JSON
+{
+...
+
+  "AWS": {
+    "Profile": "default",
+    "Region": "us-east-1",
+    "ResignRetries": true
+  }
+  
+...
+}
+```
+ 
+ For more information and other configurable options please refer to [Configuring the AWS SDK for .NET with .NET Core](https://docs.aws.amazon.com/sdk-for-net/v3/developer-guide/net-dg-config-netcore.html).
+ 
 # Getting Help
 
 We use the [GitHub issues](https://github.com/aws/aws-dotnet-extensions-configuration/issues) for tracking bugs and feature requests and have limited bandwidth to address them.
