@@ -59,6 +59,44 @@ namespace HostBuilderExample
 
 ## Samples
 
+### Custom ParameterProcessor Sample
+Example of using a custom `IParameterProcessor` which provides a way to store and retreive `null` values. Since AWS Parameter Store params are string literals, there is no way to store a `null` value by default.
+
+```csharp
+namespace CustomParameterProcessorExample
+{
+    public class CustomParameterProcessor : DefaultParameterProcessor
+    {
+        const string NULL_STRING_LITERAL = "NULL";
+        
+        public override string GetValue(Parameter parameter, string path)
+        {
+            string value = base.GetValue(parameter, path);
+            return value == NULL_STRING_LITERAL ? null : value;
+        }
+    }
+    
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            CreateWebHostBuilder(args).Build().Run();
+        }
+
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+            WebHost.CreateDefaultBuilder(args)
+                .ConfigureAppConfiguration(builder =>
+                {
+                    builder.AddSystemsManager(config => {
+                        config.Path = "/my-application/";
+                        config.ParameterProcessor = new CustomParameterProcessor();
+                    });
+                })
+                .UseStartup<Startup>();
+    }
+}
+```
+
 For more complete examples, take a look at sample projects available in [samples directory](https://github.com/aws/aws-dotnet-extensions-configuration/tree/master/samples).
 
 
