@@ -1,3 +1,7 @@
+### Release 2021-07-23
+* **Amazon.Extensions.Configuration.SystemsManager (2.1.1)**
+    * Update AWSSDK.Extensions.NETCore.Setup and AWSSDK.SimpleSystemsManagement package references for SSO credential support. 
+
 ### Release 2021-03-30
 * **Amazon.Extensions.Configuration.SystemsManager (2.1.0)**
     * Update AWS SDK dependencies to version 3.7
