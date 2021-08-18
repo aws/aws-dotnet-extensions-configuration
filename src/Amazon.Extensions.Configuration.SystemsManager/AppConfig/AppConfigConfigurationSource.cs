@@ -14,28 +14,36 @@
  */
 
 using System;
-using System.Collections.Generic;
 using Amazon.Extensions.NETCore.Setup;
-using Amazon.SimpleSystemsManagement.Model;
 using Microsoft.Extensions.Configuration;
 
-namespace Amazon.Extensions.Configuration.SystemsManager
+namespace Amazon.Extensions.Configuration.SystemsManager.AppConfig
 {
     /// <inheritdoc />
     /// <summary>
-    /// Represents AWS Systems Manager Parameter Store variables as an <see cref="ISystemsManagerConfigurationSource" />.
+    /// Represents AWS Systems Manager AppConfig variables as an <see cref="ISystemsManagerConfigurationSource" />.
     /// </summary>
-    public class SystemsManagerConfigurationSource : ISystemsManagerConfigurationSource
+    public class AppConfigConfigurationSource : ISystemsManagerConfigurationSource
     {
-        public SystemsManagerConfigurationSource()
-        {
-            Filters = new List<ParameterStringFilter>();
-        }
+        /// <summary>
+        /// AppConfig Application Id.
+        /// </summary>
+        public string ApplicationId { get; set; }
 
         /// <summary>
-        /// A Path used to filter parameters.
+        /// AppConfig Environment Id.
         /// </summary>
-        public string Path { get; set; }
+        public string EnvironmentId { get; set; }
+
+        /// <summary>
+        /// AppConfig Configuration Profile Id.
+        /// </summary>
+        public string ConfigProfileId { get; set; }
+        
+        /// <summary>
+        /// AppConfig Client Id.
+        /// </summary>
+        public string ClientId { get; set; }
 
         /// <summary>
         /// <see cref="AWSOptions"/> used to create an AWS Systems Manager Client />.
@@ -48,24 +56,8 @@ namespace Amazon.Extensions.Configuration.SystemsManager
         /// <inheritdoc />
         public TimeSpan? ReloadAfter { get; set; }
 
-        /// <summary>
-        /// Prepends the supplied Prefix to all result keys
-        /// </summary>
-        public string Prefix { get; set; }
-
         /// <inheritdoc />
         public Action<SystemsManagerExceptionContext> OnLoadException { get; set; }
-
-        /// <summary>
-        /// Implementation of <see cref="IParameterProcessor"/> used to process <see cref="Parameter"/> results. Defaults to <see cref="DefaultParameterProcessor"/>.
-        /// </summary>
-        public IParameterProcessor ParameterProcessor { get; set; }
-
-        /// <summary> 
-        /// Filters to limit the request results.
-        /// You can't filter using the parameter name.
-        /// </summary>
-        public List<ParameterStringFilter> Filters { get; }
 
         /// <inheritdoc />
         public IConfigurationProvider Build(IConfigurationBuilder builder)

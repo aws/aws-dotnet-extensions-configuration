@@ -15,11 +15,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Amazon.Extensions.Configuration.SystemsManager.AppConfig;
 using Amazon.Extensions.Configuration.SystemsManager.Internal;
-using Amazon.SimpleSystemsManagement.Model;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Primitives;
 
@@ -27,11 +26,11 @@ namespace Amazon.Extensions.Configuration.SystemsManager
 {
     /// <inheritdoc />
     /// <summary>
-    /// An AWS Systems Manager Parameter Store based <see cref="IConfigurationProvider" />.
+    /// An AWS Systems Manager based <see cref="ConfigurationProvider" />.
     /// </summary>
     public class SystemsManagerConfigurationProvider : ConfigurationProvider
     {
-        public SystemsManagerConfigurationSource Source { get; }
+        private ISystemsManagerConfigurationSource Source { get; }
         private ISystemsManagerProcessor SystemsManagerProcessor { get; }
 
         private ManualResetEvent ReloadTaskEvent { get; } = new ManualResetEvent(true);
@@ -40,8 +39,17 @@ namespace Amazon.Extensions.Configuration.SystemsManager
         /// <summary>
         /// Initializes a new instance with the specified source.
         /// </summary>
-        /// <param name="source">The <see cref="IConfigurationSource"/> used to retrieve values from AWS Systems Manager Parameter Store</param>
+        /// <param name="source">The <see cref="SystemsManagerConfigurationSource"/> used to retrieve values from AWS Systems Manager Parameter Store</param>
         public SystemsManagerConfigurationProvider(SystemsManagerConfigurationSource source) : this(source, new SystemsManagerProcessor(source))
+        {
+        }
+        
+        /// <inheritdoc />
+        /// <summary>
+        /// Initializes a new instance with the specified source.
+        /// </summary>
+        /// <param name="source">The <see cref="AppConfigConfigurationSource"/> used to retrieve values from AWS Systems Manager AppConfig</param>
+        public SystemsManagerConfigurationProvider(AppConfigConfigurationSource source) : this(source, new AppConfigProcessor(source))
         {
         }
 
@@ -50,15 +58,12 @@ namespace Amazon.Extensions.Configuration.SystemsManager
         /// <summary>
         /// Initializes a new instance with the specified source.
         /// </summary>
-        /// <param name="source">The <see cref="IConfigurationSource"/> used to retrieve values from AWS Systems Manager Parameter Store</param>
-        /// <param name="systemsManagerProcessor">The <see cref="ISystemsManagerProcessor"/> used to retrieve values from AWS Systems Manager Parameter Store</param>
-        public SystemsManagerConfigurationProvider(SystemsManagerConfigurationSource source, ISystemsManagerProcessor systemsManagerProcessor)
+        /// <param name="source">The <see cref="ISystemsManagerConfigurationSource"/> used to retrieve values from AWS Systems Manager</param>
+        /// <param name="systemsManagerProcessor">The <see cref="ISystemsManagerProcessor"/> used to retrieve values from AWS Systems Manager</param>
+        public SystemsManagerConfigurationProvider(ISystemsManagerConfigurationSource source, ISystemsManagerProcessor systemsManagerProcessor)
         {
             Source = source ?? throw new ArgumentNullException(nameof(source));
             SystemsManagerProcessor = systemsManagerProcessor ?? throw new ArgumentNullException(nameof(systemsManagerProcessor));
-
-            if (source.AwsOptions == null) throw new ArgumentNullException(nameof(source.AwsOptions));
-            if (source.Path == null) throw new ArgumentNullException(nameof(source.Path));
 
             if (source.ReloadAfter != null)
             {
@@ -135,19 +140,6 @@ namespace Amazon.Extensions.Configuration.SystemsManager
                 if (!ignoreException)
                     throw;
             }
-        }
-
-        [Obsolete("This method has been moved into the internal namespace, and will be removed in a future release. Use ParameterProcessor instead")]
-        public static IDictionary<string, string> ProcessParameters(IEnumerable<Parameter> parameters, string path, IParameterProcessor parameterProcessor)
-        {
-            return parameters
-                .Where(parameter => parameterProcessor.IncludeParameter(parameter, path))
-                .Select(parameter => new
-                {
-                    Key = parameterProcessor.GetKey(parameter, path),
-                    Value = parameterProcessor.GetValue(parameter, path)
-                })
-                .ToDictionary(parameter => parameter.Key, parameter => parameter.Value, StringComparer.OrdinalIgnoreCase);
         }
     }
 }
