@@ -3,12 +3,13 @@
 # AWS .NET Configuration Extension for Systems Manager
 [![nuget](https://img.shields.io/nuget/v/Amazon.Extensions.Configuration.SystemsManager.svg)](https://www.nuget.org/packages/Amazon.Extensions.Configuration.SystemsManager/)
 
-[Amazon.Extensions.Configuration.SystemsManager](https://www.nuget.org/packages/Amazon.Extensions.Configuration.SystemsManager/) simplifies using [AWS SSM](https://aws.amazon.com/systems-manager/)'s [Parameter Store](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-paramstore.html) as a source for configuration information for .NET Core applications.  This project was contributed by [@KenHundley](https://github.com/KenHundley).
+[Amazon.Extensions.Configuration.SystemsManager](https://www.nuget.org/packages/Amazon.Extensions.Configuration.SystemsManager/) simplifies using [AWS SSM](https://aws.amazon.com/systems-manager/)'s [Parameter Store](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-paramstore.html) and [AppConfig](https://docs.aws.amazon.com/appconfig/latest/userguide/what-is-appconfig.html) as a source for configuration information for .NET Core applications.  This project was contributed by [@KenHundley](https://github.com/KenHundley) and [@MichalGorski](https://github.com/mgorski-mg).
 
 The library introduces the following dependencies:
 
 * [AWSSDK.Extensions.NETCore.Setup](https://www.nuget.org/packages/AWSSDK.Extensions.NETCore.Setup/)
 * [AWSSDK.SimpleSystemsManagement](https://www.nuget.org/packages/AWSSDK.SimpleSystemsManagement/)
+* [AWSSDK.AppConfig](https://www.nuget.org/packages/AWSSDK.AppConfig/)
 * [Microsoft.Extensions.Configuration](https://www.nuget.org/packages/Microsoft.Extensions.Configuration)
 
 # Getting Started
@@ -16,7 +17,7 @@ The library introduces the following dependencies:
 Follow the examples below to see how the library can be integrated into your application.  This extension adheres to the same practices and conventions of [Configuration in ASP.NET Core](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-2.1).
 
 ## ASP.NET Core Example
-The most common use case for this library is to pull configuration from Parameter Store.  You can easily add this functionality by adding 1 line of code:
+One of the common use cases for this library is to pull configuration from Parameter Store.  You can easily add this functionality by adding 1 line of code:
 
 ```csharp
 public class Program
@@ -36,6 +37,26 @@ public class Program
 }
 ```
 
+Second possibility is to pull configuration from AppConfig.  You can easily add this functionality by adding 1 line of code:
+
+```csharp
+public class Program
+{
+    public static void Main(string[] args)
+    {
+        CreateWebHostBuilder(args).Build().Run();
+    }
+
+    public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+        WebHost.CreateDefaultBuilder(args)
+            .ConfigureAppConfiguration(builder =>
+            {
+                builder.AddAppConfig("AppConfigApplicationId", "AppConfigEnvironmentId", "AppConfigConfigurationProfileId", , TimeSpan.FromSeconds(20));
+            })
+            .UseStartup<Startup>();
+}
+```
+
 ## HostBuilder Example
 Microsoft introduced [.NET Generic Host](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/generic-host?view=aspnetcore-2.1) to de-couple HTTP pipeline from the Web Host API.  The Generic Host library allows you to write non-HTTP services using configuration, dependency injection, and logging features.  The sample code below shows you how to use the the AWS .NET Configuration Extension library:
 
@@ -48,6 +69,7 @@ namespace HostBuilderExample
             .ConfigureAppConfiguration((hostingContext, config) =>
             {
                 config.AddSystemsManager("/my-application/");
+                config.AddAppConfig("AppConfigApplicationId", "AppConfigEnvironmentId", "AppConfigConfigurationProfileId", TimeSpan.FromSeconds(20));
             })
             .ConfigureServices((sc) => { ... })
             .Build();
@@ -61,17 +83,13 @@ namespace HostBuilderExample
 
 For more complete examples, take a look at sample projects available in [samples directory](https://github.com/aws/aws-dotnet-extensions-configuration/tree/master/samples).
 
-
 # Reloading in AWS Lambda
 
-The `reloadAfter` parameter on `AddSystemsManager()` enables automatic reloading of configuration data from Parameter Store as a background task.
+The `reloadAfter` parameter on `AddSystemsManager()` and `AddAppConfig()` enables automatic reloading of configuration data from Parameter Store or AppConfig as a background task.
 
-In AWS Lambda, background tasks are paused after processing a Lambda event.  This could disrupt the provider from 
-retrieving the latest configuration data from Parameter Store. To ensure the reload is performed within a Lambda event,
-we recommend calling the extension method `WaitForSystemsManagerReloadToComplete` from the `IConfiguration` object in 
-your Lambda function. This method will immediately return unless a reload is currently being performed.  The `WaitForSystemsManagerReloadToComplete` extension method to `IConfiguration` is available when you add the a
-`using Amazon.Extensions.Configuration.SystemsManager` statement.  See the example below:
+## Reloading in AWS Lambda
 
+In AWS Lambda, background tasks are paused after processing a Lambda event. This could disrupt the provider from retrieving the latest configuration data from Systems Manager. To ensure the reload is performed within a Lambda event, we recommend calling the extension method `WaitForSystemsManagerReloadToComplete` from the `IConfiguration` object in your Lambda function. This method will immediately return unless a reload is currently being performed. See the example below:
 
 ```csharp
 using Amazon.Extensions.Configuration.SystemsManager
@@ -87,12 +105,13 @@ var configurations = configurationBuilder.Build();
 configurations.WaitForSystemsManagerReloadToComplete(TimeSpan.FromSeconds(5));
 ```
 
+For AppConfig in Lambda you should use [Lambda Extension](https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-integration-lambda-extensions.html).
+
 # Getting Help
 
 We use the [GitHub issues](https://github.com/aws/aws-dotnet-extensions-configuration/issues) for tracking bugs and feature requests and have limited bandwidth to address them.
 
 If you think you may have found a bug, please open an [issue](https://github.com/aws/aws-dotnet-extensions-configuration/issues/new)
-
 
 # Contributing
 

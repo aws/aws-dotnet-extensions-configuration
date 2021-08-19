@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
 
 using System;
 using Amazon.Extensions.Configuration.SystemsManager;
+using Amazon.Extensions.Configuration.SystemsManager.Internal;
 using Amazon.Extensions.NETCore.Setup;
 
 // ReSharper disable once CheckNamespace
@@ -25,8 +26,6 @@ namespace Microsoft.Extensions.Configuration
     /// </summary>
     public static class SystemsManagerExtensions
     {
-        private const string AwsOptionsConfigurationKey = "AWS_CONFIGBUILDER_AWSOPTIONS";
-
         /// <summary>
         /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from AWS Systems Manager Parameter Store with a specified path.
         /// </summary>
@@ -156,7 +155,6 @@ namespace Microsoft.Extensions.Configuration
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
         /// <param name="path">The path that variable names must start with. The path will be removed from the variable names.</param>
-        /// <param name="reloadAfter">Initiate reload after TimeSpan</param>
         /// <exception cref="ArgumentNullException"><see cref="path"/> cannot be null</exception>
         /// <exception cref="ArgumentException"><see cref="path"/> does not support Secrets Manager prefix (/aws/reference/secretsmanager/)</exception>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
@@ -186,7 +184,7 @@ namespace Microsoft.Extensions.Configuration
             if (string.IsNullOrWhiteSpace(source.Path)) throw new ArgumentNullException(nameof(source.Path));
             if (source.AwsOptions != null) return builder.Add(source);
 
-            source.AwsOptions = builder.GetAwsOptions();
+            source.AwsOptions = AwsOptionsProvider.GetAwsOptions(builder);
             return builder.Add(source);
         }
 
@@ -199,28 +197,6 @@ namespace Microsoft.Extensions.Configuration
                 configurationSource.Optional = optional;
                 configurationSource.ReloadAfter = reloadAfter;
             };
-        }
-
-        private static AWSOptions GetAwsOptions(this IConfigurationBuilder builder)
-        {
-            if (builder.Properties.TryGetValue(AwsOptionsConfigurationKey, out var value) && value is AWSOptions existingOptions)
-            {
-                return existingOptions;
-            }
-
-            var config = builder.Build();
-            var newOptions = config.GetAWSOptions();
-
-            if (builder.Properties.ContainsKey(AwsOptionsConfigurationKey))
-            {
-                builder.Properties[AwsOptionsConfigurationKey] = newOptions;
-            }
-            else
-            {
-                builder.Properties.Add(AwsOptionsConfigurationKey, newOptions);
-            }
-
-            return newOptions;
         }
     }
 }

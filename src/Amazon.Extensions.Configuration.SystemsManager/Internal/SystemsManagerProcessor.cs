@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -13,23 +13,16 @@
  * permissions and limitations under the License.
  */
 
-using Amazon.Runtime;
 using Amazon.SimpleSystemsManagement;
 using Amazon.SimpleSystemsManagement.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 
 namespace Amazon.Extensions.Configuration.SystemsManager.Internal
 {
-    public interface ISystemsManagerProcessor
-    {
-        Task<IDictionary<string, string>> GetDataAsync();
-    }
-
     public class SystemsManagerProcessor : ISystemsManagerProcessor
     {
         private const string SecretsManagerPath = "/aws/reference/secretsmanager/";
@@ -38,6 +31,9 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
 
         public SystemsManagerProcessor(SystemsManagerConfigurationSource source)
         {
+            if (source.AwsOptions == null) throw new ArgumentNullException(nameof(source.AwsOptions));
+            if (source.Path == null) throw new ArgumentNullException(nameof(source.Path));
+            
             Source = source;
             Source.ParameterProcessor = Source.ParameterProcessor ?? new DefaultParameterProcessor();
         }
@@ -55,7 +51,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
             {
                 if (client is AmazonSimpleSystemsManagementClient impl)
                 {
-                    impl.BeforeRequestEvent += ServiceClientBeforeRequestEvent;
+                    impl.BeforeRequestEvent += ServiceClientAppender.ServiceClientBeforeRequestEvent;
                 }
 
                 var parameters = new List<Parameter>();
@@ -77,7 +73,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
             {
                 if (client is AmazonSimpleSystemsManagementClient impl)
                 {
-                    impl.BeforeRequestEvent += ServiceClientBeforeRequestEvent;
+                    impl.BeforeRequestEvent += ServiceClientAppender.ServiceClientBeforeRequestEvent;
                 }
 
                 var response = await client.GetParameterAsync(new GetParameterRequest { Name = Source.Path, WithDecryption = true }).ConfigureAwait(false);
@@ -109,17 +105,6 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
                     Value = parameterProcessor.GetValue(parameter, path)
                 })
                 .ToDictionary(parameter => parameter.Key, parameter => parameter.Value, StringComparer.OrdinalIgnoreCase);
-        }
-
-        private const string UserAgentHeader = "User-Agent";
-        private static readonly string AssemblyVersion = typeof(SystemsManagerProcessor).GetTypeInfo().Assembly.GetName().Version.ToString();
-
-        private static void ServiceClientBeforeRequestEvent(object sender, RequestEventArgs e)
-        {
-            if (e is WebServiceRequestEventArgs args && args.Headers.ContainsKey(UserAgentHeader))
-            {
-                args.Headers[UserAgentHeader] = args.Headers[UserAgentHeader] + " SSMConfigProvider/" + AssemblyVersion;
-            }
         }
     }
 }
