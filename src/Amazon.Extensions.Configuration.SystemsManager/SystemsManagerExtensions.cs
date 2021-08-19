@@ -34,12 +34,14 @@ namespace Microsoft.Extensions.Configuration
         /// <param name="path">The path that variable names must start with. The path will be removed from the variable names.</param>
         /// <param name="optional">Whether the AWS Systems Manager Parameters are optional.</param>
         /// <param name="reloadAfter">Initiate reload after TimeSpan</param>
+        /// <exception cref="ArgumentNullException"><see cref="builder"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="path"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="awsOptions"/> cannot be null</exception>
         /// <exception cref="ArgumentException"><see cref="path"/> does not support Secrets Manager prefix (/aws/reference/secretsmanager/)</exception>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
         public static IConfigurationBuilder AddSystemsManager(this IConfigurationBuilder builder, string path, AWSOptions awsOptions, bool optional, TimeSpan reloadAfter)
         {
+            if (builder == null) throw new ArgumentNullException(nameof(builder));
             if (path == null) throw new ArgumentNullException(nameof(path));
             if (awsOptions == null) throw new ArgumentNullException(nameof(awsOptions));
 
@@ -53,12 +55,14 @@ namespace Microsoft.Extensions.Configuration
         /// <param name="awsOptions"><see cref="AWSOptions"/> used to create an AWS Systems Manager Client connection</param>
         /// <param name="path">The path that variable names must start with. The path will be removed from the variable names.</param>
         /// <param name="optional">Whether the AWS Systems Manager Parameters are optional.</param>
+        /// <exception cref="ArgumentNullException"><see cref="builder"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="path"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="awsOptions"/> cannot be null</exception>
         /// <exception cref="ArgumentException"><see cref="path"/> does not support Secrets Manager prefix (/aws/reference/secretsmanager/)</exception>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
         public static IConfigurationBuilder AddSystemsManager(this IConfigurationBuilder builder, string path, AWSOptions awsOptions, bool optional)
         {
+            if (builder == null) throw new ArgumentNullException(nameof(builder));
             if (path == null) throw new ArgumentNullException(nameof(path));
             if (awsOptions == null) throw new ArgumentNullException(nameof(awsOptions));
 
@@ -72,12 +76,14 @@ namespace Microsoft.Extensions.Configuration
         /// <param name="awsOptions"><see cref="AWSOptions"/> used to create an AWS Systems Manager Client connection</param>
         /// <param name="path">The path that variable names must start with. The path will be removed from the variable names.</param>
         /// <param name="reloadAfter">Initiate reload after TimeSpan</param>
+        /// <exception cref="ArgumentNullException"><see cref="builder"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="path"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="awsOptions"/> cannot be null</exception>
         /// <exception cref="ArgumentException"><see cref="path"/> does not support Secrets Manager prefix (/aws/reference/secretsmanager/)</exception>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
         public static IConfigurationBuilder AddSystemsManager(this IConfigurationBuilder builder, string path, AWSOptions awsOptions, TimeSpan reloadAfter)
         {
+            if (builder == null) throw new ArgumentNullException(nameof(builder));
             if (path == null) throw new ArgumentNullException(nameof(path));
             if (awsOptions == null) throw new ArgumentNullException(nameof(awsOptions));
 
@@ -89,12 +95,14 @@ namespace Microsoft.Extensions.Configuration
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
         /// <param name="awsOptions"><see cref="AWSOptions"/> used to create an AWS Systems Manager Client connection</param>
         /// <param name="path">The path that variable names must start with. The path will be removed from the variable names.</param>
+        /// <exception cref="ArgumentNullException"><see cref="builder"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="path"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="awsOptions"/> cannot be null</exception>
         /// <exception cref="ArgumentException"><see cref="path"/> does not support Secrets Manager prefix (/aws/reference/secretsmanager/)</exception>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
         public static IConfigurationBuilder AddSystemsManager(this IConfigurationBuilder builder, string path, AWSOptions awsOptions)
         {
+            if (builder == null) throw new ArgumentNullException(nameof(builder));
             if (path == null) throw new ArgumentNullException(nameof(path));
             if (awsOptions == null) throw new ArgumentNullException(nameof(awsOptions));
 
@@ -108,11 +116,13 @@ namespace Microsoft.Extensions.Configuration
         /// <param name="path">The path that variable names must start with. The path will be removed from the variable names.</param>
         /// <param name="optional">Whether the AWS Systems Manager Parameters are optional.</param>
         /// <param name="reloadAfter">Initiate reload after TimeSpan</param>
+        /// <exception cref="ArgumentNullException"><see cref="builder"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="path"/> cannot be null</exception>
         /// <exception cref="ArgumentException"><see cref="path"/> does not support Secrets Manager prefix (/aws/reference/secretsmanager/)</exception>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
         public static IConfigurationBuilder AddSystemsManager(this IConfigurationBuilder builder, string path, bool optional, TimeSpan reloadAfter)
         {
+            if (builder == null) throw new ArgumentNullException(nameof(builder));
             if (path == null) throw new ArgumentNullException(nameof(path));
 
             return builder.AddSystemsManager(ConfigureSource(path, null, optional, reloadAfter));
@@ -124,11 +134,13 @@ namespace Microsoft.Extensions.Configuration
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
         /// <param name="path">The path that variable names must start with. The path will be removed from the variable names.</param>
         /// <param name="optional">Whether the AWS Systems Manager Parameters are optional.</param>
+        /// <exception cref="ArgumentNullException"><see cref="builder"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="path"/> cannot be null</exception>
         /// <exception cref="ArgumentException"><see cref="path"/> does not support Secrets Manager prefix (/aws/reference/secretsmanager/)</exception>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
         public static IConfigurationBuilder AddSystemsManager(this IConfigurationBuilder builder, string path, bool optional)
         {
+            if (builder == null) throw new ArgumentNullException(nameof(builder));
             if (path == null) throw new ArgumentNullException(nameof(path));
 
             return builder.AddSystemsManager(ConfigureSource(path, null, optional));
@@ -140,11 +152,13 @@ namespace Microsoft.Extensions.Configuration
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
         /// <param name="path">The path that variable names must start with. The path will be removed from the variable names.</param>
         /// <param name="reloadAfter">Initiate reload after TimeSpan</param>
+        /// <exception cref="ArgumentNullException"><see cref="builder"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="path"/> cannot be null</exception>
         /// <exception cref="ArgumentException"><see cref="path"/> does not support Secrets Manager prefix (/aws/reference/secretsmanager/)</exception>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
         public static IConfigurationBuilder AddSystemsManager(this IConfigurationBuilder builder, string path, TimeSpan reloadAfter)
         {
+            if (builder == null) throw new ArgumentNullException(nameof(builder));
             if (path == null) throw new ArgumentNullException(nameof(path));
 
             return builder.AddSystemsManager(ConfigureSource(path, null, reloadAfter: reloadAfter));
@@ -155,11 +169,13 @@ namespace Microsoft.Extensions.Configuration
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
         /// <param name="path">The path that variable names must start with. The path will be removed from the variable names.</param>
+        /// <exception cref="ArgumentNullException"><see cref="builder"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="path"/> cannot be null</exception>
         /// <exception cref="ArgumentException"><see cref="path"/> does not support Secrets Manager prefix (/aws/reference/secretsmanager/)</exception>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
         public static IConfigurationBuilder AddSystemsManager(this IConfigurationBuilder builder, string path)
         {
+            if (builder == null) throw new ArgumentNullException(nameof(builder));
             if (path == null) throw new ArgumentNullException(nameof(path));
 
             return builder.AddSystemsManager(ConfigureSource(path, null));
@@ -170,14 +186,15 @@ namespace Microsoft.Extensions.Configuration
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
         /// <param name="configureSource">Configures the source.</param>
+        /// <exception cref="ArgumentNullException"><see cref="builder"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="configureSource"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="configureSource"/>.<see cref="SystemsManagerConfigurationSource.Path"/> cannot be null</exception>
         /// <exception cref="ArgumentException"><see cref="configureSource"/>.<see cref="SystemsManagerConfigurationSource.Path"/> does not support Secrets Manager prefix (/aws/reference/secretsmanager/)</exception>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
         public static IConfigurationBuilder AddSystemsManager(this IConfigurationBuilder builder, Action<SystemsManagerConfigurationSource> configureSource)
         {
-            if (configureSource == null) throw new ArgumentNullException(nameof(configureSource));
             if (builder == null) throw new ArgumentNullException(nameof(builder));
+            if (configureSource == null) throw new ArgumentNullException(nameof(configureSource));
 
             var source = new SystemsManagerConfigurationSource();
             configureSource(source);
