@@ -51,7 +51,7 @@ public class Program
         WebHost.CreateDefaultBuilder(args)
             .ConfigureAppConfiguration(builder =>
             {
-                builder.AddAppConfig("AppConfigApplicationId", "AppConfigEnvironmentId", "AppConfigConfigurationProfileId");
+                builder.AddAppConfig("AppConfigApplicationId", "AppConfigEnvironmentId", "AppConfigConfigurationProfileId", , TimeSpan.FromSeconds(20));
             })
             .UseStartup<Startup>();
 }
@@ -69,7 +69,7 @@ namespace HostBuilderExample
             .ConfigureAppConfiguration((hostingContext, config) =>
             {
                 config.AddSystemsManager("/my-application/");
-                config.AddAppConfig("AppConfigApplicationId", "AppConfigEnvironmentId", "AppConfigConfigurationProfileId");
+                config.AddAppConfig("AppConfigApplicationId", "AppConfigEnvironmentId", "AppConfigConfigurationProfileId", TimeSpan.FromSeconds(20));
             })
             .ConfigureServices((sc) => { ... })
             .Build();
