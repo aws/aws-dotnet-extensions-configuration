@@ -37,7 +37,6 @@ namespace Microsoft.Extensions.Configuration
         /// <exception cref="ArgumentNullException"><see cref="builder"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="path"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="awsOptions"/> cannot be null</exception>
-        /// <exception cref="ArgumentException"><see cref="path"/> does not support Secrets Manager prefix (/aws/reference/secretsmanager/)</exception>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
         public static IConfigurationBuilder AddSystemsManager(this IConfigurationBuilder builder, string path, AWSOptions awsOptions, bool optional, TimeSpan reloadAfter)
         {
@@ -58,7 +57,6 @@ namespace Microsoft.Extensions.Configuration
         /// <exception cref="ArgumentNullException"><see cref="builder"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="path"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="awsOptions"/> cannot be null</exception>
-        /// <exception cref="ArgumentException"><see cref="path"/> does not support Secrets Manager prefix (/aws/reference/secretsmanager/)</exception>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
         public static IConfigurationBuilder AddSystemsManager(this IConfigurationBuilder builder, string path, AWSOptions awsOptions, bool optional)
         {
@@ -79,7 +77,6 @@ namespace Microsoft.Extensions.Configuration
         /// <exception cref="ArgumentNullException"><see cref="builder"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="path"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="awsOptions"/> cannot be null</exception>
-        /// <exception cref="ArgumentException"><see cref="path"/> does not support Secrets Manager prefix (/aws/reference/secretsmanager/)</exception>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
         public static IConfigurationBuilder AddSystemsManager(this IConfigurationBuilder builder, string path, AWSOptions awsOptions, TimeSpan reloadAfter)
         {
@@ -98,7 +95,6 @@ namespace Microsoft.Extensions.Configuration
         /// <exception cref="ArgumentNullException"><see cref="builder"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="path"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="awsOptions"/> cannot be null</exception>
-        /// <exception cref="ArgumentException"><see cref="path"/> does not support Secrets Manager prefix (/aws/reference/secretsmanager/)</exception>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
         public static IConfigurationBuilder AddSystemsManager(this IConfigurationBuilder builder, string path, AWSOptions awsOptions)
         {
@@ -118,7 +114,6 @@ namespace Microsoft.Extensions.Configuration
         /// <param name="reloadAfter">Initiate reload after TimeSpan</param>
         /// <exception cref="ArgumentNullException"><see cref="builder"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="path"/> cannot be null</exception>
-        /// <exception cref="ArgumentException"><see cref="path"/> does not support Secrets Manager prefix (/aws/reference/secretsmanager/)</exception>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
         public static IConfigurationBuilder AddSystemsManager(this IConfigurationBuilder builder, string path, bool optional, TimeSpan reloadAfter)
         {
@@ -136,7 +131,6 @@ namespace Microsoft.Extensions.Configuration
         /// <param name="optional">Whether the AWS Systems Manager Parameters are optional.</param>
         /// <exception cref="ArgumentNullException"><see cref="builder"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="path"/> cannot be null</exception>
-        /// <exception cref="ArgumentException"><see cref="path"/> does not support Secrets Manager prefix (/aws/reference/secretsmanager/)</exception>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
         public static IConfigurationBuilder AddSystemsManager(this IConfigurationBuilder builder, string path, bool optional)
         {
@@ -154,7 +148,6 @@ namespace Microsoft.Extensions.Configuration
         /// <param name="reloadAfter">Initiate reload after TimeSpan</param>
         /// <exception cref="ArgumentNullException"><see cref="builder"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="path"/> cannot be null</exception>
-        /// <exception cref="ArgumentException"><see cref="path"/> does not support Secrets Manager prefix (/aws/reference/secretsmanager/)</exception>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
         public static IConfigurationBuilder AddSystemsManager(this IConfigurationBuilder builder, string path, TimeSpan reloadAfter)
         {
@@ -171,7 +164,6 @@ namespace Microsoft.Extensions.Configuration
         /// <param name="path">The path that variable names must start with. The path will be removed from the variable names.</param>
         /// <exception cref="ArgumentNullException"><see cref="builder"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="path"/> cannot be null</exception>
-        /// <exception cref="ArgumentException"><see cref="path"/> does not support Secrets Manager prefix (/aws/reference/secretsmanager/)</exception>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
         public static IConfigurationBuilder AddSystemsManager(this IConfigurationBuilder builder, string path)
         {
@@ -189,7 +181,6 @@ namespace Microsoft.Extensions.Configuration
         /// <exception cref="ArgumentNullException"><see cref="builder"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="configureSource"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="configureSource"/>.<see cref="SystemsManagerConfigurationSource.Path"/> cannot be null</exception>
-        /// <exception cref="ArgumentException"><see cref="configureSource"/>.<see cref="SystemsManagerConfigurationSource.Path"/> does not support Secrets Manager prefix (/aws/reference/secretsmanager/)</exception>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
         public static IConfigurationBuilder AddSystemsManager(this IConfigurationBuilder builder, Action<SystemsManagerConfigurationSource> configureSource)
         {
