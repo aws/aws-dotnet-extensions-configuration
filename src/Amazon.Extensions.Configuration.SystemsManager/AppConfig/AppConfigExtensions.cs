@@ -37,6 +37,7 @@ namespace Microsoft.Extensions.Configuration
         /// <param name="awsOptions"><see cref="AWSOptions"/> used to create an AWS Systems Manager AppConfig Client connection</param>
         /// <param name="optional">Whether the AWS Systems Manager AppConfig is optional.</param>
         /// <param name="reloadAfter">Initiate reload after TimeSpan</param>
+        /// <exception cref="ArgumentNullException"><see cref="builder"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="applicationId"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="environmentId"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="configProfileId"/> cannot be null</exception>
@@ -44,6 +45,7 @@ namespace Microsoft.Extensions.Configuration
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
         public static IConfigurationBuilder AddAppConfig(this IConfigurationBuilder builder, string applicationId, string environmentId, string configProfileId, AWSOptions awsOptions, bool optional, TimeSpan? reloadAfter)
         {
+            if (builder == null) throw new ArgumentNullException(nameof(builder));
             if (applicationId == null) throw new ArgumentNullException(nameof(applicationId));
             if (environmentId == null) throw new ArgumentNullException(nameof(environmentId));
             if (configProfileId == null) throw new ArgumentNullException(nameof(configProfileId));
@@ -61,6 +63,7 @@ namespace Microsoft.Extensions.Configuration
         /// <param name="configProfileId">The AppConfig configuration profile id.</param>
         /// <param name="awsOptions"><see cref="AWSOptions"/> used to create an AWS Systems Manager AppConfig Client connection</param>
         /// <param name="optional">Whether the AWS Systems Manager AppConfig is optional.</param>
+        /// <exception cref="ArgumentNullException"><see cref="builder"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="applicationId"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="environmentId"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="configProfileId"/> cannot be null</exception>
@@ -68,6 +71,7 @@ namespace Microsoft.Extensions.Configuration
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
         public static IConfigurationBuilder AddAppConfig(this IConfigurationBuilder builder, string applicationId, string environmentId, string configProfileId, AWSOptions awsOptions, bool optional)
         {
+            if (builder == null) throw new ArgumentNullException(nameof(builder));
             if (applicationId == null) throw new ArgumentNullException(nameof(applicationId));
             if (environmentId == null) throw new ArgumentNullException(nameof(environmentId));
             if (configProfileId == null) throw new ArgumentNullException(nameof(configProfileId));
@@ -85,6 +89,7 @@ namespace Microsoft.Extensions.Configuration
         /// <param name="configProfileId">The AppConfig configuration profile id.</param>
         /// <param name="awsOptions"><see cref="AWSOptions"/> used to create an AWS Systems Manager AppConfig Client connection</param>
         /// <param name="reloadAfter">Initiate reload after TimeSpan</param>
+        /// <exception cref="ArgumentNullException"><see cref="builder"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="applicationId"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="environmentId"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="configProfileId"/> cannot be null</exception>
@@ -92,6 +97,7 @@ namespace Microsoft.Extensions.Configuration
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
         public static IConfigurationBuilder AddAppConfig(this IConfigurationBuilder builder, string applicationId, string environmentId, string configProfileId, AWSOptions awsOptions, TimeSpan? reloadAfter)
         {
+            if (builder == null) throw new ArgumentNullException(nameof(builder));
             if (applicationId == null) throw new ArgumentNullException(nameof(applicationId));
             if (environmentId == null) throw new ArgumentNullException(nameof(environmentId));
             if (configProfileId == null) throw new ArgumentNullException(nameof(configProfileId));
@@ -108,6 +114,7 @@ namespace Microsoft.Extensions.Configuration
         /// <param name="environmentId">The AppConfig environment id.</param>
         /// <param name="configProfileId">The AppConfig configuration profile id.</param>
         /// <param name="awsOptions"><see cref="AWSOptions"/> used to create an AWS Systems Manager AppConfig Client connection</param>
+        /// <exception cref="ArgumentNullException"><see cref="builder"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="applicationId"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="environmentId"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="configProfileId"/> cannot be null</exception>
@@ -115,6 +122,7 @@ namespace Microsoft.Extensions.Configuration
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
         public static IConfigurationBuilder AddAppConfig(this IConfigurationBuilder builder, string applicationId, string environmentId, string configProfileId, AWSOptions awsOptions)
         {
+            if (builder == null) throw new ArgumentNullException(nameof(builder));
             if (applicationId == null) throw new ArgumentNullException(nameof(applicationId));
             if (environmentId == null) throw new ArgumentNullException(nameof(environmentId));
             if (configProfileId == null) throw new ArgumentNullException(nameof(configProfileId));
@@ -132,12 +140,14 @@ namespace Microsoft.Extensions.Configuration
         /// <param name="configProfileId">The AppConfig configuration profile id.</param>
         /// <param name="optional">Whether the AWS Systems Manager AppConfig is optional.</param>
         /// <param name="reloadAfter">Initiate reload after TimeSpan</param>
+        /// <exception cref="ArgumentNullException"><see cref="builder"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="applicationId"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="environmentId"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="configProfileId"/> cannot be null</exception>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
         public static IConfigurationBuilder AddAppConfig(this IConfigurationBuilder builder, string applicationId, string environmentId, string configProfileId, bool optional, TimeSpan? reloadAfter)
         {
+            if (builder == null) throw new ArgumentNullException(nameof(builder));
             if (applicationId == null) throw new ArgumentNullException(nameof(applicationId));
             if (environmentId == null) throw new ArgumentNullException(nameof(environmentId));
             if (configProfileId == null) throw new ArgumentNullException(nameof(configProfileId));
@@ -153,12 +163,14 @@ namespace Microsoft.Extensions.Configuration
         /// <param name="environmentId">The AppConfig environment id.</param>
         /// <param name="configProfileId">The AppConfig configuration profile id.</param>
         /// <param name="reloadAfter">Initiate reload after TimeSpan</param>
+        /// <exception cref="ArgumentNullException"><see cref="builder"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="applicationId"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="environmentId"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="configProfileId"/> cannot be null</exception>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
         public static IConfigurationBuilder AddAppConfig(this IConfigurationBuilder builder, string applicationId, string environmentId, string configProfileId, TimeSpan? reloadAfter)
         {
+            if (builder == null) throw new ArgumentNullException(nameof(builder));
             if (applicationId == null) throw new ArgumentNullException(nameof(applicationId));
             if (environmentId == null) throw new ArgumentNullException(nameof(environmentId));
             if (configProfileId == null) throw new ArgumentNullException(nameof(configProfileId));
@@ -174,12 +186,14 @@ namespace Microsoft.Extensions.Configuration
         /// <param name="environmentId">The AppConfig environment id.</param>
         /// <param name="configProfileId">The AppConfig configuration profile id.</param>
         /// <param name="optional">Whether the AWS Systems Manager AppConfig is optional.</param>
+        /// <exception cref="ArgumentNullException"><see cref="builder"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="applicationId"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="environmentId"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="configProfileId"/> cannot be null</exception>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
         public static IConfigurationBuilder AddAppConfig(this IConfigurationBuilder builder, string applicationId, string environmentId, string configProfileId, bool optional)
         {
+            if (builder == null) throw new ArgumentNullException(nameof(builder));
             if (applicationId == null) throw new ArgumentNullException(nameof(applicationId));
             if (environmentId == null) throw new ArgumentNullException(nameof(environmentId));
             if (configProfileId == null) throw new ArgumentNullException(nameof(configProfileId));
@@ -194,12 +208,14 @@ namespace Microsoft.Extensions.Configuration
         /// <param name="applicationId">The AppConfig application id.</param>
         /// <param name="environmentId">The AppConfig environment id.</param>
         /// <param name="configProfileId">The AppConfig configuration profile id.</param>
+        /// <exception cref="ArgumentNullException"><see cref="builder"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="applicationId"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="environmentId"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="configProfileId"/> cannot be null</exception>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
         public static IConfigurationBuilder AddAppConfig(this IConfigurationBuilder builder, string applicationId, string environmentId, string configProfileId)
         {
+            if (builder == null) throw new ArgumentNullException(nameof(builder));
             if (applicationId == null) throw new ArgumentNullException(nameof(applicationId));
             if (environmentId == null) throw new ArgumentNullException(nameof(environmentId));
             if (configProfileId == null) throw new ArgumentNullException(nameof(configProfileId));
@@ -212,6 +228,7 @@ namespace Microsoft.Extensions.Configuration
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
         /// <param name="source">Configuration source.</param>
+        /// <exception cref="ArgumentNullException"><see cref="builder"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="source"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="source"/>.<see cref="AppConfigConfigurationSource.ApplicationId"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="source"/>.<see cref="AppConfigConfigurationSource.EnvironmentId"/> cannot be null</exception>
