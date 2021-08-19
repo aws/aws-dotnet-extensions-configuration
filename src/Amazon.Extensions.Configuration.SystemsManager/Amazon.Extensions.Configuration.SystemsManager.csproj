@@ -47,7 +47,7 @@
     <PackageReference Include="AWSSDK.AppConfig" Version="3.7.0.52" />
     <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.7.1" />
     <PackageReference Include="AWSSDK.SimpleSystemsManagement" Version="3.7.4.11" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.18" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.1.1" />
     <PackageReference Include="System.Text.Json" Version="5.0.2" />
   </ItemGroup>
 
