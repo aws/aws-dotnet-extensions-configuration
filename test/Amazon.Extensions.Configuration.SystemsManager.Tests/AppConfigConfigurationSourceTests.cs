@@ -13,35 +13,31 @@
  * permissions and limitations under the License.
  */
 
+using Amazon.Extensions.Configuration.SystemsManager.AppConfig;
 using Amazon.Extensions.NETCore.Setup;
 using Microsoft.Extensions.Configuration;
 using Xunit;
 
 namespace Amazon.Extensions.Configuration.SystemsManager.Tests
 {
-    public class SystemsManagerConfigurationSourceTests
+    public class AppConfigConfigurationSourceTests
     {
         [Fact]
-        public void BuildSuccessTest()
+        public void BuildShouldReturnSystemsManagerConfigurationProvider()
         {
-            var source = new SystemsManagerConfigurationSource
+            var source = new AppConfigConfigurationSource
             {
-                AwsOptions = new AWSOptions(),
-                Path = "/temp/"
+                ApplicationId = "appId",
+                EnvironmentId = "envId",
+                ConfigProfileId = "profileId",
+                ClientId = System.Guid.NewGuid().ToString(),
+                AwsOptions = new AWSOptions()
             };
             var builder = new ConfigurationBuilder();
 
             var result = source.Build(builder);
 
             Assert.IsType<SystemsManagerConfigurationProvider>(result);
-        }
-
-        [Fact]
-        public void FiltersInitializedTest()
-        {
-            var source = new SystemsManagerConfigurationSource();
-
-            Assert.NotNull(source.Filters);
         }
     }
 }

@@ -1,3 +1,11 @@
+﻿### Release 2021-08-18
+* **Amazon.Extensions.Configuration.SystemsManager (3.0.0)**
+    * Merged PR [#82](https://github.com/aws/aws-dotnet-extensions-configuration/pull/82) Adding [AWS AppConfig](https://docs.aws.amazon.com/appconfig/latest/userguide/what-is-appconfig.html) support. Thanks [Michał Górski](https://github.com/mgorski-mg)
+
+### Release 2021-07-23
+* **Amazon.Extensions.Configuration.SystemsManager (2.1.1)**
+    * Update AWSSDK.Extensions.NETCore.Setup and AWSSDK.SimpleSystemsManagement package references for SSO credential support. 
+
 ### Release 2021-03-30
 * **Amazon.Extensions.Configuration.SystemsManager (2.1.0)**
     * Update AWS SDK dependencies to version 3.7

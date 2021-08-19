@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -45,17 +45,17 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
 
         public static TheoryData<Func<IConfigurationBuilder, IConfigurationBuilder>, Type, string> SourceExtensionData => new TheoryData<Func<IConfigurationBuilder, IConfigurationBuilder>, Type, string>
         {
-            {builder => builder.AddSystemsManager(CreateSource(null, null, false, null, null)), typeof(ArgumentNullException), "Parameter name: Path"},
-            {builder => builder.AddSystemsManager(CreateSource(null, null, true, null, null)), typeof(ArgumentNullException), "Parameter name: Path"},
+            {builder => builder.AddSystemsManager(CreateSource(null, null, false, null, null)), typeof(ArgumentNullException), "Path"},
+            {builder => builder.AddSystemsManager(CreateSource(null, null, true, null, null)), typeof(ArgumentNullException), "Path"},
             {builder => builder.AddSystemsManager(CreateSource("/path", null, false, null, null)), null, null},
             {builder => builder.AddSystemsManager(CreateSource("/aws/reference/secretsmanager/somevalue", null, false, null, null)), null, null}
         };
 
         public static TheoryData<Func<IConfigurationBuilder, IConfigurationBuilder>, Type, string> WithAWSOptionsExtensionData => new TheoryData<Func<IConfigurationBuilder, IConfigurationBuilder>, Type, string>
         {
-            {builder => builder.AddSystemsManager(null, null), typeof(ArgumentNullException), "Parameter name: path"},
-            {builder => builder.AddSystemsManager("/path", null), typeof(ArgumentNullException), "Parameter name: awsOptions"},
-            {builder => builder.AddSystemsManager(null, new AWSOptions()), typeof(ArgumentNullException), "Parameter name: path"},
+            {builder => builder.AddSystemsManager(null, null), typeof(ArgumentNullException), "path"},
+            {builder => builder.AddSystemsManager("/path", null), typeof(ArgumentNullException), "awsOptions"},
+            {builder => builder.AddSystemsManager(null, new AWSOptions()), typeof(ArgumentNullException), "path"},
             {builder => builder.AddSystemsManager("/aws/reference/secretsmanager/somevalue", new AWSOptions()), null, null},
             {builder => builder.AddSystemsManager("/path", new AWSOptions(), true), null, null},
             {builder => builder.AddSystemsManager("/path", new AWSOptions(), false), null, null},
@@ -67,7 +67,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
 
         public static TheoryData<Func<IConfigurationBuilder, IConfigurationBuilder>, Type, string> NoAWSOptionsExtensionData => new TheoryData<Func<IConfigurationBuilder, IConfigurationBuilder>, Type, string>
         {
-            {builder => builder.AddSystemsManager(null as string), typeof(ArgumentNullException), "Parameter name: path"},
+            {builder => builder.AddSystemsManager(null as string), typeof(ArgumentNullException), "path"},
             {builder => builder.AddSystemsManager("/path"), null, null},
             {builder => builder.AddSystemsManager("/aws/reference/secretsmanager/somevalue"), null, null},
             {builder => builder.AddSystemsManager("/path", true), null, null},

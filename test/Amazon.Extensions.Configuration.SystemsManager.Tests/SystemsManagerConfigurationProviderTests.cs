@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@
  */
 
 using System.Collections.Generic;
+using Amazon.Extensions.Configuration.SystemsManager.AppConfig;
 using Amazon.Extensions.Configuration.SystemsManager.Internal;
 using Amazon.Extensions.NETCore.Setup;
 using Amazon.SimpleSystemsManagement.Model;
@@ -24,54 +25,91 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
 {
     public class SystemsManagerConfigurationProviderTests
     {
-        private readonly List<Parameter> _parameters = new List<Parameter>
+        private readonly Mock<ISystemsManagerProcessor> _systemsManagerProcessorMock = new Mock<ISystemsManagerProcessor>();
+
+        [Fact]
+        public void LoadForParameterStoreShouldReturnProperParameters()
         {
-            new Parameter {Name = "/start/path/p1/p2-1", Value = "p1:p2-1"},
-            new Parameter {Name = "/start/path/p1/p2-2", Value = "p1:p2-2"},
-            new Parameter {Name = "/start/path/p1/p2/p3-1", Value = "p1:p2:p3-1"},
-            new Parameter {Name = "/start/path/p1/p2/p3-2", Value = "p1:p2:p3-2"}
-        };
-
-        private const string Path = "/start/path";
-
-        private readonly SystemsManagerConfigurationProvider _provider;
-        private readonly Mock<ISystemsManagerProcessor> _systemsManagerProcessorMock;
-        private readonly Mock<IParameterProcessor> _parameterProcessorMock;
-
-        public SystemsManagerConfigurationProviderTests()
-        {
-            _parameterProcessorMock = new Mock<IParameterProcessor>();
-            _systemsManagerProcessorMock = new Mock<ISystemsManagerProcessor>();
-            var source = new SystemsManagerConfigurationSource
+            var parameters = new List<Parameter>
             {
-                ParameterProcessor = _parameterProcessorMock.Object,
-                AwsOptions = new AWSOptions(),
-                Path = Path
+                new Parameter {Name = "/start/path/p1/p2-1", Value = "p1:p2-1"},
+                new Parameter {Name = "/start/path/p1/p2-2", Value = "p1:p2-2"},
+                new Parameter {Name = "/start/path/p1/p2/p3-1", Value = "p1:p2:p3-1"},
+                new Parameter {Name = "/start/path/p1/p2/p3-2", Value = "p1:p2:p3-2"}
             };
-            _provider = new SystemsManagerConfigurationProvider(source, _systemsManagerProcessorMock.Object);
+            var parameterProcessorMock = new Mock<IParameterProcessor>();
+            var provider = ConfigureParameterStoreConfigurationProvider(parameterProcessorMock, parameters);
+
+            provider.Load();
+
+            foreach (var parameter in parameters)
+            {
+                Assert.True(provider.TryGet(parameter.Value, out _));
+            }
+
+            parameterProcessorMock.VerifyAll();
         }
 
         [Fact]
-        public void LoadTest()
+        public void LoadForAppConfigShouldReturnProperValues()
         {
-            foreach (var parameter in _parameters)
+            var values = new Dictionary<string, string>
             {
-                _parameterProcessorMock.Setup(processor => processor.IncludeParameter(parameter, Path)).Returns(true);
-                _parameterProcessorMock.Setup(processor => processor.GetKey(parameter, Path)).Returns(parameter.Value);
+                { "testKey", "testValue" },
+                { "testKey2", "testValue2" },
+                { "testKey3", "testValue3" },
+                { "testKey4", "testValue4" },
+                { "testKey5", "testValue5" }
+            };
+            var provider = ConfigureAppConfigConfigurationProvider(values);
+
+            provider.Load();
+
+            foreach (var parameter in values)
+            {
+                Assert.True(provider.TryGet(parameter.Key, out _));
+            }
+        }
+
+        private SystemsManagerConfigurationProvider ConfigureParameterStoreConfigurationProvider(Mock<IParameterProcessor> parameterProcessorMock, IReadOnlyCollection<Parameter> parameters)
+        {
+            const string path = "/start/path";
+            var source = new SystemsManagerConfigurationSource
+            {
+                ParameterProcessor = parameterProcessorMock.Object,
+                AwsOptions = new AWSOptions(),
+                Path = path
+            };
+            var provider = new SystemsManagerConfigurationProvider(source, _systemsManagerProcessorMock.Object);
+
+            foreach (var parameter in parameters)
+            {
+                parameterProcessorMock.Setup(processor => processor.IncludeParameter(parameter, path)).Returns(true);
+                parameterProcessorMock.Setup(processor => processor.GetKey(parameter, path)).Returns(parameter.Value);
             }
 
-            var getData = SystemsManagerProcessor.ProcessParameters(_parameters, Path, _parameterProcessorMock.Object);
+            var getData = SystemsManagerProcessor.ProcessParameters(parameters, path, parameterProcessorMock.Object);
 
             _systemsManagerProcessorMock.Setup(p => p.GetDataAsync()).ReturnsAsync(() => getData);
 
-            _provider.Load();
+            return provider;
+        }
 
-            foreach (var parameter in _parameters)
+        private SystemsManagerConfigurationProvider ConfigureAppConfigConfigurationProvider(IDictionary<string, string> values)
+        {
+            var source = new AppConfigConfigurationSource
             {
-                Assert.True(_provider.TryGet(parameter.Value, out _));
-            }
+                ApplicationId = "appId",
+                EnvironmentId = "envId",
+                ConfigProfileId = "profileId",
+                AwsOptions = new AWSOptions()
+            };
 
-            _parameterProcessorMock.VerifyAll();
+            _systemsManagerProcessorMock.Setup(p => p.GetDataAsync()).ReturnsAsync(() => values);
+            
+            var provider = new SystemsManagerConfigurationProvider(source, _systemsManagerProcessorMock.Object);
+
+            return provider;
         }
     }
 }
