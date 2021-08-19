@@ -31,6 +31,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
 
         public SystemsManagerProcessor(SystemsManagerConfigurationSource source)
         {
+            if (source == null) throw new ArgumentNullException(nameof(source));
             if (source.AwsOptions == null) throw new ArgumentNullException(nameof(source.AwsOptions));
             if (source.Path == null) throw new ArgumentNullException(nameof(source.Path));
             

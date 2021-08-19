@@ -13,6 +13,7 @@
  * permissions and limitations under the License.
  */
 
+using System;
 using Amazon.Extensions.NETCore.Setup;
 using Microsoft.Extensions.Configuration;
 
@@ -24,6 +25,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
         
         public static AWSOptions GetAwsOptions(IConfigurationBuilder builder)
         {
+            if (builder == null) throw new ArgumentNullException(nameof(builder));
             if (builder.Properties.TryGetValue(AwsOptionsConfigurationKey, out var value) && value is AWSOptions existingOptions)
             {
                 return existingOptions;

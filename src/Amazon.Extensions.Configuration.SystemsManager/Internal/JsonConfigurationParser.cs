@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Text.Json;
 using Microsoft.Extensions.Configuration;
 
@@ -17,13 +18,20 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
         private readonly Dictionary<string, string> _data = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         private readonly Stack<string> _paths = new Stack<string>();
 
-        public static IDictionary<string, string> Parse(string input)
+        public static IDictionary<string, string> Parse(string input) => new JsonConfigurationParser().ParseString(input);
+
+        public static IDictionary<string, string> Parse(Stream input)
         {
-            return new JsonConfigurationParser().ParseString(input);
+            using (var reader = new StreamReader(input))
+            {
+                return Parse(reader.ReadToEnd());
+            }
         }
 
         private IDictionary<string, string> ParseString(string input)
         {
+            _data.Clear();
+
             var jsonDocumentOptions = new JsonDocumentOptions
             {
                 CommentHandling = JsonCommentHandling.Skip,

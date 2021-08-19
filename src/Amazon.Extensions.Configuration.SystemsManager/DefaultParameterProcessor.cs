@@ -32,12 +32,15 @@ namespace Amazon.Extensions.Configuration.SystemsManager
 
         public virtual string GetKey(Parameter parameter, string path)
         {
+            if (parameter == null) throw new ArgumentNullException(nameof(parameter));
+            if (path == null) throw new ArgumentNullException(nameof(path));
+
             var name = parameter.Name.StartsWith(path, StringComparison.OrdinalIgnoreCase) 
                 ? parameter.Name.Substring(path.Length) 
                 : parameter.Name;
             return name.TrimStart('/').Replace("/", KeyDelimiter);
         }
 
-        public virtual string GetValue(Parameter parameter, string path) => parameter.Value;
+        public virtual string GetValue(Parameter parameter, string path) => parameter?.Value;
     }
 }

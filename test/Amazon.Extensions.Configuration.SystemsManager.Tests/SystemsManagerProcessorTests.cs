@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Amazon.Extensions.Configuration.SystemsManager.Internal;
 using Amazon.SimpleSystemsManagement.Model;
 using Moq;

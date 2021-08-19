@@ -219,6 +219,7 @@ namespace Microsoft.Extensions.Configuration
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
         public static IConfigurationBuilder AddAppConfig(this IConfigurationBuilder builder, AppConfigConfigurationSource source)
         {
+            if (builder == null) throw new ArgumentNullException(nameof(builder));
             if (source == null) throw new ArgumentNullException(nameof(source));
             if (source.ApplicationId == null) throw new ArgumentNullException(nameof(source.ApplicationId));
             if (source.EnvironmentId == null) throw new ArgumentNullException(nameof(source.EnvironmentId));

@@ -64,7 +64,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Integ
 
         private void seedTestData()
         {
-            bool success = false;
+            var success = false;
             using (var client = AWSOptions.CreateServiceClient<IAmazonSimpleSystemsManagement>())
             {
                 var tasks = new List<Task>();
@@ -83,9 +83,9 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Integ
                 // due to eventual consistency, wait for 5 sec increments for 3 times to verify
                 // test data is correctly set before executing tests.
                 const int tries = 3;
-                for (int i = 0; i < tries; i++)
+                for (var i = 0; i < tries; i++)
                 {
-                    int count = 0;
+                    var count = 0;
                     GetParametersByPathResponse response;
                     do
                     {

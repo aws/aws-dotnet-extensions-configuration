@@ -30,6 +30,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.AppConfig
 
         public AppConfigProcessor(AppConfigConfigurationSource source)
         {
+            if (source == null) throw new ArgumentNullException(nameof(source));
             if (source.ApplicationId == null) throw new ArgumentNullException(nameof(source.ApplicationId));
             if (source.EnvironmentId == null) throw new ArgumentNullException(nameof(source.EnvironmentId));
             if (source.ConfigProfileId == null) throw new ArgumentNullException(nameof(source.ConfigProfileId));
