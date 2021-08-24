@@ -3,7 +3,7 @@
 # AWS .NET Configuration Extension for Systems Manager
 [![nuget](https://img.shields.io/nuget/v/Amazon.Extensions.Configuration.SystemsManager.svg)](https://www.nuget.org/packages/Amazon.Extensions.Configuration.SystemsManager/)
 
-[Amazon.Extensions.Configuration.SystemsManager](https://www.nuget.org/packages/Amazon.Extensions.Configuration.SystemsManager/) simplifies using [AWS SSM](https://aws.amazon.com/systems-manager/)'s [Parameter Store](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-paramstore.html) and [AppConfig](https://docs.aws.amazon.com/appconfig/latest/userguide/what-is-appconfig.html) as a source for configuration information for .NET Core applications.  This project was contributed by [@KenHundley](https://github.com/KenHundley) and [@MichalGorski](https://github.com/mgorski-mg).
+[Amazon.Extensions.Configuration.SystemsManager](https://www.nuget.org/packages/Amazon.Extensions.Configuration.SystemsManager/) simplifies using [AWS SSM's](https://aws.amazon.com/systems-manager) [Parameter Store](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-paramstore.html) and [AppConfig](https://docs.aws.amazon.com/appconfig/latest/userguide/what-is-appconfig.html) as a source for configuration information for .NET Core applications.  This project was contributed by [@KenHundley](https://github.com/KenHundley) and [@MichalGorski](https://github.com/mgorski-mg).
 
 The library introduces the following dependencies:
 
@@ -17,7 +17,7 @@ The library introduces the following dependencies:
 Follow the examples below to see how the library can be integrated into your application.  This extension adheres to the same practices and conventions of [Configuration in ASP.NET Core](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-2.1).
 
 ## ASP.NET Core Example
-One of the common use cases for this library is to pull configuration from Parameter Store.  You can easily add this functionality by adding 1 line of code:
+One of the common use cases for this library is to pull configuration from Parameter Store.  You can easily add this functionality by adding 1 line of code.
 
 ```csharp
 public class Program
@@ -37,7 +37,7 @@ public class Program
 }
 ```
 
-Second possibility is to pull configuration from AppConfig.  You can easily add this functionality by adding 1 line of code:
+Second possibility is to pull configuration from AppConfig.  You can easily add this functionality by adding 1 line of code.
 
 ```csharp
 public class Program
@@ -51,7 +51,7 @@ public class Program
         WebHost.CreateDefaultBuilder(args)
             .ConfigureAppConfiguration(builder =>
             {
-                builder.AddAppConfig("AppConfigApplicationId", "AppConfigEnvironmentId", "AppConfigConfigurationProfileId", , TimeSpan.FromSeconds(20));
+                builder.AddAppConfig("AppConfigApplicationId", "AppConfigEnvironmentId", "AppConfigConfigurationProfileId", TimeSpan.FromSeconds(20));
             })
             .UseStartup<Startup>();
 }
@@ -79,10 +79,47 @@ namespace HostBuilderExample
 }
 ```
 
+## AWS Lambda Example
+
+In Lambda you don't need `Host`, but you can use `ConfigurationBuilder` to retrieve the configuration from Parameter Store or AppConfig.
+
+For AppConfig in Lambda there is special implementation `AddAppConfigForLambda` which uses [Lambda Extension](https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-integration-lambda-extensions.html).
+
+Very important!! If you want to use AppConfig, remember to add proper [Lambda Extension](https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-integration-lambda-extensions.html) to your AWS Lambda.
+
+```csharp
+var configurations = new ConfigurationBuilder()
+                        .AddSystemsManager("/my-application/")
+                        .AddAppConfigForLambda("AppConfigApplicationId", "AppConfigEnvironmentId", "AppConfigConfigurationProfileId", TimeSpan.FromSeconds(20))
+                        .Build();
+```
+
+# Config reloading
+
+The `reloadAfter` parameter on `AddSystemsManager()`, `AddAppConfig()` and `AddAppConfigForLambda()` enables automatic reloading of configuration data from Parameter Store or AppConfig as a background task.
+
+## Parameter Store config reloading in AWS Lambda
+
+In AWS Lambda, background tasks are paused after processing a Lambda event. This could disrupt the provider from retrieving the latest configuration data from Parameter Store. To ensure the reload is performed within a Lambda event, we recommend calling the extension method `WaitForSystemsManagerReloadToComplete` from the `IConfiguration` object in your Lambda function. This method will immediately return unless a reload is currently being performed.
+
+```csharp
+using Amazon.Extensions.Configuration.SystemsManager
+
+...
+
+var configurations = new ConfigurationBuilder()
+                         .AddSystemsManager(IntegTestFixture.ParameterPrefix, fixture.AWSOptions);
+                         .Build();
+
+...
+
+configurations.WaitForSystemsManagerReloadToComplete(TimeSpan.FromSeconds(5));
+```
+
 ## Samples
 
 ### Custom ParameterProcessor Sample
-Example of using a custom `IParameterProcessor` which provides a way to store and retreive `null` values. Since AWS Parameter Store params are string literals, there is no way to store a `null` value by default.
+Example of using a custom `IParameterProcessor` which provides a way to store and retrieve `null` values. Since AWS Parameter Store params are string literals, there is no way to store a `null` value by default.
 
 ```csharp
 namespace CustomParameterProcessorExample
@@ -120,30 +157,6 @@ namespace CustomParameterProcessorExample
 ```
 
 For more complete examples, take a look at sample projects available in [samples directory](https://github.com/aws/aws-dotnet-extensions-configuration/tree/master/samples).
-
-# Reloading in AWS Lambda
-
-The `reloadAfter` parameter on `AddSystemsManager()` and `AddAppConfig()` enables automatic reloading of configuration data from Parameter Store or AppConfig as a background task.
-
-## Reloading in AWS Lambda
-
-In AWS Lambda, background tasks are paused after processing a Lambda event. This could disrupt the provider from retrieving the latest configuration data from Systems Manager. To ensure the reload is performed within a Lambda event, we recommend calling the extension method `WaitForSystemsManagerReloadToComplete` from the `IConfiguration` object in your Lambda function. This method will immediately return unless a reload is currently being performed. See the example below:
-
-```csharp
-using Amazon.Extensions.Configuration.SystemsManager
-
-...
-
-var configurationBuilder = new ConfigurationBuilder();
-configurationBuilder.AddSystemsManager(IntegTestFixture.ParameterPrefix, fixture.AWSOptions);
-var configurations = configurationBuilder.Build();
-
-...
-
-configurations.WaitForSystemsManagerReloadToComplete(TimeSpan.FromSeconds(5));
-```
-
-For AppConfig in Lambda you should use [Lambda Extension](https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-integration-lambda-extensions.html).
 
 # Configuring Systems Manager Client
 
