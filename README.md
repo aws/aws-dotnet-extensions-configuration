@@ -85,7 +85,7 @@ In Lambda you don't need `Host`, but you can use `ConfigurationBuilder` to retri
 
 For AppConfig in Lambda there is special implementation `AddAppConfigForLambda` which uses [Lambda Extension](https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-integration-lambda-extensions.html).
 
-Very important!! If you want to use AppConfig, remember to add proper [Lambda Extension](https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-integration-lambda-extensions.html) to your AWS Lambda.
+Very important!! If you want to use AppConfig, remember to add proper [Lambda Extension](https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-integration-lambda-extensions.html) and required environment variables to your AWS Lambda.
 
 ```csharp
 var configurations = new ConfigurationBuilder()
