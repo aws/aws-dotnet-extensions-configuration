@@ -29,7 +29,7 @@ namespace Microsoft.Extensions.Configuration
     {
         /// <summary>
         /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from AWS Systems Manager AppConfig.
-        /// For Lambda it uses Lambda Layer to retrieve config according to the <a href="https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-integration-lambda-extensions.html">documentation</a>.
+        /// For AWS Lambda it uses Lambda Extension to retrieve config according to the <a href="https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-integration-lambda-extensions.html">documentation</a>.
         /// Remember to add proper Layer to your AWS Lambda.
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
@@ -38,7 +38,7 @@ namespace Microsoft.Extensions.Configuration
         /// <param name="configProfileId">The AppConfig configuration profile id.</param>
         /// <param name="awsOptions"><see cref="AWSOptions"/> used to create an AWS Systems Manager AppConfig Client connection</param>
         /// <param name="optional">Whether the AWS Systems Manager AppConfig is optional.</param>
-        /// <param name="reloadAfter">Initiate reload after TimeSpan</param>
+        /// <param name="reloadAfter">Initiate reload after TimeSpan. Only needed when you are calling this method in the AWS Lambda Handler class constructor.</param>
         /// <exception cref="ArgumentNullException"><see cref="applicationId"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="environmentId"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="configProfileId"/> cannot be null</exception>
@@ -56,7 +56,7 @@ namespace Microsoft.Extensions.Configuration
 
         /// <summary>
         /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from AWS Systems Manager AppConfig.
-        /// For Lambda it uses Lambda Layer to retrieve config according to the <a href="https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-integration-lambda-extensions.html">documentation</a>.
+        /// For AWS Lambda it uses Lambda Extension to retrieve config according to the <a href="https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-integration-lambda-extensions.html">documentation</a>.
         /// Remember to add proper Layer to your AWS Lambda.
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
@@ -82,7 +82,7 @@ namespace Microsoft.Extensions.Configuration
 
         /// <summary>
         /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from AWS Systems Manager AppConfig.
-        /// For Lambda it uses Lambda Layer to retrieve config according to the <a href="https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-integration-lambda-extensions.html">documentation</a>.
+        /// For AWS Lambda it uses Lambda Extension to retrieve config according to the <a href="https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-integration-lambda-extensions.html">documentation</a>.
         /// Remember to add proper Layer to your AWS Lambda.
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
@@ -90,7 +90,7 @@ namespace Microsoft.Extensions.Configuration
         /// <param name="environmentId">The AppConfig environment id.</param>
         /// <param name="configProfileId">The AppConfig configuration profile id.</param>
         /// <param name="awsOptions"><see cref="AWSOptions"/> used to create an AWS Systems Manager AppConfig Client connection</param>
-        /// <param name="reloadAfter">Initiate reload after TimeSpan</param>
+        /// <param name="reloadAfter">Initiate reload after TimeSpan. Only needed when you are calling this method in the AWS Lambda Handler class constructor.</param>
         /// <exception cref="ArgumentNullException"><see cref="applicationId"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="environmentId"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="configProfileId"/> cannot be null</exception>
@@ -108,7 +108,7 @@ namespace Microsoft.Extensions.Configuration
 
         /// <summary>
         /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from AWS Systems Manager AppConfig.
-        /// For Lambda it uses Lambda Layer to retrieve config according to the <a href="https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-integration-lambda-extensions.html">documentation</a>.
+        /// For AWS Lambda it uses Lambda Extension to retrieve config according to the <a href="https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-integration-lambda-extensions.html">documentation</a>.
         /// Remember to add proper Layer to your AWS Lambda.
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
@@ -133,7 +133,7 @@ namespace Microsoft.Extensions.Configuration
 
         /// <summary>
         /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from AWS Systems Manager AppConfig.
-        /// For Lambda it uses Lambda Layer to retrieve config according to the <a href="https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-integration-lambda-extensions.html">documentation</a>.
+        /// For AWS Lambda it uses Lambda Extension to retrieve config according to the <a href="https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-integration-lambda-extensions.html">documentation</a>.
         /// Remember to add proper Layer to your AWS Lambda.
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
@@ -141,7 +141,7 @@ namespace Microsoft.Extensions.Configuration
         /// <param name="environmentId">The AppConfig environment id.</param>
         /// <param name="configProfileId">The AppConfig configuration profile id.</param>
         /// <param name="optional">Whether the AWS Systems Manager AppConfig is optional.</param>
-        /// <param name="reloadAfter">Initiate reload after TimeSpan</param>
+        /// <param name="reloadAfter">Initiate reload after TimeSpan. Only needed when you are calling this method in the AWS Lambda Handler class constructor.</param>
         /// <exception cref="ArgumentNullException"><see cref="applicationId"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="environmentId"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="configProfileId"/> cannot be null</exception>
@@ -157,14 +157,14 @@ namespace Microsoft.Extensions.Configuration
 
         /// <summary>
         /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from AWS Systems Manager AppConfig.
-        /// For Lambda it uses Lambda Layer to retrieve config according to the <a href="https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-integration-lambda-extensions.html">documentation</a>.
+        /// For AWS Lambda it uses Lambda Extension to retrieve config according to the <a href="https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-integration-lambda-extensions.html">documentation</a>.
         /// Remember to add proper Layer to your AWS Lambda.
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
         /// <param name="applicationId">The AppConfig application id.</param>
         /// <param name="environmentId">The AppConfig environment id.</param>
         /// <param name="configProfileId">The AppConfig configuration profile id.</param>
-        /// <param name="reloadAfter">Initiate reload after TimeSpan</param>
+        /// <param name="reloadAfter">Initiate reload after TimeSpan. Only needed when you are calling this method in the AWS Lambda Handler class constructor.</param>
         /// <exception cref="ArgumentNullException"><see cref="applicationId"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="environmentId"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><see cref="configProfileId"/> cannot be null</exception>
@@ -180,7 +180,7 @@ namespace Microsoft.Extensions.Configuration
 
         /// <summary>
         /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from AWS Systems Manager AppConfig.
-        /// For Lambda it uses Lambda Layer to retrieve config according to the <a href="https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-integration-lambda-extensions.html">documentation</a>.
+        /// For AWS Lambda it uses Lambda Extension to retrieve config according to the <a href="https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-integration-lambda-extensions.html">documentation</a>.
         /// Remember to add proper Layer to your AWS Lambda.
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
@@ -203,7 +203,7 @@ namespace Microsoft.Extensions.Configuration
 
         /// <summary>
         /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from AWS Systems Manager AppConfig.
-        /// For Lambda it uses Lambda Layer to retrieve config according to the <a href="https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-integration-lambda-extensions.html">documentation</a>.
+        /// For AWS Lambda it uses Lambda Extension to retrieve config according to the <a href="https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-integration-lambda-extensions.html">documentation</a>.
         /// Remember to add proper Layer to your AWS Lambda.
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
@@ -225,7 +225,7 @@ namespace Microsoft.Extensions.Configuration
 
         /// <summary>
         /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from AWS Systems Manager AppConfig.
-        /// For Lambda it uses Lambda Layer to retrieve config according to the <a href="https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-integration-lambda-extensions.html">documentation</a>.
+        /// For AWS Lambda it uses Lambda Extension to retrieve config according to the <a href="https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-integration-lambda-extensions.html">documentation</a>.
         /// Remember to add proper Layer to your AWS Lambda.
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
