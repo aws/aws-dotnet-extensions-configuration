@@ -1,0 +1,68 @@
+AWSTemplateFormatVersion: 2010-09-09
+Transform: AWS::Serverless-2016-10-31
+
+Resources:
+  ConfigLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: Lambda::Lambda.Functions.ConfigLambda::Invoke
+      Role: !GetAtt ConfigLambdaRole.Arn
+
+  ConfigLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      Policies:
+        - PolicyName: allowToUseAppConfig
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action: appconfig:GetConfiguration
+                Resource:
+                  - !Sub arn:aws:appconfig:${AWS::Region}:${AWS::AccountId}:application/${AppConfigApplication}
+                  - !Sub arn:aws:appconfig:${AWS::Region}:${AWS::AccountId}:application/${AppConfigApplication}/environment/${AppConfigEnvironment}
+                  - !Sub arn:aws:appconfig:${AWS::Region}:${AWS::AccountId}:application/${AppConfigApplication}/configurationprofile/${AppConfigConfigurationProfile}
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+        - arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Action: sts:AssumeRole
+            Principal:
+              Service: lambda.amazonaws.com
+
+  AppConfigApplication:
+    Type: AWS::AppConfig::Application
+    Properties:
+      Name: !Ref AWS::StackName
+
+  AppConfigEnvironment:
+    Type: AWS::AppConfig::Environment
+    Properties:
+      ApplicationId: !Ref AppConfigApplication
+      Name: config
+
+  AppConfigConfigurationProfile:
+    Type: AWS::AppConfig::ConfigurationProfile
+    Properties:
+      ApplicationId: !Ref AppConfigApplication
+      Name: config-profile
+      LocationUri: hosted
+
+Globals:
+  Function:
+    Runtime: dotnetcore3.1
+    CodeUri: bin/Release/netcoreapp3.1/publish
+    MemorySize: 128
+    Timeout: 30
+    Tracing: Active
+    Layers:
+      - arn:aws:lambda:eu-west-1:434848589818:layer:AWS-AppConfig-Extension:41
+    Environment:
+      Variables:
+        AppConfigAppId: !Ref AppConfigApplication
+        AppConfigEnvironmentId: !Ref AppConfigEnvironment
+        AppConfigConfigProfileId: !Ref AppConfigConfigurationProfile
+        AppConfigReloadTimeInSeconds: 90
+        AWS_APPCONFIG_EXTENSION_POLL_INTERVAL_SECONDS: 60
+        AWS_APPCONFIG_EXTENSION_HTTP_PORT: 2772
