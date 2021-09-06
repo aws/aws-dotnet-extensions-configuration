@@ -59,7 +59,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.AppConfig
 
                 var response = await client.GetConfigurationAsync(request).ConfigureAwait(false);
 
-                if (response.ContentLength > 0)
+                if (response.ConfigurationVersion != LastConfigVersion)
                 {
                     LastConfigVersion = response.ConfigurationVersion;
                     LastConfig = ParseConfig(response);

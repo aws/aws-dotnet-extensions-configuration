@@ -29,6 +29,8 @@ namespace Microsoft.Extensions.Configuration
     {
         /// <summary>
         /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from AWS Systems Manager AppConfig.
+        /// If you want to use AWS AppConfig with AWS Lambda, consider to use AddAppConfigForLambda method. It is designed to work with AWS Lambda Extension.
+        /// But if you really need to use this method with AWS Lambda, remember that to use AWS AppConfig caching mechanism properly, you need to build <see cref="IConfiguration"/> in the AWS Lambda constructor. Thanks to that <see cref="SystemsManagerConfigurationProvider"/> can use ClientId and remember Last Configuration version.
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
         /// <param name="applicationId">The AppConfig application id.</param>
@@ -54,6 +56,8 @@ namespace Microsoft.Extensions.Configuration
 
         /// <summary>
         /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from AWS Systems Manager AppConfig.
+        /// If you want to use AWS AppConfig with AWS Lambda, consider to use AddAppConfigForLambda method. It is designed to work with AWS Lambda Extension.
+        /// But if you really need to use this method with AWS Lambda, remember that to use AWS AppConfig caching mechanism properly, you need to build <see cref="IConfiguration"/> in the AWS Lambda constructor. Thanks to that <see cref="SystemsManagerConfigurationProvider"/> can use ClientId and remember Last Configuration version.
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
         /// <param name="applicationId">The AppConfig application id.</param>
@@ -78,6 +82,8 @@ namespace Microsoft.Extensions.Configuration
 
         /// <summary>
         /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from AWS Systems Manager AppConfig.
+        /// If you want to use AWS AppConfig with AWS Lambda, consider to use AddAppConfigForLambda method. It is designed to work with AWS Lambda Extension.
+        /// But if you really need to use this method with AWS Lambda, remember that to use AWS AppConfig caching mechanism properly, you need to build <see cref="IConfiguration"/> in the AWS Lambda constructor. Thanks to that <see cref="SystemsManagerConfigurationProvider"/> can use ClientId and remember Last Configuration version.
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
         /// <param name="applicationId">The AppConfig application id.</param>
@@ -102,6 +108,8 @@ namespace Microsoft.Extensions.Configuration
 
         /// <summary>
         /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from AWS Systems Manager AppConfig.
+        /// If you want to use AWS AppConfig with AWS Lambda, consider to use AddAppConfigForLambda method. It is designed to work with AWS Lambda Extension.
+        /// But if you really need to use this method with AWS Lambda, remember that to use AWS AppConfig caching mechanism properly, you need to build <see cref="IConfiguration"/> in the AWS Lambda constructor. Thanks to that <see cref="SystemsManagerConfigurationProvider"/> can use ClientId and remember Last Configuration version.
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
         /// <param name="applicationId">The AppConfig application id.</param>
@@ -125,6 +133,8 @@ namespace Microsoft.Extensions.Configuration
 
         /// <summary>
         /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from AWS Systems Manager AppConfig.
+        /// If you want to use AWS AppConfig with AWS Lambda, consider to use AddAppConfigForLambda method. It is designed to work with AWS Lambda Extension.
+        /// But if you really need to use this method with AWS Lambda, remember that to use AWS AppConfig caching mechanism properly, you need to build <see cref="IConfiguration"/> in the AWS Lambda constructor. Thanks to that <see cref="SystemsManagerConfigurationProvider"/> can use ClientId and remember Last Configuration version.
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
         /// <param name="applicationId">The AppConfig application id.</param>
@@ -147,6 +157,8 @@ namespace Microsoft.Extensions.Configuration
 
         /// <summary>
         /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from AWS Systems Manager AppConfig.
+        /// If you want to use AWS AppConfig with AWS Lambda, consider to use AddAppConfigForLambda method. It is designed to work with AWS Lambda Extension.
+        /// But if you really need to use this method with AWS Lambda, remember that to use AWS AppConfig caching mechanism properly, you need to build <see cref="IConfiguration"/> in the AWS Lambda constructor. Thanks to that <see cref="SystemsManagerConfigurationProvider"/> can use ClientId and remember Last Configuration version.
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
         /// <param name="applicationId">The AppConfig application id.</param>
@@ -168,6 +180,8 @@ namespace Microsoft.Extensions.Configuration
 
         /// <summary>
         /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from AWS Systems Manager AppConfig.
+        /// If you want to use AWS AppConfig with AWS Lambda, consider to use AddAppConfigForLambda method. It is designed to work with AWS Lambda Extension.
+        /// But if you really need to use this method with AWS Lambda, remember that to use AWS AppConfig caching mechanism properly, you need to build <see cref="IConfiguration"/> in the AWS Lambda constructor. Thanks to that <see cref="SystemsManagerConfigurationProvider"/> can use ClientId and remember Last Configuration version.
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
         /// <param name="applicationId">The AppConfig application id.</param>
@@ -189,6 +203,8 @@ namespace Microsoft.Extensions.Configuration
 
         /// <summary>
         /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from AWS Systems Manager AppConfig.
+        /// If you want to use AWS AppConfig with AWS Lambda, consider to use AddAppConfigForLambda method. It is designed to work with AWS Lambda Extension.
+        /// But if you really need to use this method with AWS Lambda, remember that to use AWS AppConfig caching mechanism properly, you need to build <see cref="IConfiguration"/> in the AWS Lambda constructor. Thanks to that <see cref="SystemsManagerConfigurationProvider"/> can use ClientId and remember Last Configuration version.
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
         /// <param name="applicationId">The AppConfig application id.</param>
@@ -209,6 +225,8 @@ namespace Microsoft.Extensions.Configuration
 
         /// <summary>
         /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from AWS Systems Manager AppConfig.
+        /// If you want to use AWS AppConfig with AWS Lambda, consider to use AddAppConfigForLambda method. It is designed to work with AWS Lambda Extension.
+        /// But if you really need to use this method with AWS Lambda, remember that to use AWS AppConfig caching mechanism properly, you need to build <see cref="IConfiguration"/> in the AWS Lambda constructor. Thanks to that <see cref="SystemsManagerConfigurationProvider"/> can use ClientId and remember Last Configuration version.
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
         /// <param name="source">Configuration source.</param>

@@ -31,6 +31,7 @@ namespace Microsoft.Extensions.Configuration
         /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from AWS Systems Manager AppConfig.
         /// For AWS Lambda it uses Lambda Extension to retrieve config according to the <a href="https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-integration-lambda-extensions.html">documentation</a>.
         /// Remember to add proper Layer to your AWS Lambda.
+        /// To use AWS AppConfig caching mechanism properly, always build <see cref="IConfiguration"/> in the AWS Lambda constructor. Thanks to that <see cref="SystemsManagerConfigurationProvider"/> can use ClientId and remember Last Configuration version.
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
         /// <param name="applicationId">The AppConfig application id.</param>
@@ -58,6 +59,7 @@ namespace Microsoft.Extensions.Configuration
         /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from AWS Systems Manager AppConfig.
         /// For AWS Lambda it uses Lambda Extension to retrieve config according to the <a href="https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-integration-lambda-extensions.html">documentation</a>.
         /// Remember to add proper Layer to your AWS Lambda.
+        /// To use AWS AppConfig caching mechanism properly, always build <see cref="IConfiguration"/> in the AWS Lambda constructor. Thanks to that <see cref="SystemsManagerConfigurationProvider"/> can use ClientId and remember Last Configuration version.
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
         /// <param name="applicationId">The AppConfig application id.</param>
@@ -84,6 +86,7 @@ namespace Microsoft.Extensions.Configuration
         /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from AWS Systems Manager AppConfig.
         /// For AWS Lambda it uses Lambda Extension to retrieve config according to the <a href="https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-integration-lambda-extensions.html">documentation</a>.
         /// Remember to add proper Layer to your AWS Lambda.
+        /// To use AWS AppConfig caching mechanism properly, always build <see cref="IConfiguration"/> in the AWS Lambda constructor. Thanks to that <see cref="SystemsManagerConfigurationProvider"/> can use ClientId and remember Last Configuration version.
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
         /// <param name="applicationId">The AppConfig application id.</param>
@@ -110,6 +113,7 @@ namespace Microsoft.Extensions.Configuration
         /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from AWS Systems Manager AppConfig.
         /// For AWS Lambda it uses Lambda Extension to retrieve config according to the <a href="https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-integration-lambda-extensions.html">documentation</a>.
         /// Remember to add proper Layer to your AWS Lambda.
+        /// To use AWS AppConfig caching mechanism properly, always build <see cref="IConfiguration"/> in the AWS Lambda constructor. Thanks to that <see cref="SystemsManagerConfigurationProvider"/> can use ClientId and remember Last Configuration version.
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
         /// <param name="applicationId">The AppConfig application id.</param>
@@ -135,6 +139,7 @@ namespace Microsoft.Extensions.Configuration
         /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from AWS Systems Manager AppConfig.
         /// For AWS Lambda it uses Lambda Extension to retrieve config according to the <a href="https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-integration-lambda-extensions.html">documentation</a>.
         /// Remember to add proper Layer to your AWS Lambda.
+        /// To use AWS AppConfig caching mechanism properly, always build <see cref="IConfiguration"/> in the AWS Lambda constructor. Thanks to that <see cref="SystemsManagerConfigurationProvider"/> can use ClientId and remember Last Configuration version.
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
         /// <param name="applicationId">The AppConfig application id.</param>
@@ -159,6 +164,7 @@ namespace Microsoft.Extensions.Configuration
         /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from AWS Systems Manager AppConfig.
         /// For AWS Lambda it uses Lambda Extension to retrieve config according to the <a href="https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-integration-lambda-extensions.html">documentation</a>.
         /// Remember to add proper Layer to your AWS Lambda.
+        /// To use AWS AppConfig caching mechanism properly, always build <see cref="IConfiguration"/> in the AWS Lambda constructor. Thanks to that <see cref="SystemsManagerConfigurationProvider"/> can use ClientId and remember Last Configuration version.
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
         /// <param name="applicationId">The AppConfig application id.</param>
@@ -182,6 +188,7 @@ namespace Microsoft.Extensions.Configuration
         /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from AWS Systems Manager AppConfig.
         /// For AWS Lambda it uses Lambda Extension to retrieve config according to the <a href="https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-integration-lambda-extensions.html">documentation</a>.
         /// Remember to add proper Layer to your AWS Lambda.
+        /// To use AWS AppConfig caching mechanism properly, always build <see cref="IConfiguration"/> in the AWS Lambda constructor. Thanks to that <see cref="SystemsManagerConfigurationProvider"/> can use ClientId and remember Last Configuration version.
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
         /// <param name="applicationId">The AppConfig application id.</param>
@@ -205,6 +212,7 @@ namespace Microsoft.Extensions.Configuration
         /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from AWS Systems Manager AppConfig.
         /// For AWS Lambda it uses Lambda Extension to retrieve config according to the <a href="https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-integration-lambda-extensions.html">documentation</a>.
         /// Remember to add proper Layer to your AWS Lambda.
+        /// To use AWS AppConfig caching mechanism properly, always build <see cref="IConfiguration"/> in the AWS Lambda constructor. Thanks to that <see cref="SystemsManagerConfigurationProvider"/> can use ClientId and remember Last Configuration version.
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
         /// <param name="applicationId">The AppConfig application id.</param>
@@ -227,6 +235,7 @@ namespace Microsoft.Extensions.Configuration
         /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from AWS Systems Manager AppConfig.
         /// For AWS Lambda it uses Lambda Extension to retrieve config according to the <a href="https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-integration-lambda-extensions.html">documentation</a>.
         /// Remember to add proper Layer to your AWS Lambda.
+        /// To use AWS AppConfig caching mechanism properly, always build <see cref="IConfiguration"/> in the AWS Lambda constructor. Thanks to that <see cref="SystemsManagerConfigurationProvider"/> can use ClientId and remember Last Configuration version.
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
         /// <param name="source">Configuration source.</param>

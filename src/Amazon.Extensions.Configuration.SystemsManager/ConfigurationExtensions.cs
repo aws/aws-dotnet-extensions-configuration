@@ -19,7 +19,7 @@ using Microsoft.Extensions.Configuration;
 namespace Amazon.Extensions.Configuration.SystemsManager
 {
     /// <summary>
-    /// This extension is an a different namespace to avoid misuse of this method which should only be called when being used from Lambda.
+    /// This extension is an a different namespace to avoid misuse of this method which should only be called when being used from AWS Lambda.
     /// </summary>
     public static class ConfigurationExtensions
     {
@@ -27,13 +27,13 @@ namespace Amazon.Extensions.Configuration.SystemsManager
         /// This method blocks while any SystemsManagerConfigurationProvider added to IConfiguration are
         /// currently reloading the parameters from Parameter Store.
         /// 
-        /// This is generally only needed when the provider is being called from a Lambda function. Without this call
-        /// in a Lambda environment there is a potential of the background thread doing the refresh never running successfully.
-        /// This can happen because the Lambda compute environment is frozen after the current Lambda event is complete.
+        /// This is generally only needed when the provider is being called from a AWS Lambda function. Without this call
+        /// in a AWS Lambda environment there is a potential of the background thread doing the refresh never running successfully.
+        /// This can happen because the AWS Lambda compute environment is frozen after the current AWS Lambda event is complete.
         /// </summary>
         /// <param name="configuration"></param>
-        /// <param name="timeSpan"></param>
-        public static void WaitForSystemsManagerReloadToComplete(this IConfiguration configuration, TimeSpan timeSpan)
+        /// <param name="timeout">Maximum time to wait for reload to be completed</param>
+        public static void WaitForSystemsManagerReloadToComplete(this IConfiguration configuration, TimeSpan timeout)
         {
             if (configuration is ConfigurationRoot configRoot)
             {
@@ -41,7 +41,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager
                 {
                     if (provider is SystemsManagerConfigurationProvider ssmProvider)
                     {
-                        ssmProvider.WaitForReloadToComplete(timeSpan);
+                        ssmProvider.WaitForReloadToComplete(timeout);
                     }
                 }
             }

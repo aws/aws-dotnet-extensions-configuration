@@ -101,31 +101,32 @@ var configurations = new ConfigurationBuilder()
 
 The `reloadAfter` parameter on `AddSystemsManager()`, `AddAppConfig()` and `AddAppConfigForLambda()` enables automatic reloading of configuration data from Parameter Store or AppConfig as a background task.
 
-## Config reloading from Parameter Store in AWS Lambda
+## Config reloading in AWS Lambda
 
-In AWS Lambda, background tasks are paused after processing the AWS Lambda event. This could disrupt the provider from retrieving the latest configuration data from Parameter Store. To ensure the reload is performed within the AWS Lambda event, we recommend calling the extension method `WaitForSystemsManagerReloadToComplete` from the `IConfiguration` object in your AWS Lambda function. This method will immediately return unless a reload is currently being performed.
+In AWS Lambda, background tasks are paused after processing the AWS Lambda event. This could disrupt the provider from retrieving the latest configuration data from Parameter Store or AWS AppConfig. To ensure the reload is performed within the AWS Lambda event, we recommend calling the extension
+method `WaitForSystemsManagerReloadToComplete` from the `IConfiguration` object in the beginning of your AWS Lambda function handler. This method will immediately return unless a reload is currently being performed.
+
+Remember to build `IConfiguration` in the AWS Lambda constructor! It is the only way to cache the configuration and reload it using `reloadAfter` parameter.
 
 ```csharp
-using Amazon.Extensions.Configuration.SystemsManager
+public class SampleLambda
+{
+    private readonly IConfiguration _configurations;
+    
+    public SampleLambda()
+    {
+        _configurations = new ConfigurationBuilder()
+                            .AddSystemsManager("/my-application/")
+                            .AddAppConfigForLambda("AppConfigApplicationId", "AppConfigEnvironmentId", "AppConfigConfigurationProfileId", TimeSpan.FromSeconds(20))
+                            .Build();
+    }
 
-...
-
-var configurations = new ConfigurationBuilder()
-                         .AddSystemsManager(IntegTestFixture.ParameterPrefix, fixture.AWSOptions);
-                         .Build();
-
-...
-
-configurations.WaitForSystemsManagerReloadToComplete(TimeSpan.FromSeconds(5));
+    protected void Invoke()
+    {
+        _configurations.WaitForSystemsManagerReloadToComplete(TimeSpan.FromSeconds(2));
+    }
+}
 ```
-
-## Config reloading from AppConfig in AWS Lambda
-
-Lambda Extension is automatically reloading the config with the interval set in an environment variable. Because of that you don't need to pass `reloadAfter` parameter into `AddAppConfigForLambda()` method.
-
-The possibility to pass 'reloadAfter' parameter is for a situation when you need to create `IConfiguration` in the AWS Lambda Handler class constructor to initialize other sources of configuration.
-
-In a normal situation, it is recommended to build `IConfiguration` in the AWS Lambda Invoke method. This approach allows you to always have fresh config from Lambda Extension in every AWS Lambda invocation. There is no invocation time cost because building `IConfiguration` takes few milliseconds when the config is already present in Lambda Extension.
 
 ## Samples
 
