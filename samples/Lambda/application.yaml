@@ -66,3 +66,5 @@ Globals:
         AppConfigReloadTimeInSeconds: 90
         AWS_APPCONFIG_EXTENSION_POLL_INTERVAL_SECONDS: 60
         AWS_APPCONFIG_EXTENSION_HTTP_PORT: 2772
+        AWS_APPCONFIG_EXTENSION_LOG_LEVEL: debug
+        AWS_APPCONFIG_EXTENSION_PREFETCH_LIST: !Sub /applications/${AppConfigApplication}/environments/${AppConfigEnvironment}/configurations/${AppConfigConfigurationProfile}
