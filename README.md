@@ -164,12 +164,54 @@ This extension is using [AWSSDK.Extensions.NETCore.Setup](https://www.nuget.org/
 ```
  
  For more information and other configurable options please refer to [Configuring the AWS SDK for .NET with .NET Core](https://docs.aws.amazon.com/sdk-for-net/v3/developer-guide/net-dg-config-netcore.html).
- 
+
+# Permissions
+## Parameter Store
+The AWS credentials used must have access to the `ssm:GetParameters` service operation from AWS System Manager. Below is an example IAM policy for this action.
+```JSON
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "SSMPermissionStatement",
+            "Effect": "Allow",
+            "Action": "ssm:GetParameters",
+            "Resource": "arn:aws:ssm:${Region}:${Account}:parameter/${ParameterNamePrefix}*"
+        }
+    ]
+}
+```
+The above policy gives user access to get and use parameters which begin with the specified prefix.
+
+For more details, refer [Restricting access to Systems Manager parameters using IAM policies](https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-paramstore-access.html).
+
+## AppConfig
+If the application reads configuration values from AWS Systems Manager AppConfig, the AWS credentials used must have access to `appconfig:GetConfiguration` service operation. Below is an example IAM policy for this action.
+```JSON
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "appconfig:GetConfiguration"
+      ],
+      "Resource": [
+          "arn:${Partition}:appconfig:${Region}:${Account}:application/${ApplicationId}",
+          "arn:${Partition}:appconfig:${Region}:${Account}:application/${ApplicationId}/environment/${EnvironmentId}",
+          "arn:${Partition}:appconfig:${Region}:${Account}:application/${ApplicationId}/configurationprofile/${ConfigurationProfileId}"
+      ]
+    }
+  ]
+}
+```
+For more details, refer [Configuring permissions for AWS AppConfig](https://docs.aws.amazon.com/appconfig/latest/userguide/getting-started-with-appconfig-permissions.html) and [Actions, resources, and condition keys for AWS AppConfig](https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsappconfig.html#awsappconfig-GetConfiguration).
+
 # Getting Help
 
 We use the [GitHub issues](https://github.com/aws/aws-dotnet-extensions-configuration/issues) for tracking bugs and feature requests and have limited bandwidth to address them.
 
-If you think you may have found a bug, please open an [issue](https://github.com/aws/aws-dotnet-extensions-configuration/issues/new)
+If you think you may have found a bug, please open an [issue](https://github.com/aws/aws-dotnet-extensions-configuration/issues/new).
 
 # Contributing
 
