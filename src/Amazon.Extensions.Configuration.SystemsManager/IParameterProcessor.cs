@@ -13,6 +13,8 @@
  * permissions and limitations under the License.
  */
 
+using System;
+using System.Collections.Generic;
 using Amazon.SimpleSystemsManagement.Model;
 using Microsoft.Extensions.Configuration;
 
@@ -24,27 +26,11 @@ namespace Amazon.Extensions.Configuration.SystemsManager
     public interface IParameterProcessor
     {
         /// <summary>
-        /// Decides if a <see cref="Parameter"/> should be included for processing
+        /// Process parameters from AWS Parameter Store into a dictionary for <see cref="IConfiguration"/>
         /// </summary>
-        /// <param name="parameter"><see cref="Parameter"/> to be processed</param>
+        /// <param name="parameters">Enumeration of <see cref="Parameter"/>s to be processed</param>
         /// <param name="path">Path used when retrieving the <see cref="Parameter"/></param>
-        /// <returns>Boolean that determines if the Parameter wil be processed further</returns>
-        bool IncludeParameter(Parameter parameter, string path);
-
-        /// <summary>
-        /// Normalizes the key to be compatible with <see cref="IConfiguration"/>.
-        /// </summary>
-        /// <param name="parameter"><see cref="Parameter"/> to be processed</param>
-        /// <param name="path">Path used when retrieving the <see cref="Parameter"/></param>
-        /// <returns>The normalized key</returns>
-        string GetKey(Parameter parameter, string path);
-        
-        /// <summary>
-        /// Gets the value to be returned by <see cref="IConfiguration"/>.
-        /// </summary>
-        /// <param name="parameter"><see cref="Parameter"/> to be processed</param>
-        /// <param name="path">Path used when retrieving the <see cref="Parameter"/></param>
-        /// <returns>The configuration value</returns>
-        string GetValue(Parameter parameter, string path);
+        /// <returns>Configuration values for <see cref="IConfiguration"/></returns>
+        IDictionary<string, string> ProcessParameters(IEnumerable<Parameter> parameters, string path);
     }
 }
