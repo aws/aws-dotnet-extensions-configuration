@@ -129,9 +129,6 @@ namespace Microsoft.Extensions.Configuration
             bool optional = false
         )
         {
-
-
-
             return new AppConfigConfigurationSource
             {
                 ApplicationId = applicationId,

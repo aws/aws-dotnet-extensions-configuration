@@ -14,6 +14,7 @@
  */
 
 using System;
+using System.Net.Http;
 using Amazon.Extensions.NETCore.Setup;
 using Microsoft.Extensions.Configuration;
 
@@ -52,6 +53,14 @@ namespace Amazon.Extensions.Configuration.SystemsManager.AppConfig
         public TimeSpan? ReloadAfter { get; set; }
 
         internal bool UseLambdaExtension { get; set; }
+
+        /// <summary>
+        /// Used only when integrating with the AWS AppConfig Lambda extension.
+        /// 
+        /// This property allows customizing the HttpClient connecting to the AWS AppConfig Lambda extension. This is useful
+        /// to instrument the HttpClient for telemetry. For example adding the Amazon.XRay.Recorder.Handlers.System.Net.HttpClientXRayTracingHandler handle for AWS X-Ray tracing.
+        /// </summary>
+        public HttpClient CustomHttpClientForLambdaExtension { get; set; }
 
         /// <inheritdoc />
         public Action<SystemsManagerExceptionContext> OnLoadException { get; set; }

@@ -55,7 +55,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.AppConfig
             {
                 var port = Environment.GetEnvironmentVariable("AWS_APPCONFIG_EXTENSION_HTTP_PORT") ?? "2772";
                 _lambdaExtensionUri = new Uri($"http://localhost:{port}/applications/{Source.ApplicationId}/environments/{Source.EnvironmentId}/configurations/{Source.ConfigProfileId}");
-                _lambdaExtensionClient = new HttpClient();
+                _lambdaExtensionClient = source.CustomHttpClientForLambdaExtension ?? new HttpClient();
             }
             else
             {
