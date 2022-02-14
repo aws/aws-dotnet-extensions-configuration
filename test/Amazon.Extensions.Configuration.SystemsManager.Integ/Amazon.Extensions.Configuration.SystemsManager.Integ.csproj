@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AWSSDK.AppConfig" Version="3.7.1.23" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
     <PackageReference Include="AWSSDK.SecurityToken" Version="3.7.1.51" />
     <PackageReference Include="xunit" Version="2.4.1" />

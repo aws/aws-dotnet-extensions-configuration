@@ -14,6 +14,8 @@
  */
 
 using System;
+using System.Reflection;
+using System.Linq;
 using Amazon.Extensions.Configuration.SystemsManager.AppConfig;
 using Microsoft.Extensions.Configuration;
 using Moq;
@@ -31,36 +33,26 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
             const string applicationId = "appId";
             const string environmentId = "envId";
             const string configProfileId = "profId";
-            const string configServiceUrl = "http://localhost:2772";
 
             var builder = new ConfigurationBuilder();
-            builder.AddAppConfigForLambda(applicationId, environmentId, configProfileId);
+            builder.AddAppConfigUsingLambdaExtension(applicationId, environmentId, configProfileId);
 
-            Assert.Contains(
-                builder.Sources,
-                source => source is AppConfigConfigurationSource configurationSource
-                       && configurationSource.ApplicationId == applicationId
-                       && configurationSource.EnvironmentId == environmentId
-                       && configurationSource.ConfigProfileId == configProfileId
-                       && configurationSource.AwsOptions.DefaultClientConfig.ServiceURL == configServiceUrl
-            );
-        }
+            var configurationSource = builder.Sources.FirstOrDefault(source => source is AppConfigConfigurationSource) as AppConfigConfigurationSource;
+            Assert.NotNull(configurationSource);
+            Assert.Equal(applicationId, configurationSource.ApplicationId);
+            Assert.Equal(environmentId, configurationSource.EnvironmentId);
+            Assert.Equal(configProfileId, configurationSource.ConfigProfileId);
 
-        [Fact]
-        public void AddAppConfigForLambdaWithoutAwsOptionsShouldThrowException()
-        {
-            var builder = new ConfigurationBuilder();
-            Func<IConfigurationBuilder> func = () => builder.AddAppConfigForLambda("appId", "envId", "profileId", awsOptions: null);
-
-            var ex = Assert.Throws<ArgumentNullException>(func);
-            Assert.Contains("awsOptions", ex.Message);
+            var property = typeof(AppConfigConfigurationSource).GetProperty("UseLambdaExtension", BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.NotNull(property);
+            Assert.True((bool)property.GetValue(configurationSource));
         }
 
         [Fact]
         public void AddAppConfigForLambdaWithoutApplicationIdShouldThrowException()
         {
             var builder = new ConfigurationBuilder();
-            Func<IConfigurationBuilder> func = () => builder.AddAppConfigForLambda(null, "envId", "profileId");
+            Func<IConfigurationBuilder> func = () => builder.AddAppConfigUsingLambdaExtension(null, "envId", "profileId");
 
             var ex = Assert.Throws<ArgumentNullException>(func);
             Assert.Contains("applicationId", ex.Message);
@@ -70,7 +62,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
         public void AddAppConfigForLambdaWithoutEnvironmentIdShouldThrowException()
         {
             var builder = new ConfigurationBuilder();
-            Func<IConfigurationBuilder> func = () => builder.AddAppConfigForLambda("appId", null, "profileId");
+            Func<IConfigurationBuilder> func = () => builder.AddAppConfigUsingLambdaExtension("appId", null, "profileId");
 
             var ex = Assert.Throws<ArgumentNullException>(func);
             Assert.Contains("environmentId", ex.Message);
@@ -80,7 +72,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
         public void AddAppConfigForLambdaWithoutProfileIdShouldThrowException()
         {
             var builder = new ConfigurationBuilder();
-            Func<IConfigurationBuilder> func = () => builder.AddAppConfigForLambda("appId", "envId", null);
+            Func<IConfigurationBuilder> func = () => builder.AddAppConfigUsingLambdaExtension("appId", "envId", null);
 
             var ex = Assert.Throws<ArgumentNullException>(func);
             Assert.Contains("configProfileId", ex.Message);

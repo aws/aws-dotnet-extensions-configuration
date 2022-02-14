@@ -39,11 +39,6 @@ namespace Amazon.Extensions.Configuration.SystemsManager.AppConfig
         /// AppConfig Configuration Profile Id.
         /// </summary>
         public string ConfigProfileId { get; set; }
-        
-        /// <summary>
-        /// AppConfig Client Id.
-        /// </summary>
-        public string ClientId { get; set; }
 
         /// <summary>
         /// <see cref="AWSOptions"/> used to create an AWS Systems Manager Client />.
@@ -55,6 +50,8 @@ namespace Amazon.Extensions.Configuration.SystemsManager.AppConfig
 
         /// <inheritdoc />
         public TimeSpan? ReloadAfter { get; set; }
+
+        internal bool UseLambdaExtension { get; set; }
 
         /// <inheritdoc />
         public Action<SystemsManagerExceptionContext> OnLoadException { get; set; }

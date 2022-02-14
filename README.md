@@ -84,22 +84,22 @@ namespace HostBuilderExample
 
 ## AWS Lambda Example
 
-In AWS Lambda you don't need `Host`, but you can use `ConfigurationBuilder` to retrieve the configuration from Parameter Store or AppConfig.
 
-For AppConfig in AWS Lambda there is special implementation `AddAppConfigForLambda` which uses [Lambda Extension](https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-integration-lambda-extensions.html).
+For improved performance with AppConfig and Lambda it is recommended to use the `AddAppConfigUsingLambdaExtension` method and deploy the Lambda funtion with the AWS AppConfig Lambda extension. More information including the AppConfig Lambda extension layer arn can be found in the [AWS AppConfig user guide](https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-integration-lambda-extensions.html).
 
-Very important!! If you want to use AppConfig, remember to add proper [Lambda Extension](https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-integration-lambda-extensions.html) and required environment variables to your AWS Lambda.
 
 ```csharp
 var configurations = new ConfigurationBuilder()
                         .AddSystemsManager("/my-application/")
-                        .AddAppConfigForLambda("AppConfigApplicationId", "AppConfigEnvironmentId", "AppConfigConfigurationProfileId", TimeSpan.FromSeconds(20))
+                        .AddAppConfigUsingLambdaExtension("AppConfigApplicationId", "AppConfigEnvironmentId", "AppConfigConfigurationProfileId")
                         .Build();
 ```
 
 # Config reloading
 
-The `reloadAfter` parameter on `AddSystemsManager()`, `AddAppConfig()` and `AddAppConfigForLambda()` enables automatic reloading of configuration data from Parameter Store or AppConfig as a background task.
+The `reloadAfter` parameter on `AddSystemsManager()` and `AddAppConfig()` enables automatic reloading of configuration data from Parameter Store or AppConfig as a background task. When using 
+
+The `reloadAfter` parameter on `AddSystemsManager()` and `AddAppConfig()` enables automatic reloading of configuration data from Parameter Store or AppConfig as a background task. When using `AddAppConfigUsingLambdaExtension` reload is automatically configured.
 
 ## Config reloading in AWS Lambda
 
@@ -212,7 +212,7 @@ The above policy gives user access to get and use parameters which begin with th
 For more details, refer [Restricting access to Systems Manager parameters using IAM policies](https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-paramstore-access.html).
 
 ## AppConfig
-If the application reads configuration values from AWS Systems Manager AppConfig, the AWS credentials used must have access to `appconfig:GetConfiguration` service operation. Below is an example IAM policy for this action.
+If the application reads configuration values from AWS Systems Manager AppConfig, the AWS credentials used must have access to `appconfig:StartConfigurationSession` and `appconfig:GetLatestConfiguration` service operations. Below is an example IAM policy for this action.
 ```JSON
 {
   "Version": "2012-10-17",
@@ -220,7 +220,8 @@ If the application reads configuration values from AWS Systems Manager AppConfig
     {
       "Effect": "Allow",
       "Action": [
-        "appconfig:GetConfiguration"
+        "appconfig:StartConfigurationSession",
+        "appconfig:GetLatestConfiguration",
       ],
       "Resource": [
           "arn:${Partition}:appconfig:${Region}:${Account}:application/${ApplicationId}",

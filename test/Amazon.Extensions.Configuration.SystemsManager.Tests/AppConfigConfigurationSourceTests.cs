@@ -30,7 +30,6 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
                 ApplicationId = "appId",
                 EnvironmentId = "envId",
                 ConfigProfileId = "profileId",
-                ClientId = System.Guid.NewGuid().ToString(),
                 AwsOptions = new AWSOptions()
             };
             var builder = new ConfigurationBuilder();
