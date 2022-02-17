@@ -44,6 +44,11 @@ namespace Amazon.Extensions.Configuration.SystemsManager.AppConfig
         /// AppConfig Client Id.
         /// </summary>
         public string ClientId { get; set; }
+        
+        /// <summary>
+        /// if it's enabled, the latest AppConfig Profile Version number retrieved is included in the config data.
+        /// </summary>
+        public bool IncludeLatestConfigVersion { get; set; }
 
         /// <summary>
         /// <see cref="AWSOptions"/> used to create an AWS Systems Manager Client />.

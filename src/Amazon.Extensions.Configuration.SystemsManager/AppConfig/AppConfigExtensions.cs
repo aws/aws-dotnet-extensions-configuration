@@ -34,6 +34,32 @@ namespace Microsoft.Extensions.Configuration
         /// <param name="applicationId">The AppConfig application id.</param>
         /// <param name="environmentId">The AppConfig environment id.</param>
         /// <param name="configProfileId">The AppConfig configuration profile id.</param>
+        /// <param name="includeLatestConfigVersion">Whether the latest AppConfig configuration profile version reloaded should be included in the config data</param>
+        /// <param name="awsOptions"><see cref="AWSOptions"/> used to create an AWS Systems Manager AppConfig Client connection</param>
+        /// <param name="optional">Whether the AWS Systems Manager AppConfig is optional.</param>
+        /// <param name="reloadAfter">Initiate reload after TimeSpan</param>
+        /// <exception cref="ArgumentNullException"><see cref="applicationId"/> cannot be null</exception>
+        /// <exception cref="ArgumentNullException"><see cref="environmentId"/> cannot be null</exception>
+        /// <exception cref="ArgumentNullException"><see cref="configProfileId"/> cannot be null</exception>
+        /// <exception cref="ArgumentNullException"><see cref="awsOptions"/> cannot be null</exception>
+        /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
+        public static IConfigurationBuilder AddAppConfig(this IConfigurationBuilder builder, string applicationId, string environmentId, string configProfileId, bool includeLatestConfigVersion, AWSOptions awsOptions, bool optional, TimeSpan? reloadAfter)
+        {
+            if (applicationId == null) throw new ArgumentNullException(nameof(applicationId));
+            if (environmentId == null) throw new ArgumentNullException(nameof(environmentId));
+            if (configProfileId == null) throw new ArgumentNullException(nameof(configProfileId));
+            if (awsOptions == null) throw new ArgumentNullException(nameof(awsOptions));
+
+            return builder.AddAppConfig(ConfigureSource(applicationId, environmentId, configProfileId, includeLatestConfigVersion, awsOptions, optional, reloadAfter));
+        }
+        
+        /// <summary>
+        /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from AWS Systems Manager AppConfig.
+        /// </summary>
+        /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
+        /// <param name="applicationId">The AppConfig application id.</param>
+        /// <param name="environmentId">The AppConfig environment id.</param>
+        /// <param name="configProfileId">The AppConfig configuration profile id.</param>
         /// <param name="awsOptions"><see cref="AWSOptions"/> used to create an AWS Systems Manager AppConfig Client connection</param>
         /// <param name="optional">Whether the AWS Systems Manager AppConfig is optional.</param>
         /// <param name="reloadAfter">Initiate reload after TimeSpan</param>
@@ -49,7 +75,7 @@ namespace Microsoft.Extensions.Configuration
             if (configProfileId == null) throw new ArgumentNullException(nameof(configProfileId));
             if (awsOptions == null) throw new ArgumentNullException(nameof(awsOptions));
 
-            return builder.AddAppConfig(ConfigureSource(applicationId, environmentId, configProfileId, awsOptions, optional, reloadAfter));
+            return builder.AddAppConfig(ConfigureSource(applicationId, environmentId, configProfileId, false, awsOptions, optional, reloadAfter));
         }
 
         /// <summary>
@@ -73,7 +99,7 @@ namespace Microsoft.Extensions.Configuration
             if (configProfileId == null) throw new ArgumentNullException(nameof(configProfileId));
             if (awsOptions == null) throw new ArgumentNullException(nameof(awsOptions));
 
-            return builder.AddAppConfig(ConfigureSource(applicationId, environmentId, configProfileId, awsOptions, optional));
+            return builder.AddAppConfig(ConfigureSource(applicationId, environmentId, configProfileId, false, awsOptions, optional));
         }
 
         /// <summary>
@@ -97,7 +123,7 @@ namespace Microsoft.Extensions.Configuration
             if (configProfileId == null) throw new ArgumentNullException(nameof(configProfileId));
             if (awsOptions == null) throw new ArgumentNullException(nameof(awsOptions));
 
-            return builder.AddAppConfig(ConfigureSource(applicationId, environmentId, configProfileId, awsOptions, reloadAfter: reloadAfter));
+            return builder.AddAppConfig(ConfigureSource(applicationId, environmentId, configProfileId, false, awsOptions, reloadAfter: reloadAfter));
         }
 
         /// <summary>
@@ -120,7 +146,7 @@ namespace Microsoft.Extensions.Configuration
             if (configProfileId == null) throw new ArgumentNullException(nameof(configProfileId));
             if (awsOptions == null) throw new ArgumentNullException(nameof(awsOptions));
 
-            return builder.AddAppConfig(ConfigureSource(applicationId, environmentId, configProfileId, awsOptions));
+            return builder.AddAppConfig(ConfigureSource(applicationId, environmentId, configProfileId, false, awsOptions));
         }
 
         /// <summary>
@@ -237,6 +263,7 @@ namespace Microsoft.Extensions.Configuration
             string applicationId,
             string environmentId,
             string configProfileId,
+            bool includeLatestConfigVersion = false,
             AWSOptions awsOptions = null,
             bool optional = false,
             TimeSpan? reloadAfter = null
@@ -247,6 +274,7 @@ namespace Microsoft.Extensions.Configuration
                 ApplicationId = applicationId,
                 EnvironmentId = environmentId,
                 ConfigProfileId = configProfileId,
+                IncludeLatestConfigVersion = includeLatestConfigVersion,
                 ClientId = Guid.NewGuid().ToString(),
                 AwsOptions = awsOptions,
                 Optional = optional,

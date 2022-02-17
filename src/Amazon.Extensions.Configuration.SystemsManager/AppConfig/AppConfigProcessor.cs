@@ -24,6 +24,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.AppConfig
 {
     public class AppConfigProcessor : ISystemsManagerProcessor
     {
+        private readonly string _lastAppConfigVersionKey;
         private AppConfigConfigurationSource Source { get; }
         private string LastConfigVersion { get; set; }
         private IDictionary<string, string> LastConfig { get; set; }
@@ -35,6 +36,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.AppConfig
             if (source.ConfigProfileId == null) throw new ArgumentNullException(nameof(source.ConfigProfileId));
             if (source.ClientId == null) throw new ArgumentNullException(nameof(source.ClientId));
             if (source.AwsOptions == null) throw new ArgumentNullException(nameof(source.AwsOptions));
+            _lastAppConfigVersionKey = source.GetLastAppConfigVersionKey();
 
             Source = source;
         }
@@ -63,6 +65,11 @@ namespace Amazon.Extensions.Configuration.SystemsManager.AppConfig
                 {
                     LastConfigVersion = response.ConfigurationVersion;
                     LastConfig = ParseConfig(response);
+                    
+                    if (!string.IsNullOrEmpty(_lastAppConfigVersionKey))
+                    {
+                        LastConfig.Add(_lastAppConfigVersionKey, LastConfigVersion);
+                    }
                 }
 
                 return LastConfig;
