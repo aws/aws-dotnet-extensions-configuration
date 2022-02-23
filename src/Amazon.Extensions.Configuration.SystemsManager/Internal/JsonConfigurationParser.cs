@@ -24,7 +24,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Amazon.Extensions.Configuration.SystemsManager.Internal
 {
-    public class JsonConfigurationParser : IDisposable
+    public class JsonConfigurationParser
     {
         private JsonConfigurationParser() { }
 
@@ -36,11 +36,9 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
         {
             using (var doc = JsonDocument.Parse(input))
             {
-                using (var parser = new JsonConfigurationParser())
-                {
-                    parser.VisitElement(doc.RootElement);
-                    return parser._data;
-                }
+                var parser = new JsonConfigurationParser();
+                parser.VisitElement(doc.RootElement);
+                return parser._data;
             }
         }
 
@@ -48,11 +46,9 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
         {
             using (var doc = JsonDocument.Parse(input))
             {
-                using (var parser = new JsonConfigurationParser())
-                {
-                    parser.VisitElement(doc.RootElement);
-                    return parser._data;
-                }
+                var parser = new JsonConfigurationParser();
+                parser.VisitElement(doc.RootElement);
+                return parser._data;
             }
         }
 
@@ -81,8 +77,6 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
                     break;
                 case JsonValueKind.Null:
                     VisitNull(element);
-                    break;
-                default:
                     break;
             }
 
@@ -129,19 +123,6 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
         {
             _context.Pop();
             _currentPath = ConfigurationPath.Combine(_context.Reverse());
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-            }
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
         }
     }
 }

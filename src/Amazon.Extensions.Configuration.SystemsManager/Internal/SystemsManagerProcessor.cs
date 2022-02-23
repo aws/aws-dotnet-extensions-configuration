@@ -82,7 +82,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
                 var response = await client.GetParameterAsync(new GetParameterRequest { Name = Source.Path, WithDecryption = true }).ConfigureAwait(false);
 
                 var prefix = Source.Prefix;
-                return AddPrefix(Source.ParameterProcessor.ProcessParameters(Enumerable.Repeat(response.Parameter, 1), Source.Path), prefix);
+                return AddPrefix(Source.ParameterProcessor.ProcessParameters(new []{response.Parameter}, Source.Path), prefix);
             }
         }
 

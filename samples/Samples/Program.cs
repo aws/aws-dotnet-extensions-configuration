@@ -29,12 +29,12 @@ static async Task PopulateSampleDataForThisProject()
     var root = $"/dotnet-aws-samples/systems-manager-sample/common";
     var parameters = new[]
     {
-                new {Name = "StringValue", Value = "string-value"},
-                new {Name = "IntegerValue", Value = "10"},
-                new {Name = "DateTimeValue", Value = "2000-01-01"},
-                new {Name = "BooleanValue", Value = "True"},
-                new {Name = "TimeSpanValue", Value = "00:05:00"},
-            };
+        new {Name = "StringValue", Value = "string-value"},
+        new {Name = "IntegerValue", Value = "10"},
+        new {Name = "DateTimeValue", Value = "2000-01-01"},
+        new {Name = "BooleanValue", Value = "True"},
+        new {Name = "TimeSpanValue", Value = "00:05:00"},
+    };
 
     using (var client = awsOptions.CreateServiceClient<IAmazonSimpleSystemsManagement>())
     {

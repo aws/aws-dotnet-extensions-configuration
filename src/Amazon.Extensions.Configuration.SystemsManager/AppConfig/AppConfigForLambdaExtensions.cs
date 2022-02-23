@@ -108,13 +108,17 @@ namespace Microsoft.Extensions.Configuration
 
             if(!source.ReloadAfter.HasValue)
             {
+                // default polling duration is 45 seconds https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-integration-lambda-extensions.html
+                var reloadAfter = 45;
+
                 // Since the user is using Lambda extension which automatically refreshes the data default to the configuration provider defaulting
                 // to reload at the rate the extension reloads plus 5 second buffer.
-                var reloadAfterStr = Environment.GetEnvironmentVariable("AWS_APPCONFIG_EXTENSION_POLL_INTERVAL_SECONDS") ?? "45";
-                if (!int.TryParse(reloadAfterStr, out int reloadAfter))
+                var reloadAfterStr = Environment.GetEnvironmentVariable("AWS_APPCONFIG_EXTENSION_POLL_INTERVAL_SECONDS");
+                if (reloadAfterStr != null && !int.TryParse(reloadAfterStr, out reloadAfter))
                 {
                     throw new ArgumentException("Environment variable AWS_APPCONFIG_EXTENSION_POLL_INTERVAL_SECONDS used for computing ReloadAfter is not set to a valid integer");
                 }
+
                 reloadAfter += 5;
                 source.ReloadAfter = TimeSpan.FromSeconds(reloadAfter);
             }

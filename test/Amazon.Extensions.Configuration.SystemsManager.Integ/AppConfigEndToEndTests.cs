@@ -42,7 +42,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Integ
                 await PerformDeploymentAsync(applicationId, environmentId, configProfileId, versionNumber);
 
                 // Wait for ConfigProvider to perform the reload
-                await Task.Delay(10);
+                await Task.Delay(TimeSpan.FromSeconds(7));
                 Assert.Equal("newValue1", configuration["key1"]);
             }
             finally

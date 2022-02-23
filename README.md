@@ -84,7 +84,7 @@ namespace HostBuilderExample
 
 ## AWS Lambda Example
 
-For improved performance with AppConfig and Lambda it is recommended to use the `AddAppConfigUsingLambdaExtension` method and deploy the Lambda funtion with the AWS AppConfig Lambda extension. More information including the AppConfig Lambda extension layer arn can be found in the [AWS AppConfig user guide](https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-integration-lambda-extensions.html).
+For improved performance with AppConfig and Lambda it is recommended to use the `AddAppConfigUsingLambdaExtension` method and deploy the Lambda function with the AWS AppConfig Lambda extension. More information including the AppConfig Lambda extension layer arn can be found in the [AWS AppConfig user guide](https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-integration-lambda-extensions.html).
 
 
 ```csharp
