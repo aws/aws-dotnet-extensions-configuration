@@ -38,6 +38,13 @@ namespace Amazon.Extensions.Configuration.SystemsManager
         public string Path { get; set; }
 
         /// <summary>
+        /// True to use the GetParameter action to retrieve a single parameter by name.
+        /// False to use the GetParametersByPath action to retrieve all parameters under a path hierarchy.
+        /// Always true if <see cref="Path"/> is a Secrets Manager path. Defaults to false otherwise.
+        /// </summary>
+        public bool SingleParameter { get; set; }
+
+        /// <summary>
         /// <see cref="AWSOptions"/> used to create an AWS Systems Manager Client />.
         /// </summary>
         public AWSOptions AwsOptions { get; set; }
@@ -57,7 +64,8 @@ namespace Amazon.Extensions.Configuration.SystemsManager
         public Action<SystemsManagerExceptionContext> OnLoadException { get; set; }
 
         /// <summary>
-        /// Implementation of <see cref="IParameterProcessor"/> used to process <see cref="Parameter"/> results. Defaults to <see cref="DefaultParameterProcessor"/>.
+        /// Implementation of <see cref="IParameterProcessor"/> used to process <see cref="Parameter"/> results.
+        /// Defaults to <see cref="JsonParameterProcessor"/> if <see cref="SingleParameter"/> is true, otherwise defaults to <see cref="DefaultParameterProcessor"/>.
         /// </summary>
         public IParameterProcessor ParameterProcessor { get; set; }
 

@@ -33,17 +33,18 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
         {
             if (source.AwsOptions == null) throw new ArgumentNullException(nameof(source.AwsOptions));
             if (source.Path == null) throw new ArgumentNullException(nameof(source.Path));
-            
+
             Source = source;
+            Source.SingleParameter = IsSecretsManagerPath(Source.Path) || Source.SingleParameter;
             Source.ParameterProcessor = Source.ParameterProcessor ??
-                (IsSecretsManagerPath(Source.Path)
+                (Source.SingleParameter
                     ? new JsonParameterProcessor()
                     : new DefaultParameterProcessor());
         }
 
         public async Task<IDictionary<string, string>> GetDataAsync()
         {
-            return IsSecretsManagerPath(Source.Path)
+            return Source.SingleParameter
                 ? await GetParameterAsync().ConfigureAwait(false)
                 : await GetParametersByPathAsync().ConfigureAwait(false);
         }
