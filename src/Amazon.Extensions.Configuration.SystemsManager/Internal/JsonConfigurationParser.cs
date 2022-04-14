@@ -18,13 +18,13 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
+using System.Text.Json;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Amazon.Extensions.Configuration.SystemsManager.Internal
 {
-    public class JsonConfigurationParser : IDisposable
+    public class JsonConfigurationParser
     {
         private JsonConfigurationParser() { }
 
@@ -32,92 +32,76 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
         private readonly Stack<string> _context = new Stack<string>();
         private string _currentPath;
 
-        private JsonTextReader _reader;
-
         public static IDictionary<string, string> Parse(Stream input)
         {
-            using (var reader = new StreamReader(input))
-            using (var parser = new JsonConfigurationParser())
+            using (var doc = JsonDocument.Parse(input))
             {
-                return parser.ParseInput(reader);    
+                var parser = new JsonConfigurationParser();
+                parser.VisitElement(doc.RootElement);
+                return parser._data;
             }
         }
 
         public static IDictionary<string, string> Parse(string input)
         {
-            using (var reader = new StringReader(input))
-            using (var parser = new JsonConfigurationParser())
+            using (var doc = JsonDocument.Parse(input))
             {
-                return parser.ParseInput(reader);    
+                var parser = new JsonConfigurationParser();
+                parser.VisitElement(doc.RootElement);
+                return parser._data;
             }
         }
 
-        private IDictionary<string, string> ParseInput(TextReader input)
+        private void VisitElement(JsonElement element)
         {
-            _data.Clear();
-            using (_reader = new JsonTextReader(input) {DateParseHandling = DateParseHandling.None})
+            switch (element.ValueKind)
             {
-                var jsonConfig = JObject.Load(_reader);
-
-                VisitJObject(jsonConfig);
-
-                return _data;
-            }
-        }
-        
-        private void VisitJObject(JObject jObject)
-        {
-            foreach (var property in jObject.Properties())
-            {
-                EnterContext(property.Name);
-                VisitProperty(property);
-                ExitContext();
-            }
-        }
-
-        private void VisitProperty(JProperty property)
-        {
-            VisitToken(property.Value);
-        }
-
-        private void VisitToken(JToken token)
-        {
-            switch (token.Type)
-            {
-                case JTokenType.Object:
-                    VisitJObject(token.Value<JObject>());
+                case JsonValueKind.Undefined:
                     break;
-
-                case JTokenType.Array:
-                    VisitArray(token.Value<JArray>());
+                case JsonValueKind.Object:
+                    foreach (var property in element.EnumerateObject())
+                    {
+                        EnterContext(property.Name);
+                        VisitElement(property.Value);
+                        ExitContext();
+                    }
                     break;
-
-                case JTokenType.Integer:
-                case JTokenType.Float:
-                case JTokenType.String:
-                case JTokenType.Boolean:
-                case JTokenType.Bytes:
-                case JTokenType.Raw:
-                case JTokenType.Null:
-                    VisitPrimitive(token.Value<JValue>());
+                case JsonValueKind.Array:
+                    VisitArray(element);
                     break;
-
-                default:
-                    throw new FormatException($"Unsupported JSON token '{_reader.TokenType}' was found. SecretId '{_reader.Path}', line {_reader.LineNumber} position {_reader.LinePosition}.");
+                case JsonValueKind.String:
+                case JsonValueKind.Number:
+                case JsonValueKind.True:
+                case JsonValueKind.False:
+                    VisitPrimitive(element);
+                    break;
+                case JsonValueKind.Null:
+                    VisitNull(element);
+                    break;
             }
+
         }
 
-        private void VisitArray(JArray array)
+        private void VisitArray(JsonElement array)
         {
-            for (var index = 0; index < array.Count; index++)
+            int index = 0;
+            foreach (var item in array.EnumerateArray())
             {
                 EnterContext(index.ToString(CultureInfo.InvariantCulture));
-                VisitToken(array[index]);
+                VisitElement(item);
                 ExitContext();
+
+                index++;
             }
         }
 
-        private void VisitPrimitive(JValue data)
+        private void VisitNull(JsonElement data)
+        {
+            var key = _currentPath;
+            _data[key] = null;
+        }
+
+        private void VisitPrimitive(JsonElement data)
         {
             var key = _currentPath;
 
@@ -126,7 +110,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
                 throw new FormatException($"A duplicate key '{key}' was found.");
             }
 
-            _data[key] = data.Value == null ? null : data.ToString(CultureInfo.InvariantCulture);
+            _data[key] = data.ToString();
         }
 
         private void EnterContext(string context)
@@ -139,20 +123,6 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
         {
             _context.Pop();
             _currentPath = ConfigurationPath.Combine(_context.Reverse());
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                ((IDisposable) _reader)?.Dispose();
-            }
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
         }
     }
 }

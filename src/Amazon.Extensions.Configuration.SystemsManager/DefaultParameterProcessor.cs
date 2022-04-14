@@ -14,6 +14,8 @@
  */
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Amazon.SimpleSystemsManagement.Model;
 using Microsoft.Extensions.Configuration;
 
@@ -39,5 +41,17 @@ namespace Amazon.Extensions.Configuration.SystemsManager
         }
 
         public virtual string GetValue(Parameter parameter, string path) => parameter.Value;
+
+        public virtual IDictionary<string, string> ProcessParameters(IEnumerable<Parameter> parameters, string path)
+        {
+            return parameters
+                .Where(parameter => IncludeParameter(parameter, path))
+                .Select(parameter => new
+                {
+                    Key = GetKey(parameter, path),
+                    Value = GetValue(parameter, path)
+                })
+                .ToDictionary(parameter => parameter.Key, parameter => parameter.Value, StringComparer.OrdinalIgnoreCase);
+        }
     }
 }

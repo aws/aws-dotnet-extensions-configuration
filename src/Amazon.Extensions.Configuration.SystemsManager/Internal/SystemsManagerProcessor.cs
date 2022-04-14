@@ -35,7 +35,10 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
             if (source.Path == null) throw new ArgumentNullException(nameof(source.Path));
             
             Source = source;
-            Source.ParameterProcessor = Source.ParameterProcessor ?? new DefaultParameterProcessor();
+            Source.ParameterProcessor = Source.ParameterProcessor ??
+                (IsSecretsManagerPath(Source.Path)
+                    ? new JsonParameterProcessor()
+                    : new DefaultParameterProcessor());
         }
 
         public async Task<IDictionary<string, string>> GetDataAsync()
@@ -63,7 +66,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
                     parameters.AddRange(response.Parameters);
                 } while (!string.IsNullOrEmpty(nextToken));
 
-                return AddPrefix(ProcessParameters(parameters, Source.Path, Source.ParameterProcessor), Source.Prefix);
+                return AddPrefix(Source.ParameterProcessor.ProcessParameters(parameters, Source.Path), Source.Prefix);
             }
         }
 
@@ -78,11 +81,8 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
 
                 var response = await client.GetParameterAsync(new GetParameterRequest { Name = Source.Path, WithDecryption = true }).ConfigureAwait(false);
 
-                if (!Source.ParameterProcessor.IncludeParameter(response.Parameter, SecretsManagerPath)) return new Dictionary<string, string>();
-
-                var prefix = Source.Prefix ?? Source.ParameterProcessor.GetKey(response.Parameter, SecretsManagerPath);
-                return AddPrefix(JsonConfigurationParser.Parse(Source.ParameterProcessor.GetValue(response.Parameter, SecretsManagerPath)), prefix);
-
+                var prefix = Source.Prefix;
+                return AddPrefix(Source.ParameterProcessor.ProcessParameters(new []{response.Parameter}, Source.Path), prefix);
             }
         }
 
@@ -93,18 +93,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
             return string.IsNullOrEmpty(prefix)
                 ? input
                 : input.ToDictionary(pair => $"{prefix}{ConfigurationPath.KeyDelimiter}{pair.Key}", pair => pair.Value, StringComparer.OrdinalIgnoreCase);
-        }
 
-        public static IDictionary<string, string> ProcessParameters(IEnumerable<Parameter> parameters, string path, IParameterProcessor parameterProcessor)
-        {
-            return parameters
-                .Where(parameter => parameterProcessor.IncludeParameter(parameter, path))
-                .Select(parameter => new
-                {
-                    Key = parameterProcessor.GetKey(parameter, path),
-                    Value = parameterProcessor.GetValue(parameter, path)
-                })
-                .ToDictionary(parameter => parameter.Key, parameter => parameter.Value, StringComparer.OrdinalIgnoreCase);
         }
     }
 }

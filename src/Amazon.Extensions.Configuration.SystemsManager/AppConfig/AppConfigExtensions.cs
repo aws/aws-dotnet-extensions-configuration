@@ -223,7 +223,6 @@ namespace Microsoft.Extensions.Configuration
             if (source.ApplicationId == null) throw new ArgumentNullException(nameof(source.ApplicationId));
             if (source.EnvironmentId == null) throw new ArgumentNullException(nameof(source.EnvironmentId));
             if (source.ConfigProfileId == null) throw new ArgumentNullException(nameof(source.ConfigProfileId));
-            if (source.ClientId == null) throw new ArgumentNullException(nameof(source.ClientId));
 
             if (source.AwsOptions == null)
             {
@@ -247,7 +246,6 @@ namespace Microsoft.Extensions.Configuration
                 ApplicationId = applicationId,
                 EnvironmentId = environmentId,
                 ConfigProfileId = configProfileId,
-                ClientId = Guid.NewGuid().ToString(),
                 AwsOptions = awsOptions,
                 Optional = optional,
                 ReloadAfter = reloadAfter

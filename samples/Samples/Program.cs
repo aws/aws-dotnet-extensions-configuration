@@ -1,35 +1,50 @@
-﻿using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using System.Threading.Tasks;
+﻿using Amazon;
+using Amazon.Extensions.NETCore.Setup;
+using Amazon.SimpleSystemsManagement;
+using Amazon.SimpleSystemsManagement.Model;
 
-namespace Samples
+//populates some sample data to be used by this example project
+await PopulateSampleDataForThisProject().ConfigureAwait(false);
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Configuration.AddSystemsManager($"/dotnet-aws-samples/systems-manager-sample/");
+
+// Add services to the container.
+builder.Services.AddControllers();
+
+var app = builder.Build();
+
+app.UseHttpsRedirection();
+app.UseAuthorization();
+app.MapControllers();
+
+app.Run();
+
+
+static async Task PopulateSampleDataForThisProject()
 {
-    public static partial class Program
+    var awsOptions = new AWSOptions { Region = RegionEndpoint.USEast1 };
+
+    var root = $"/dotnet-aws-samples/systems-manager-sample/common";
+    var parameters = new[]
     {
-        public static async Task Main(string[] args)
+        new {Name = "StringValue", Value = "string-value"},
+        new {Name = "IntegerValue", Value = "10"},
+        new {Name = "DateTimeValue", Value = "2000-01-01"},
+        new {Name = "BooleanValue", Value = "True"},
+        new {Name = "TimeSpanValue", Value = "00:05:00"},
+    };
+
+    using (var client = awsOptions.CreateServiceClient<IAmazonSimpleSystemsManagement>())
+    {
+        var result = await client.GetParametersByPathAsync(new GetParametersByPathRequest { Path = root, Recursive = true }).ConfigureAwait(false);
+        if (result.Parameters.Count == parameters.Length) return;
+
+        foreach (var parameter in parameters)
         {
-            //populates some sample data to be used by this example project
-            await PopulateSampleDataForThisProject().ConfigureAwait(false);
-
-            CreateWebHostBuilder(args).Build().Run();
-        }
-
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args)
-        {
-            return WebHost.CreateDefaultBuilder(args)
-                .ConfigureAppConfiguration((context, config) =>
-                {
-                    var env = context.HostingEnvironment;
-
-                    // NOTE: A default AWS SDK configuration has been added to appsettings.Development.json.
-                    // More Details can be found at: https://docs.aws.amazon.com/sdk-for-net/v3/developer-guide/net-dg-config-netcore.html
-
-                    // Add systems manager parameter store paths
-                    config.AddSystemsManager($"/dotnet-aws-samples/systems-manager-sample/common");
-                    config.AddSystemsManager($"/dotnet-aws-samples/systems-manager-sample/{env.EnvironmentName}", optional: true);
-                })
-                .UseStartup<Startup>();
+            var name = $"{root}/settings/{parameter.Name}";
+            await client.PutParameterAsync(new PutParameterRequest { Name = name, Value = parameter.Value, Type = ParameterType.String, Overwrite = true }).ConfigureAwait(false);
         }
     }
 }

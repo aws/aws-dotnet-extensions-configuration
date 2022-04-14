@@ -82,13 +82,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
             };
             var provider = new SystemsManagerConfigurationProvider(source, _systemsManagerProcessorMock.Object);
 
-            foreach (var parameter in parameters)
-            {
-                parameterProcessorMock.Setup(processor => processor.IncludeParameter(parameter, path)).Returns(true);
-                parameterProcessorMock.Setup(processor => processor.GetKey(parameter, path)).Returns(parameter.Value);
-            }
-
-            var getData = SystemsManagerProcessor.ProcessParameters(parameters, path, parameterProcessorMock.Object);
+            var getData = new DefaultParameterProcessor().ProcessParameters(parameters, path);
 
             _systemsManagerProcessorMock.Setup(p => p.GetDataAsync()).ReturnsAsync(() => getData);
 

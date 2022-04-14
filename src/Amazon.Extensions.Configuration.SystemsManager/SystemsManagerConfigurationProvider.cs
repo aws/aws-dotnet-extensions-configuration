@@ -91,8 +91,8 @@ namespace Amazon.Extensions.Configuration.SystemsManager
         /// If this configuration provider is currently performing a reload of the config data this method will block until
         /// the reload is called.
         /// 
-        /// This method is not meant for general use. It is exposed so a Lambda function can wait for the reload to complete
-        /// before completing the event causing the Lambda compute environment to be frozen.
+        /// This method is not meant for general use. It is exposed so a AWS Lambda function can wait for the reload to complete
+        /// before completing the event causing the AWS Lambda compute environment to be frozen.
         /// </summary>
         public void WaitForReloadToComplete(TimeSpan timeout)
         {

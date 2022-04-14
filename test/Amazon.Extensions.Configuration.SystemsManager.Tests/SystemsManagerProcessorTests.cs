@@ -9,65 +9,6 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
 {
     public class SystemsManagerProcessorTests
     {
-        private readonly Mock<IParameterProcessor> _parameterProcessorMock;
-
-        public SystemsManagerProcessorTests()
-        {
-            _parameterProcessorMock = new Mock<IParameterProcessor>();
-        }
-
-        [Fact]
-        public void ProcessParametersTest()
-        {
-            var parameters = new List<Parameter>
-            {
-                new Parameter {Name = "/start/path/p1/p2-1", Value = "p1:p2-1"},
-                new Parameter {Name = "/start/path/p1/p2-2", Value = "p1:p2-2"},
-                new Parameter {Name = "/start/path/p1/p2/p3-1", Value = "p1:p2:p3-1"},
-                new Parameter {Name = "/start/path/p1/p2/p3-2", Value = "p1:p2:p3-2"},
-            };
-
-            const string path = "/start/path";
-
-            foreach (var parameter in parameters)
-            {
-                _parameterProcessorMock.Setup(processor => processor.IncludeParameter(parameter, path)).Returns(true);
-                _parameterProcessorMock.Setup(processor => processor.GetKey(parameter, path)).Returns(parameter.Value);
-                _parameterProcessorMock.Setup(processor => processor.GetValue(parameter, path)).Returns(parameter.Value);
-            }
-
-            var data = SystemsManagerProcessor.ProcessParameters(parameters, path, _parameterProcessorMock.Object);
-
-            Assert.All(data, item => Assert.Equal(item.Value, item.Key));
-
-            _parameterProcessorMock.VerifyAll();
-        }
-
-        [Fact]
-        public void ProcessParametersRootTest()
-        {
-            var parameters = new List<Parameter>
-            {
-                new Parameter {Name = "/p1", Value = "p1"},
-                new Parameter {Name = "p2", Value = "p2"},
-            };
-
-            const string path = "/";
-
-            foreach (var parameter in parameters)
-            {
-                _parameterProcessorMock.Setup(processor => processor.IncludeParameter(parameter, path)).Returns(true);
-                _parameterProcessorMock.Setup(processor => processor.GetKey(parameter, path)).Returns(parameter.Value);
-                _parameterProcessorMock.Setup(processor => processor.GetValue(parameter, path)).Returns(parameter.Value);
-            }
-
-            var data = SystemsManagerProcessor.ProcessParameters(parameters, path, _parameterProcessorMock.Object);
-
-            Assert.All(data, item => Assert.Equal(item.Value, item.Key));
-
-            _parameterProcessorMock.VerifyAll();
-        }
-
         [Theory]
         [InlineData("/aws/reference/secretsmanager/", true)]
         [InlineData("/not-sm-path/", false)]
