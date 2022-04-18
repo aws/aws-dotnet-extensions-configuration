@@ -37,13 +37,23 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Integ
 
                 Assert.Equal("value1", configuration["key1"]);
 
-                configSettings["key1"] = "newValue1";
+                const string newValue = "newValue1";
+                configSettings["key1"] = newValue;
                 var versionNumber = await CreateNewHostedConfig(applicationId, configProfileId, configSettings);
                 await PerformDeploymentAsync(applicationId, environmentId, configProfileId, versionNumber);
 
-                // Wait for ConfigProvider to perform the reload
-                await Task.Delay(TimeSpan.FromSeconds(7));
-                Assert.Equal("newValue1", configuration["key1"]);
+                for(int i = 0; i < 5; i++)
+                {
+                    // Wait for ConfigProvider to perform the reload
+                    await Task.Delay(TimeSpan.FromSeconds(7));
+                    var value = configuration["key1"];
+                    if(string.Equals(newValue, value))
+                    {
+                        break;
+                    }
+                }
+
+                Assert.Equal(newValue, configuration["key1"]);
             }
             finally
             {
