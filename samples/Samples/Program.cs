@@ -2,6 +2,7 @@
 using Amazon.Extensions.NETCore.Setup;
 using Amazon.SimpleSystemsManagement;
 using Amazon.SimpleSystemsManagement.Model;
+using Samples;
 
 //populates some sample data to be used by this example project
 await PopulateSampleDataForThisProject().ConfigureAwait(false);
@@ -9,6 +10,8 @@ await PopulateSampleDataForThisProject().ConfigureAwait(false);
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.AddSystemsManager($"/dotnet-aws-samples/systems-manager-sample/");
+
+builder.Services.Configure<Settings>(builder.Configuration.GetSection($"common:settings"));
 
 // Add services to the container.
 builder.Services.AddControllers();
