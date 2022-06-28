@@ -1,4 +1,16 @@
-﻿### Release 2021-08-18
+﻿### Release 2022-06-28
+* **Amazon.Extensions.Configuration.SystemsManager (4.0.0)**
+   * Merged PR [#99](https://github.com/aws/aws-dotnet-extensions-configuration/pull/99) adding support for using AppConfig Lambda extension. Thanks [mgorski-mg](https://github.com/mgorski-mg)
+   * Merged PR [#69](https://github.com/aws/aws-dotnet-extensions-configuration/pull/69) making IParameterProcessor used for customizing data from AWS into config values more genenric. Thanks [warej](https://github.com/warej)   
+   * Merged PR [#59](https://github.com/aws/aws-dotnet-extensions-configuration/pull/59) removing dependency on Newtonsoft.JSON and now use System.Text.Json. Thanks [Adilson de Almeida Junior](https://github.com/Adilson)
+   * Accessing AppConfig data now uses the AWS AppConfig Data APIs StargConfigurationSession and GetLatestConfiguration
+   * **Breaking Change:** The IncludeParameter, GetKey and GetValue methods were removed from IParameterProcessor in favor of the new generic ProcessParameters method allowing more flexibility in implementations.
+   * **Breaking Change:** `ClientId` was removed from `AppConfigConfigurationSource`.
+   * **Breaking Change:** When using AppConfig IAM permissions for `appconfig:StartConfigurationSession` and `appconfig:GetLatestConfiguration` are now required and `appconfig:GetConfiguration` is not longer required.
+
+
+
+### Release 2021-08-18
 * **Amazon.Extensions.Configuration.SystemsManager (3.0.0)**
     * Merged PR [#82](https://github.com/aws/aws-dotnet-extensions-configuration/pull/82) Adding [AWS AppConfig](https://docs.aws.amazon.com/appconfig/latest/userguide/what-is-appconfig.html) support. Thanks [Michał Górski](https://github.com/mgorski-mg)
 
