@@ -220,11 +220,7 @@ If the application reads configuration values from AWS Systems Manager AppConfig
         "appconfig:StartConfigurationSession",
         "appconfig:GetLatestConfiguration",
       ],
-      "Resource": [
-          "arn:${Partition}:appconfig:${Region}:${Account}:application/${ApplicationId}",
-          "arn:${Partition}:appconfig:${Region}:${Account}:application/${ApplicationId}/environment/${EnvironmentId}",
-          "arn:${Partition}:appconfig:${Region}:${Account}:application/${ApplicationId}/configurationprofile/${ConfigurationProfileId}"
-      ]
+      "Resource": "arn:${Partition}:appconfig:${Region}:${Account}:application/${ApplicationId}/environment/${EnvironmentId}/configuration/${ConfigurationProfileId}"
     }
   ]
 }
