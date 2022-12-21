@@ -186,6 +186,11 @@ This extension is using [AWSSDK.Extensions.NETCore.Setup](https://www.nuget.org/
 }
 ```
 
+
+### With AWS Lambda Serverless Api .Net Template
+
+When using .Net Lambda Serverless Api Template the default appsettings.Development.json contain a AWS section with a region set to **DefaultRegion**, this make Configuration Extension for Systems Manager unable to start with a host issue (No such host is known). Remove this section or put a real aws region to make it work.
+
 For more information and other configurable options please refer to [Configuring the AWS SDK for .NET with .NET Core](https://docs.aws.amazon.com/sdk-for-net/v3/developer-guide/net-dg-config-netcore.html).
 
 # Permissions
