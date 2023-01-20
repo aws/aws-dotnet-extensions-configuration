@@ -124,7 +124,12 @@ namespace Amazon.Extensions.Configuration.SystemsManager.AppConfig
                     PollConfigurationToken = response.NextPollConfigurationToken;
                     NextAllowedPollTime = DateTime.UtcNow.AddSeconds(response.NextPollIntervalInSeconds);
 
-                    LastConfig = ParseConfig(response.ContentType, response.Configuration);
+                    // Configuration is empty when the last received config is the latest
+                    // so only attempt to parse the AppConfig response when it is not empty
+                    if (response.ContentLength > 0)
+                    {
+                        LastConfig = ParseConfig(response.ContentType, response.Configuration);
+                    }
                 }
                 finally
                 {
