@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Amazon.Extensions.Configuration.SystemsManager.Internal;
 using Amazon.SimpleSystemsManagement.Model;
+using Microsoft.Extensions.Configuration;
 
 namespace Amazon.Extensions.Configuration.SystemsManager
 {
@@ -29,10 +30,21 @@ namespace Amazon.Extensions.Configuration.SystemsManager
     {
         public override IDictionary<string, string> ProcessParameters(IEnumerable<Parameter> parameters, string path)
         {
-            return parameters
-                .Where(parameter => IncludeParameter(parameter, path))
-                .SelectMany(parameter => JsonConfigurationParser.Parse(parameter.Value))
-                .ToDictionary(parameter => parameter.Key, parameter => parameter.Value, StringComparer.OrdinalIgnoreCase);
+            var outputDictionary = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            foreach (Parameter parameter in parameters.Where(parameter => IncludeParameter(parameter, path)))
+            {
+                // Get the extra prefix if the path is subset of paramater name.
+                string prefix = GetKey(parameter, path);
+
+                var parameterDictionary = JsonConfigurationParser.Parse(parameter.Value);
+                foreach (var keyValue in parameterDictionary)
+                {
+                    string key = ConfigurationPath.Combine(prefix, keyValue.Key);
+                    outputDictionary.Add(key, keyValue.Value);
+                }
+            }
+
+            return outputDictionary;
         }
     }
 }
