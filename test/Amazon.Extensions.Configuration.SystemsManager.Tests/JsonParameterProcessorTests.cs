@@ -23,13 +23,17 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
                 new Parameter {Name = "/p1/p3", Value = "{\"p3key\": \"p3value\"}"},
                 new Parameter {Name = "/p4", Value = "{\"p4key\": { \"p5key\": \"p5value\" } }"},
                 new Parameter {Name = "/p6", Value = "{\"p6key\": { \"p7key\": { \"p8key\": \"p8value\" } } }"},
+                new Parameter {Name = "/ObjectA", Value = "{\"Bucket\": \"arnA\"}"},
+                new Parameter {Name = "/ObjectB", Value = "{\"Bucket\": \"arnB\"}"}
             };
             var expected = new Dictionary<string, string>() {
-                { "p1", "p1" },
-                { "p2", "p2" },
-                { "p3key", "p3value" },
-                { "p4key:p5key", "p5value" },
-                { "p6key:p7key:p8key", "p8value" },
+                { "p1:p1", "p1" },
+                { "p2:p2", "p2" },
+                { "p1:p3:p3key", "p3value" },
+                { "p4:p4key:p5key", "p5value" },
+                { "p6:p6key:p7key:p8key", "p8value" },
+                { "ObjectA:Bucket", "arnA" },
+                { "ObjectB:Bucket", "arnB" }
             };
 
             const string path = "/";
