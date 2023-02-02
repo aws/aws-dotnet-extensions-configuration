@@ -1,4 +1,8 @@
-﻿### Release 2022-06-28
+﻿### Release 2023-02-01
+* **Amazon.Extensions.Configuration.SystemsManager (4.0.1)**
+   * Merged PR [#128](https://github.com/aws/aws-dotnet-extensions-configuration/pull/128) fixed issue parsing AppConfig response when services returns empty response for no changes. Thanks  [Tyler Ohlsen](https://github.com/tylerohlsen)
+
+### Release 2022-06-28
 * **Amazon.Extensions.Configuration.SystemsManager (4.0.0)**
    * Merged PR [#99](https://github.com/aws/aws-dotnet-extensions-configuration/pull/99) adding support for using AppConfig Lambda extension. Thanks [mgorski-mg](https://github.com/mgorski-mg)
    * Merged PR [#69](https://github.com/aws/aws-dotnet-extensions-configuration/pull/69) making IParameterProcessor used for customizing data from AWS into config values more genenric. Thanks [warej](https://github.com/warej)   
