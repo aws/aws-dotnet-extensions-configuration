@@ -1,4 +1,8 @@
-﻿### Release 2023-02-01
+﻿### Release 2023-02-07
+* **Amazon.Extensions.Configuration.SystemsManager (5.0.0)**
+   * **Breaking Change:** Fixed issue when parsing JSON SSM parameter values to include the relative SSM parameter name to the JSON property names.
+
+### Release 2023-02-01
 * **Amazon.Extensions.Configuration.SystemsManager (4.0.1)**
    * Merged PR [#128](https://github.com/aws/aws-dotnet-extensions-configuration/pull/128) fixed issue parsing AppConfig response when services returns empty response for no changes. Thanks  [Tyler Ohlsen](https://github.com/tylerohlsen)
 
