@@ -39,7 +39,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager
                 var parameterDictionary = JsonConfigurationParser.Parse(parameter.Value);
                 foreach (var keyValue in parameterDictionary)
                 {
-                    string key = ConfigurationPath.Combine(prefix, keyValue.Key);
+                    string key = (!string.IsNullOrEmpty(prefix) ? ConfigurationPath.Combine(prefix, keyValue.Key) : keyValue.Key);
                     outputDictionary.Add(key, keyValue.Value);
                 }
             }
