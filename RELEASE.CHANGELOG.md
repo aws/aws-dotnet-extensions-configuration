@@ -1,4 +1,8 @@
-﻿### Release 2023-02-07
+﻿### Release 2023-03-06
+* **Amazon.Extensions.Configuration.SystemsManager (5.0.1)**
+   * Fixed an issue where JsonParameterProcessor was prefixing `:` character to parameter properties while retrieving parameter by name.
+
+### Release 2023-02-07
 * **Amazon.Extensions.Configuration.SystemsManager (5.0.0)**
    * **Breaking Change:** Fixed issue when parsing JSON SSM parameter values to include the relative SSM parameter name to the JSON property names.
 
