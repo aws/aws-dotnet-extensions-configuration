@@ -61,6 +61,30 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Integ
             }
         }
 
+        [Fact]
+        public async Task JsonWithCharsetConfiguration()
+        {
+            var configSettings = new Dictionary<string, string>
+            {
+                { "key1", "value1" },
+                { "key2", "value2" }
+            };
+            (string applicationId, string environmentId, string configProfileId) = await CreateAppConfigResourcesAsync("JsonWithCharsetConfiguration", configSettings, "application/json; charset=utf-8");
+            try
+            {
+                var builder = new ConfigurationBuilder()
+                                .AddAppConfig(applicationId, environmentId, configProfileId, new AWSOptions { Region = RegionEndpoint.USWest2 }, TimeSpan.FromSeconds(5));
+
+                var configuration = builder.Build();
+
+                Assert.Equal("value1", configuration["key1"]);
+            }
+            finally
+            {
+                await CleanupAppConfigResourcesAsync(applicationId, environmentId, configProfileId);
+            }
+        }
+
         private async Task CleanupAppConfigResourcesAsync(string applicationId, string environmentId, string configProfileId)
         {
             await _appConfigClient.DeleteEnvironmentAsync(new DeleteEnvironmentRequest {ApplicationId = applicationId, EnvironmentId = environmentId });
@@ -91,7 +115,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Integ
         }
 
 
-        private async Task<(string applicationId, string environmentId, string configProfileId)> CreateAppConfigResourcesAsync(string seedName, IDictionary<string, string> configs)
+        private async Task<(string applicationId, string environmentId, string configProfileId)> CreateAppConfigResourcesAsync(string seedName, IDictionary<string, string> configs, string contentType = "application/json")
         {
             var nameSuffix = DateTime.Now.Ticks;
 
@@ -110,13 +134,13 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Integ
                 Name = seedName + "-" + nameSuffix
             });
 
-            var versionNumber = await CreateNewHostedConfig(createAppResponse.Id, createConfigResponse.Id, configs);
+            var versionNumber = await CreateNewHostedConfig(createAppResponse.Id, createConfigResponse.Id, configs, contentType);
             await PerformDeploymentAsync(createAppResponse.Id, createEnvironmentResponse.Id, createConfigResponse.Id, versionNumber);
 
             return (createAppResponse.Id, createEnvironmentResponse.Id, createConfigResponse.Id);
         }
 
-        private async Task<string> CreateNewHostedConfig(string applicationId, string configProfileId, IDictionary<string, string> configs)
+        private async Task<string> CreateNewHostedConfig(string applicationId, string configProfileId, IDictionary<string, string> configs, string contentType = "application/json")
         {
             var json = JsonSerializer.Serialize(configs);
 
@@ -124,7 +148,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Integ
             {
                 ApplicationId = applicationId,
                 ConfigurationProfileId = configProfileId,
-                ContentType = "application/json",
+                ContentType = contentType,
                 Content = new MemoryStream(UTF8Encoding.UTF8.GetBytes(json))
             });
 
