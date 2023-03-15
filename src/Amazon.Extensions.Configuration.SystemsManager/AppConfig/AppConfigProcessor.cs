@@ -158,6 +158,12 @@ namespace Amazon.Extensions.Configuration.SystemsManager.AppConfig
 
         private static IDictionary<string, string> ParseConfig(string contentType, Stream configuration)
         {
+            // Content-Type has format "media-type; charset" or "media-type; boundary" (for multipart entities).
+            if (contentType != null)
+            {
+                contentType = contentType.Split(';')[0];
+            }
+
             switch (contentType)
             {
                 case "application/json":
