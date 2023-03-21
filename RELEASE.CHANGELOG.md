@@ -1,4 +1,8 @@
-﻿### Release 2023-03-06
+﻿### Release 2023-03-21
+* **Amazon.Extensions.Configuration.SystemsManager (5.0.2)**
+   * Fixed an issue where AppConfig JSON configuration with charset information in ContentType was not being parsed.
+
+### Release 2023-03-06
 * **Amazon.Extensions.Configuration.SystemsManager (5.0.1)**
    * Fixed an issue where JsonParameterProcessor was prefixing `:` character to parameter properties while retrieving parameter by name.
 
