@@ -50,8 +50,9 @@ namespace Amazon.Extensions.Configuration.SystemsManager
                 {
                     Key = GetKey(parameter, path),
                     Value = GetValue(parameter, path)
-                })
-                .ToDictionary(parameter => parameter.Key, parameter => parameter.Value, StringComparer.OrdinalIgnoreCase);
+                })                
+                .GroupBy(parameter => parameter.Key, StringComparer.OrdinalIgnoreCase)
+                .ToDictionary(group => group.Key, group => group.First().Value, StringComparer.OrdinalIgnoreCase);
         }
     }
 }
