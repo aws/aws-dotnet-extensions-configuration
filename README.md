@@ -38,8 +38,27 @@ public class Program
             .UseStartup<Startup>();
 }
 ```
+It is also possible to load AWS Secrets Manager secrets from Parameter Store parameters. When retrieving a Secrets Manager secret from Parameter Store, the name must begin with the following reserved path: /aws/reference/secretsmanager/`{Secret-Id}`. Below example demonstrates this use case:
+```csharp
+public class Program
+{
+    public static void Main(string[] args)
+    {
+        CreateWebHostBuilder(args).Build().Run();
+    }
 
-Second possibility is to pull configuration from AppConfig. You can easily add this functionality by adding 1 line of code.
+    public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+        WebHost.CreateDefaultBuilder(args)
+            .ConfigureAppConfiguration(builder =>
+            {
+                builder.AddSystemsManager("/aws/reference/secretsmanager/SomeSecret");
+            })
+            .UseStartup<Startup>();
+}
+```
+For loading secrets, the library will use `JsonParameterProcessor` to load Key/Value pairs stored in the secret. These Key/Value pairs could be retrieved from the `ConfigurationManager` object. For more details, kindly refer [Referencing AWS Secrets Manager secrets from Parameter Store parameters](https://docs.aws.amazon.com/systems-manager/latest/userguide/integration-ps-secretsmanager.html).
+
+Another possibility is to pull configuration from AppConfig. You can easily add this functionality by adding 1 line of code.
 
 ```csharp
 public class Program
@@ -207,6 +226,8 @@ The AWS credentials used must have access to the `ssm:GetParameters` service ope
 The above policy gives user access to get and use parameters which begin with the specified prefix.
 
 For more details, refer [Restricting access to Systems Manager parameters using IAM policies](https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-paramstore-access.html).
+
+Additionally, for referencing secrets from AWS Secrets Manager from Paramater Store parameters, AWS credentials used must have permissions to access the secret.
 
 ## AppConfig
 If the application reads configuration values from AWS Systems Manager AppConfig, the AWS credentials used must have access to `appconfig:StartConfigurationSession` and `appconfig:GetLatestConfiguration` service operations. Below is an example IAM policy for this action.
