@@ -1,4 +1,12 @@
-﻿### Release 2023-03-21
+﻿### Release 2023-05-30
+* **Amazon.Extensions.Configuration.SystemsManager (5.0.4)**
+   * Support TargetFramework of netstandard2.0.
+
+### Release 2023-05-13
+* **Amazon.Extensions.Configuration.SystemsManager (5.0.3)**
+    * Updated the XML comment documentation and README.md
+
+### Release 2023-03-21
 * **Amazon.Extensions.Configuration.SystemsManager (5.0.2)**
    * Fixed an issue where AppConfig JSON configuration with charset information in ContentType was not being parsed.
 
