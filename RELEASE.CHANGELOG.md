@@ -1,4 +1,8 @@
-﻿### Release 2023-03-21
+﻿### Release 2023-05-31
+* **Amazon.Extensions.Configuration.SystemsManager (5.1.0)**
+   * Pull request [#150](https://github.com/aws/aws-dotnet-extensions-configuration/pull/150) Adding .NET Standard 2.0 support for .NET Framework applications. Thanks [Matthew Heaton](https://github.com/heatonmatthew)
+
+### Release 2023-03-21
 * **Amazon.Extensions.Configuration.SystemsManager (5.0.2)**
    * Fixed an issue where AppConfig JSON configuration with charset information in ContentType was not being parsed.
 
