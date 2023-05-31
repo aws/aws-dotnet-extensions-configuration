@@ -1,18 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.1;net6.0</TargetFrameworks>
+    <!-- Included netstandard2.0 support for a .NET Framework use-case, see: https://github.com/aws/aws-dotnet-extensions-configuration/pull/150 -->
+    <TargetFrameworks>netstandard2.0;netcoreapp3.1;net6.0</TargetFrameworks>
     <AssemblyName>Amazon.Extensions.Configuration.SystemsManager</AssemblyName>
     <RootNamespace>Amazon.Extensions.Configuration.SystemsManager</RootNamespace>
     <OutputType>Library</OutputType>
-    <VersionPrefix>5.0.3</VersionPrefix>
+    <VersionPrefix>5.0.4</VersionPrefix>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>Amazon.Extensions.Configuration.SystemsManager</PackageId>
     <Title>.NET Configuration Extensions for AWS Systems Manager</Title>
     <Product>Amazon.Extensions.Configuration.SystemsManager</Product>
     <Description>.NET Configuration Extensions for AWS Systems Manager</Description>
     <Authors>Amazon Web Services</Authors>
-    <Copyright>2018-2021</Copyright>
+    <Copyright>2018-2023</Copyright>
     <PackageTags>AWS;Amazon;aws-sdk-v3;SimpleSystemsManagement;configuration</PackageTags>
     <PackageProjectUrl>https://github.com/aws/aws-dotnet-extensions-configuration/</PackageProjectUrl>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
@@ -48,6 +49,7 @@
     <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.7.1" />
     <PackageReference Include="AWSSDK.SimpleSystemsManagement" Version="3.7.12.9" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.*" />
+    <PackageReference Include="System.Text.Json" Condition=" '$(TargetFramework)' == 'netstandard2.0' " Version="7.0.2" />
   </ItemGroup>
 
   <ItemGroup>
