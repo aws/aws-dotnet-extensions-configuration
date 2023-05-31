@@ -42,10 +42,10 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Integ
                 var versionNumber = await CreateNewHostedConfig(applicationId, configProfileId, configSettings);
                 await PerformDeploymentAsync(applicationId, environmentId, configProfileId, versionNumber);
 
-                for(int i = 0; i < 5; i++)
+                for(int i = 0; i < 10; i++)
                 {
                     // Wait for ConfigProvider to perform the reload
-                    await Task.Delay(TimeSpan.FromSeconds(7));
+                    await Task.Delay(TimeSpan.FromSeconds(10));
                     var value = configuration["key1"];
                     if(string.Equals(newValue, value))
                     {
