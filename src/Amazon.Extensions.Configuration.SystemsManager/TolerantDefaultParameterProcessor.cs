@@ -17,32 +17,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Amazon.SimpleSystemsManagement.Model;
-using Microsoft.Extensions.Configuration;
 
 namespace Amazon.Extensions.Configuration.SystemsManager
 {
     /// <inheritdoc />
     /// <summary>
-    /// Default parameter processor based on Systems Manager's suggested naming convention
+    /// This implementation will ignore any dublicate parameters that may located in SSM with different CASE (like \Path1\Param1 and \path1\param1 , only first one will be taken).
+    /// This is based on Default parameter processor which is based on Systems Manager's suggested naming convention
     /// </summary>
-    public class DefaultParameterProcessor : IParameterProcessor
+    public class TolerantDefaultParameterProcessor : DefaultParameterProcessor
     {
-        /// <inheritdoc cref="ConfigurationPath.KeyDelimiter"/>
-        public static readonly string KeyDelimiter = ConfigurationPath.KeyDelimiter;
-
-        public virtual bool IncludeParameter(Parameter parameter, string path) => true;
-
-        public virtual string GetKey(Parameter parameter, string path)
-        {
-            var name = parameter.Name.StartsWith(path, StringComparison.OrdinalIgnoreCase) 
-                ? parameter.Name.Substring(path.Length) 
-                : parameter.Name;
-            return name.TrimStart('/').Replace("/", KeyDelimiter);
-        }
-
-        public virtual string GetValue(Parameter parameter, string path) => parameter.Value;
-
-        public virtual IDictionary<string, string> ProcessParameters(IEnumerable<Parameter> parameters, string path)
+        public override IDictionary<string, string> ProcessParameters(IEnumerable<Parameter> parameters, string path)
         {
             return parameters
                 .Where(parameter => IncludeParameter(parameter, path))
