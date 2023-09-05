@@ -47,6 +47,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
 
             var data = _parameterProcessor.ProcessParameters(parameters, path);
 
+            Assert.Equal(5, data.Keys.Count);
             Assert.Equal("p1", data["single:0"]);
             Assert.Equal("p1", data["multiple:0"]);
             Assert.Equal("p2", data["multiple:1"]);
