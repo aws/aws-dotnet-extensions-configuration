@@ -1,4 +1,8 @@
-﻿### Release 2023-05-31
+﻿### Release 2023-09-11
+* **Amazon.Extensions.Configuration.SystemsManager (5.1.1)**
+   * Pull request [#142](https://github.com/aws/aws-dotnet-extensions-configuration/pull/142) Added StringList handling in default parameter processor. Thanks [ArtemMelnychenko](https://github.com/Plazmius)
+
+### Release 2023-05-31
 * **Amazon.Extensions.Configuration.SystemsManager (5.1.0)**
    * Pull request [#150](https://github.com/aws/aws-dotnet-extensions-configuration/pull/150) Adding .NET Standard 2.0 support for .NET Framework applications. Thanks [Matthew Heaton](https://github.com/heatonmatthew)
 
