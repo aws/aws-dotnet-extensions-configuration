@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Amazon.SimpleSystemsManagement;
 using Amazon.SimpleSystemsManagement.Model;
 using Moq;
 using Xunit;
@@ -32,6 +33,29 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
             Assert.All(data, item => Assert.Equal(item.Value, item.Key));
         }
 
+        [Fact]
+        public void ProcessParametersStringListTest()
+        {
+            var parameters = new List<Parameter>
+            {
+                new Parameter {Name = "/string-list/single", Value = "p1", Type = ParameterType.StringList},
+                new Parameter {Name = "/string-list/multiple", Value = "p1,p2,p3", Type = ParameterType.StringList},
+                new Parameter {Name = "/string-list/empty", Value = "", Type = ParameterType.StringList},
+            };
+
+            const string path = "/string-list";
+
+            var data = _parameterProcessor.ProcessParameters(parameters, path);
+
+            Assert.Equal(5, data.Keys.Count);
+            Assert.Equal("p1", data["single:0"]);
+            Assert.Equal("p1", data["multiple:0"]);
+            Assert.Equal("p2", data["multiple:1"]);
+            Assert.Equal("p3", data["multiple:2"]);
+            Assert.Equal("", data["empty:0"]);
+        }
+
+        
         [Fact]
         public void ProcessParametersRootTest()
         {
