@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Amazon.SimpleSystemsManagement;
 using Amazon.SimpleSystemsManagement.Model;
 using Microsoft.Extensions.Configuration;
 
@@ -42,16 +43,33 @@ namespace Amazon.Extensions.Configuration.SystemsManager
 
         public virtual string GetValue(Parameter parameter, string path) => parameter.Value;
 
+        private IEnumerable<KeyValuePair<string, string>> ParseStringList(Parameter parameter, string path)
+        {
+            // Items in a StringList must be separated by a comma (,).
+            // You can't use other punctuation or special characters to escape items in the list.
+            // If you have a parameter value that requires a comma, then use the String type.
+            // https://docs.aws.amazon.com/systems-manager/latest/userguide/param-create-cli.html#param-create-cli-stringlist
+            return parameter.Value.Split(",").Select((value, idx) =>
+                new KeyValuePair<string, string>($"{GetKey(parameter, path)}:{idx}", value));
+        }
+
         public virtual IDictionary<string, string> ProcessParameters(IEnumerable<Parameter> parameters, string path)
         {
-            return parameters
-                .Where(parameter => IncludeParameter(parameter, path))
-                .Select(parameter => new
+            var result = new List<KeyValuePair<string, string>>();
+            foreach (var parameter in parameters.Where(parameter => IncludeParameter(parameter, path)))
+            {
+                if (parameter.Type == ParameterType.StringList)
                 {
-                    Key = GetKey(parameter, path),
-                    Value = GetValue(parameter, path)
-                })
-                .ToDictionary(parameter => parameter.Key, parameter => parameter.Value, StringComparer.OrdinalIgnoreCase);
+                    result.AddRange(ParseStringList(parameter, path));
+                }
+                else
+                {
+                    result.Add(new KeyValuePair<string, string>(GetKey(parameter, path), GetValue(parameter, path)));
+                }
+            }
+
+            return result.ToDictionary(parameter => parameter.Key, parameter => parameter.Value,
+                StringComparer.OrdinalIgnoreCase);
         }
     }
 }
