@@ -49,7 +49,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager
             // You can't use other punctuation or special characters to escape items in the list.
             // If you have a parameter value that requires a comma, then use the String type.
             // https://docs.aws.amazon.com/systems-manager/latest/userguide/param-create-cli.html#param-create-cli-stringlist
-            return parameter.Value.Split(",").Select((value, idx) =>
+            return parameter.Value.Split(',').Select((value, idx) =>
                 new KeyValuePair<string, string>($"{GetKey(parameter, path)}:{idx}", value));
         }
 
