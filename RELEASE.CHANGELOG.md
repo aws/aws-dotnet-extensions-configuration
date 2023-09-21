@@ -1,6 +1,12 @@
-﻿### Release 2023-09-11
+﻿### Release 2023-09-21
+* **Amazon.Extensions.Configuration.SystemsManager (6.0.0)**
+   * BREAKING CHANGE: Added StringList handling in default parameter processor.
+   * Note: This is re-releasing 5.1.1 as a major version bump because it introduced a change in behavior if a user was already handling StringList parameters.
+
+### Release 2023-09-11
 * **Amazon.Extensions.Configuration.SystemsManager (5.1.1)**
    * Pull request [#142](https://github.com/aws/aws-dotnet-extensions-configuration/pull/142) Added StringList handling in default parameter processor. Thanks [ArtemMelnychenko](https://github.com/Plazmius)
+   * Note: We have unlisted and re-released this as 6.0.0. due to the breaking change reported in [#156](https://github.com/aws/aws-dotnet-extensions-configuration/issues/156)
 
 ### Release 2023-05-31
 * **Amazon.Extensions.Configuration.SystemsManager (5.1.0)**
