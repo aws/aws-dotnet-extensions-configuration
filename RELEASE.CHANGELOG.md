@@ -1,4 +1,8 @@
-﻿### Release 2023-09-21
+﻿### Release 2024-03-29
+* **Amazon.Extensions.Configuration.SystemsManager (6.1.0)**
+   * Pull request [#163](https://github.com/aws/aws-dotnet-extensions-configuration/pull/163) adding .NET 8 target. Thanks [Jon Armen](https://github.com/jon-armen)
+   
+### Release 2023-09-21
 * **Amazon.Extensions.Configuration.SystemsManager (6.0.0)**
    * BREAKING CHANGE: Added StringList handling in default parameter processor.
    * Note: This is re-releasing 5.1.1 as a major version bump because it introduced a change in behavior if a user was already handling StringList parameters.
