@@ -6,7 +6,7 @@
     <AssemblyName>Amazon.Extensions.Configuration.SystemsManager</AssemblyName>
     <RootNamespace>Amazon.Extensions.Configuration.SystemsManager</RootNamespace>
     <OutputType>Library</OutputType>
-    <VersionPrefix>6.1.0</VersionPrefix>
+    <VersionPrefix>6.1.1</VersionPrefix>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>Amazon.Extensions.Configuration.SystemsManager</PackageId>
     <Title>.NET Configuration Extensions for AWS Systems Manager</Title>
@@ -35,9 +35,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AWSSDK.AppConfigData" Version="3.7.0.23" />
-    <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.7.1" />
-    <PackageReference Include="AWSSDK.SimpleSystemsManagement" Version="3.7.12.9" />
+    <PackageReference Include="AWSSDK.AppConfigData" Version="3.7.301.35" />
+    <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.7.300" />
+    <PackageReference Include="AWSSDK.SimpleSystemsManagement" Version="3.7.303.23" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.*" />
     <PackageReference Include="System.Text.Json" Condition=" '$(TargetFramework)' == 'netstandard2.0' " Version="7.0.2" />
   </ItemGroup>
