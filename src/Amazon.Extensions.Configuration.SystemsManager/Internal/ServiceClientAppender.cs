@@ -23,14 +23,15 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
     {
         private const string UserAgentHeader = "User-Agent";
         private static readonly string AssemblyVersion = typeof(AppConfigProcessor).GetTypeInfo().Assembly.GetName().Version.ToString();
+        private static readonly string UserAgentSuffix = $"lib/SSMConfigProvider#{AssemblyVersion}";
 
         public static void ServiceClientBeforeRequestEvent(object sender, RequestEventArgs e)
         {
             if (e is WebServiceRequestEventArgs args)
             {
-                if (args.Headers.ContainsKey(UserAgentHeader))
+                if (args.Headers.ContainsKey(UserAgentHeader) && !args.Headers[UserAgentHeader].Contains(UserAgentSuffix))
                 {
-                    args.Headers[UserAgentHeader] = args.Headers[UserAgentHeader] + " SSMConfigProvider/" + AssemblyVersion;
+                    args.Headers[UserAgentHeader] = args.Headers[UserAgentHeader] + " " + UserAgentSuffix;
                 }
             }
         }
