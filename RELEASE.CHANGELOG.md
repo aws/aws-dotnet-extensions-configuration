@@ -1,4 +1,8 @@
-﻿### Release 2024-03-29
+﻿### Release 2024-04-20
+* **Amazon.Extensions.Configuration.SystemsManager (6.1.1)**
+  * Update User-Agent string
+
+### Release 2024-03-29
 * **Amazon.Extensions.Configuration.SystemsManager (6.1.0)**
    * Pull request [#163](https://github.com/aws/aws-dotnet-extensions-configuration/pull/163) adding .NET 8 target. Thanks [Jon Armen](https://github.com/jon-armen)
    
