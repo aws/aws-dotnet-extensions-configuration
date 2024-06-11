@@ -60,11 +60,29 @@ namespace Amazon.Extensions.Configuration.SystemsManager
             {
                 if (parameter.Type == ParameterType.StringList)
                 {
-                    result.AddRange(ParseStringList(parameter, path));
+                    var parameterList = ParseStringList(parameter, path);
+                    
+                    // Check for duplicate parameter keys.
+                    var stringListKeys = parameterList.Select(p => p.Key);
+                    var duplicateKeys = result.Where(r => stringListKeys.Contains(r.Key, StringComparer.OrdinalIgnoreCase)).Select(r => r.Key);
+                    if (duplicateKeys.Count() > 0)
+                    {
+                        throw new DuplicateParameterException($"Duplicate parameters '{string.Join(";", duplicateKeys)}' found. Parameter keys are case-insensitive.");
+                    }
+                    
+                    result.AddRange(parameterList);
                 }
                 else
                 {
-                    result.Add(new KeyValuePair<string, string>(GetKey(parameter, path), GetValue(parameter, path)));
+                    string parameterKey = GetKey(parameter, path);
+
+                    // Check for duplicate parameter key.
+                    if (result.Any(r => string.Equals(r.Key, parameterKey, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        throw new DuplicateParameterException($"Duplicate parameter '{parameterKey}' found. Parameter keys are case-insensitive.");
+                    }
+
+                    result.Add(new KeyValuePair<string, string>(parameterKey, GetValue(parameter, path)));
                 }
             }
 

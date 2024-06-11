@@ -40,6 +40,13 @@ namespace Amazon.Extensions.Configuration.SystemsManager
                 foreach (var keyValue in parameterDictionary)
                 {
                     string key = (!string.IsNullOrEmpty(prefix) ? ConfigurationPath.Combine(prefix, keyValue.Key) : keyValue.Key);
+
+                    // Check for duplicate parameter key.
+                    if (outputDictionary.ContainsKey(key))
+                    {
+                        throw new DuplicateParameterException($"Duplicate parameter '{key}' found. Parameter keys are case-insensitive.");
+                    }
+
                     outputDictionary.Add(key, keyValue.Value);
                 }
             }

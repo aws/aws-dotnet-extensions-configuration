@@ -120,6 +120,10 @@ namespace Amazon.Extensions.Configuration.SystemsManager
                     OnReload();
                 }
             }
+            catch (DuplicateParameterException) // Throw duplicate parameter exception irrespective of whether parameter is optional or not.
+            {
+                throw;
+            }
             catch (Exception ex)
             {
                 if (Source.Optional) return;
