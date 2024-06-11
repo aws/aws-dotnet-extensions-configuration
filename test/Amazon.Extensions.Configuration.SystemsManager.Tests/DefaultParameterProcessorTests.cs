@@ -71,5 +71,31 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
 
             Assert.All(data, item => Assert.Equal(item.Value, item.Key));
         }
+
+        [Fact]
+        public void DuplicateSimpleParametersTest()
+        {
+            var parameters = new List<Parameter>
+            {
+                new Parameter {Name = "/start/path/p1", Value = "p1:1"},
+                new Parameter {Name = "/start/path/P1", Value = "p1:2"}
+            };
+
+            const string path = "/start/path";
+            Assert.Throws<DuplicateParameterException>(() => _parameterProcessor.ProcessParameters(parameters, path));
+        }
+
+        [Fact]
+        public void DuplicateStringListParametersTest()
+        {
+            var parameters = new List<Parameter>
+            {
+                new Parameter {Name = "/string-list/multiple", Value = "p1,p2,p3", Type = ParameterType.StringList},
+                new Parameter {Name = "/string-list/MULTIPLE", Value = "p3,p5,p6", Type = ParameterType.StringList}
+            };
+
+            const string path = "/string-list";
+            Assert.Throws<DuplicateParameterException>(() => _parameterProcessor.ProcessParameters(parameters, path));
+        }
     }
 }
