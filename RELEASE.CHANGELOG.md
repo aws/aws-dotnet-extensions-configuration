@@ -1,4 +1,8 @@
-﻿### Release 2024-04-20
+﻿### Release 2024-06-19
+* **Amazon.Extensions.Configuration.SystemsManager (6.2.0)**
+  * **Breaking Change:** Throw exception if duplicate Systems Manager parameter keys (case insensitive) are detected irrespective of whether the parameter is optional or not.
+
+### Release 2024-04-20
 * **Amazon.Extensions.Configuration.SystemsManager (6.1.1)**
   * Update User-Agent string
 
