@@ -209,7 +209,7 @@ For more information and other configurable options please refer to [Configuring
 
 # Permissions
 ## Parameter Store
-The AWS credentials used must have access to the `ssm:GetParameters` service operation from AWS System Manager. Below is an example IAM policy for this action.
+The AWS credentials used must have access to the `ssm:GetParametersByPath` service operation from AWS System Manager. Below is an example IAM policy for this action.
 ```JSON
 {
     "Version": "2012-10-17",
@@ -217,7 +217,7 @@ The AWS credentials used must have access to the `ssm:GetParameters` service ope
         {
             "Sid": "SSMPermissionStatement",
             "Effect": "Allow",
-            "Action": "ssm:GetParameters",
+            "Action": "ssm:GetParametersByPath",
             "Resource": "arn:aws:ssm:${Region}:${Account}:parameter/${ParameterNamePrefix}*"
         }
     ]
