@@ -1,4 +1,8 @@
-﻿### Release 2024-06-19
+﻿### Release 2024-07-30
+* **Amazon.Extensions.Configuration.SystemsManager (6.2.1)**
+  * For .NET Standard 2.0 target updated the dependency version of System.Text.Json to version 8.0.4
+  
+### Release 2024-06-19
 * **Amazon.Extensions.Configuration.SystemsManager (6.2.0)**
   * **Breaking Change:** Throw exception if duplicate Systems Manager parameter keys (case insensitive) are detected irrespective of whether the parameter is optional or not.
 
