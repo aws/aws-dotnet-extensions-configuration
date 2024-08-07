@@ -5,9 +5,9 @@ using Xunit;
 
 namespace Amazon.Extensions.Configuration.SystemsManager.Tests
 {
-    public class JsonOrDefaultParameterProcessorTest
+    public class JsonOrStringParameterProcessorTest
     {
-        private readonly JsonOrDefaultParameterProcessor _processor = new JsonOrDefaultParameterProcessor();
+        private readonly JsonOrStringParameterProcessor _processor = new JsonOrStringParameterProcessor();
 
         [Fact]
         public void ParsesJsonParametersSuccessfully()
