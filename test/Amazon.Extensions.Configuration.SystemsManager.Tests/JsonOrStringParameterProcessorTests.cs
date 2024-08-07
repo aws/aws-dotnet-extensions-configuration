@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Amazon.Extensions.Configuration.SystemsManager.Tests
 {
-    public class JsonOrStringParameterProcessorTest
+    public class JsonOrStringParameterProcessorTests
     {
         private readonly IParameterProcessor _parameterProcessor = new JsonOrStringParameterProcessor();
 
