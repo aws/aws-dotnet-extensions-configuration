@@ -21,21 +21,22 @@ namespace Amazon.Extensions.Configuration.SystemsManager
 
             foreach (var parameter in parameters.Where(parameter => IncludeParameter(parameter, path)))
             {
-                var prefix = GetKey(parameter, path);
+                var keyPrefix = GetKey(parameter, path);
+                var value = GetValue(parameter, path);
 
                 if (parameter.Type == ParameterType.StringList)
                 {
-                    ParseStringListParameter(parameter, prefix, result);
+                    ParseStringListParameter(keyPrefix, value, result);
                     continue;
                 }
 
                 try
                 {
-                    ParseJsonParameter(parameter, prefix, result);
+                    ParseJsonParameter(keyPrefix, value, result);
                 }
                 catch (JsonException)
                 {
-                    ParseStringParameter(parameter, prefix, result);
+                    ParseStringParameter(keyPrefix, value, result);
                 }
             }
 
