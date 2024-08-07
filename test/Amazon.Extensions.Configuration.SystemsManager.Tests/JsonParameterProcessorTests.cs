@@ -7,12 +7,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
 {
     public class JsonParameterProcessorTests
     {
-        private readonly IParameterProcessor _parameterProcessor;
-
-        public JsonParameterProcessorTests()
-        {
-            _parameterProcessor = new JsonParameterProcessor();
-        }
+        private readonly IParameterProcessor _parameterProcessor = new JsonParameterProcessor();
 
         [Fact]
         public void ProcessParametersTest()
