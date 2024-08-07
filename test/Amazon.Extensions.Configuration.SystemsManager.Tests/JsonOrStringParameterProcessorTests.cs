@@ -27,7 +27,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
         }
 
         [Fact]
-        public void ProcessParameters_ParsesJsonParametersWithoutPrefixSuccessfully()
+        public void ProcessParametersParsesJsonParametersWithoutPrefixSuccessfully()
         {
             var parameters = new List<Parameter>
             {
@@ -52,7 +52,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
 
 
         [Fact]
-        public void ProcessParameters_FallsBackOnString()
+        public void ProcessParametersFallBackOnString()
         {
             var parameters = new List<Parameter>
             {
@@ -66,7 +66,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
         }
 
         [Fact]
-        public void ProcessParameters_ThrowsOnDuplicateParameter()
+        public void ProcessParametersThrowsOnDuplicateParameter()
         {
             var parameters = new List<Parameter>
             {
@@ -78,7 +78,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
         }
 
         [Fact]
-        public void ProcessParameters_ThrowsOnDuplicateParameterAtMultiLevel()
+        public void ProcessParametersThrowsOnDuplicateParameterAtMultiLevel()
         {
             var parameters = new List<Parameter>
             {
@@ -91,7 +91,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
         }
 
         [Fact]
-        public void ProcessParameters_ThrowsOnDuplicateParameterAtMultilevelForJsonArray()
+        public void ProcessParametersThrowsOnDuplicateParameterAtMultilevelForJsonArray()
         {
             var parameters = new List<Parameter>
             {
@@ -105,7 +105,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
 
 
         [Fact]
-        public void ProcessParameters_ProcessesStringListParameters()
+        public void ProcessParametersProcessesStringListParameters()
         {
             var parameters = new List<Parameter>
             {
