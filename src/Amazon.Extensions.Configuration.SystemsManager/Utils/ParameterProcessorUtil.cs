@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
 using Amazon.Extensions.Configuration.SystemsManager.Internal;
 using Amazon.SimpleSystemsManagement.Model;
 using Microsoft.Extensions.Configuration;
@@ -9,29 +8,20 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Utils
 {
     public static class ParameterProcessorUtil
     {
-        public static bool TryParseJsonParameter(Parameter parameter, string keyPrefix, IDictionary<string, string> result)
+        public static void ParseJsonParameter(Parameter parameter, string keyPrefix, IDictionary<string, string> result)
         {
-            try
+            foreach (var kv in JsonConfigurationParser.Parse(parameter.Value))
             {
-                foreach (var kv in JsonConfigurationParser.Parse(parameter.Value))
+                var key = !string.IsNullOrEmpty(keyPrefix) ? ConfigurationPath.Combine(keyPrefix, kv.Key) : kv.Key;
+                if (result.ContainsKey(key))
                 {
-                    var key = !string.IsNullOrEmpty(keyPrefix) ? ConfigurationPath.Combine(keyPrefix, kv.Key) : kv.Key;
-                    if (result.ContainsKey(key))
-                    {
-                        throw new DuplicateParameterException($"Duplicate parameter '{key}' found. Parameter keys are case-insensitive.");
-                    }
-
-                    result.Add(key, kv.Value);
+                    throw new DuplicateParameterException($"Duplicate parameter '{key}' found. Parameter keys are case-insensitive.");
                 }
 
-                return true;
-            }
-            catch (JsonException)
-            {
-                return false;
+                result.Add(key, kv.Value);
             }
         }
-        
+
         public static void ParseStringListParameter(Parameter parameter, string keyPrefix, IDictionary<string, string> result)
         {
             // Items in a StringList must be separated by a comma (,).
