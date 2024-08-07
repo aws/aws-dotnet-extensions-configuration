@@ -7,7 +7,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
 {
     public class JsonOrStringParameterProcessorTest
     {
-        private readonly JsonOrStringParameterProcessor _processor = new JsonOrStringParameterProcessor();
+        private readonly IParameterProcessor _parameterProcessor = new JsonOrStringParameterProcessor();
 
         [Fact]
         public void ParsesJsonParametersSuccessfully()
@@ -17,7 +17,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
                 new Parameter() { Name = "/test/level1/level2", Type = ParameterType.String, Value = "{\"level1Key\":\"level1value\"}" },
                 new Parameter() { Name = "/test/level1", Type = ParameterType.String, Value = "{\"level1Key\" : {\"level2key\" : \"level2value\"}}" }
             };
-            var result = _processor.ProcessParameters(parameters, "/test");
+            var result = _parameterProcessor.ProcessParameters(parameters, "/test");
 
             Assert.Equal(2, result.Count);
             Assert.True(result.ContainsKey("level1:level2:level1Key"));
@@ -41,7 +41,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
                     Value = "{\"level1Key\" : {\"level2key\" : \"level2value\"}}"
                 }
             };
-            var result = _processor.ProcessParameters(parameters, "");
+            var result = _parameterProcessor.ProcessParameters(parameters, "");
 
             Assert.Equal(2, result.Count);
             Assert.True(result.ContainsKey("test:level1:level2:level1Key"));
@@ -58,7 +58,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
             {
                 new Parameter() { Name = "/test/stringParam", Type = ParameterType.String, Value = "some string" }
             };
-            var result = _processor.ProcessParameters(parameters, "/test");
+            var result = _parameterProcessor.ProcessParameters(parameters, "/test");
 
             Assert.Equal(1, result.Count);
             Assert.True(result.ContainsKey("stringParam"));
@@ -73,7 +73,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
                 new Parameter() { Name = "/test/Duplicate", Type = ParameterType.String, Value = "value1" },
                 new Parameter() { Name = "/test/duplicate", Type = ParameterType.String, Value = "value2" }
             };
-            var duplicateParameterException = Assert.Throws<DuplicateParameterException>(() => _processor.ProcessParameters(parameters, "/test"));
+            var duplicateParameterException = Assert.Throws<DuplicateParameterException>(() => _parameterProcessor.ProcessParameters(parameters, "/test"));
             Assert.Equal("Duplicate parameter 'duplicate' found. Parameter keys are case-insensitive.", duplicateParameterException.Message);
         }
 
@@ -86,7 +86,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
                 new Parameter() { Name = "/test/level1/level1key", Type = ParameterType.String, Value = "level1valueOverriden" },
             };
 
-            var duplicateParameterException = Assert.Throws<DuplicateParameterException>(() => _processor.ProcessParameters(parameters, "/test"));
+            var duplicateParameterException = Assert.Throws<DuplicateParameterException>(() => _parameterProcessor.ProcessParameters(parameters, "/test"));
             Assert.Equal("Duplicate parameter 'level1:level1key' found. Parameter keys are case-insensitive.", duplicateParameterException.Message);
         }
 
@@ -99,7 +99,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
                 new Parameter() { Name = "/test/level1/Level1key", Type = ParameterType.StringList, Value = "level1valueOverriden" },
             };
 
-            var duplicateParameterException = Assert.Throws<DuplicateParameterException>(() => _processor.ProcessParameters(parameters, "/test"));
+            var duplicateParameterException = Assert.Throws<DuplicateParameterException>(() => _parameterProcessor.ProcessParameters(parameters, "/test"));
             Assert.Equal("Duplicate parameter 'level1:Level1key:0' found. Parameter keys are case-insensitive.", duplicateParameterException.Message);
         }
 
@@ -111,7 +111,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
             {
                 new Parameter() { Name = "/test/stringList", Type = ParameterType.StringList, Value = "value1,value2" }
             };
-            var result = _processor.ProcessParameters(parameters, "/test");
+            var result = _parameterProcessor.ProcessParameters(parameters, "/test");
 
             Assert.Equal(2, result.Count);
             Assert.True(result.ContainsKey("stringList:0"));
