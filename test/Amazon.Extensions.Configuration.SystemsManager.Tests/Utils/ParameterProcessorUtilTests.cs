@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Text.Json;
 using Amazon.Extensions.Configuration.SystemsManager.Utils;
-using Amazon.SimpleSystemsManagement.Model;
 using Xunit;
 
 namespace Amazon.Extensions.Configuration.SystemsManager.Tests.Utils
@@ -12,10 +11,10 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests.Utils
         public void ParseJsonParameterSuccessfully()
         {
             var result = new Dictionary<string, string>();
-            var parameter = new Parameter { Value = "{\"key\": \"value\"}" };
+            var value = "{\"key\": \"value\"}";
             var keyPrefix = "prefix";
 
-            ParameterProcessorUtil.ParseJsonParameter(parameter, keyPrefix, result);
+            ParameterProcessorUtil.ParseJsonParameter(keyPrefix, value, result);
 
             Assert.Single(result);
             Assert.Contains("prefix:key", result.Keys);
@@ -26,30 +25,30 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests.Utils
         public void ParseJsonParameterWithDuplicateKeyThrowsException()
         {
             var result = new Dictionary<string, string> { { "prefix:key", "value" } };
-            var parameter = new Parameter { Value = "{\"key\": \"newvalue\"}" };
+            var value = "{\"key\": \"newvalue\"}";
             var keyPrefix = "prefix";
 
-            Assert.Throws<DuplicateParameterException>(() => ParameterProcessorUtil.ParseJsonParameter(parameter, keyPrefix, result));
+            Assert.Throws<DuplicateParameterException>(() => ParameterProcessorUtil.ParseJsonParameter(keyPrefix, value, result));
         }
 
         [Fact]
         public void ParseJsonParameterForInvalidJsonThrowsException()
         {
             var result = new Dictionary<string, string>();
-            var parameter = new Parameter { Value = "invalid json" };
+            var value = "invalid json";
             var keyPrefix = "";
 
-            Assert.ThrowsAny<JsonException>(() => ParameterProcessorUtil.ParseJsonParameter(parameter, keyPrefix, result));
+            Assert.ThrowsAny<JsonException>(() => ParameterProcessorUtil.ParseJsonParameter(keyPrefix, value, result));
         }
 
         [Fact]
         public void ParseStringListParameterSuccessfully()
         {
             var result = new Dictionary<string, string>();
-            var parameter = new Parameter { Value = "value1,value2,value3" };
+            var value = "value1,value2,value3";
             var keyPrefix = "prefix";
 
-            ParameterProcessorUtil.ParseStringListParameter(parameter, keyPrefix, result);
+            ParameterProcessorUtil.ParseStringListParameter(keyPrefix, value, result);
 
             Assert.Equal(3, result.Count);
             Assert.Contains("prefix:0", result.Keys);
@@ -64,20 +63,20 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests.Utils
         public void ParseStringListParameterWithDuplicateKeyThrowsException()
         {
             var result = new Dictionary<string, string> { { "prefix:0", "value" } };
-            var parameter = new Parameter { Value = "value1,value2,value3" };
+            var value = "value1,value2,value3";
             var keyPrefix = "prefix";
 
-            Assert.Throws<DuplicateParameterException>(() => ParameterProcessorUtil.ParseStringListParameter(parameter, keyPrefix, result));
+            Assert.Throws<DuplicateParameterException>(() => ParameterProcessorUtil.ParseStringListParameter(keyPrefix, value, result));
         }
-        
+
         [Fact]
         public void ParseStringParameterSuccessfully()
         {
             var result = new Dictionary<string, string>();
-            var parameter = new Parameter { Value = "stringValue" };
+            var value = "stringValue";
             var key = "myKey";
 
-            ParameterProcessorUtil.ParseStringParameter(parameter, key, result);
+            ParameterProcessorUtil.ParseStringParameter(key, value, result);
 
             Assert.Single(result);
             Assert.Contains("myKey", result.Keys);
@@ -88,11 +87,10 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests.Utils
         public void ParseStringParameterWithDuplicateKeyThrowsException()
         {
             var result = new Dictionary<string, string> { { "myKey", "existingValue" } };
-            var parameter = new Parameter { Value = "newValue" };
+            var value = "newValue";
             var key = "myKey";
 
-            Assert.Throws<DuplicateParameterException>(() => ParameterProcessorUtil.ParseStringParameter(parameter, key, result));
+            Assert.Throws<DuplicateParameterException>(() => ParameterProcessorUtil.ParseStringParameter(key, value, result));
         }
-
     }
 }
