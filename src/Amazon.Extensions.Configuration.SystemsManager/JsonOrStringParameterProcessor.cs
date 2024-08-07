@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using Amazon.SimpleSystemsManagement;
 using Amazon.SimpleSystemsManagement.Model;
 using static Amazon.Extensions.Configuration.SystemsManager.Utils.ParameterProcessorUtil;
@@ -28,7 +29,11 @@ namespace Amazon.Extensions.Configuration.SystemsManager
                     continue;
                 }
 
-                if (!TryParseJsonParameter(parameter, prefix, result))
+                try
+                {
+                    ParseJsonParameter(parameter, prefix, result);
+                }
+                catch (JsonException)
                 {
                     ParseStringParameter(parameter, prefix, result);
                 }

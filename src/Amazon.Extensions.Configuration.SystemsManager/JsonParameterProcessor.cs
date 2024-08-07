@@ -36,7 +36,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager
             {
                 var prefix = GetKey(parameter, path);
 
-                TryParseJsonParameter(parameter, prefix, result);
+                ParseJsonParameter(parameter, prefix, result);
             }
 
             return result;

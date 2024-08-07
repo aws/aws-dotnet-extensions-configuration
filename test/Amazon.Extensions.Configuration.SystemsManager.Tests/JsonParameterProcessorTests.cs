@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text.Json;
 using Amazon.SimpleSystemsManagement.Model;
 using Xunit;
 
@@ -57,6 +58,18 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
 
             const string path = "/";
             Assert.Throws<DuplicateParameterException>(() => _parameterProcessor.ProcessParameters(parameters, path));
+        }
+
+        [Fact]
+        public void InvalidJsonTest()
+        {
+            var parameters = new List<Parameter>
+            {
+                new Parameter {Name = "/p1", Value = "String value"},
+            };
+
+            const string path = "/";
+            Assert.ThrowsAny<JsonException>(() => _parameterProcessor.ProcessParameters(parameters, path));
         }
     }
 }
