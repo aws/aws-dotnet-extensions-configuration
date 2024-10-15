@@ -25,7 +25,11 @@ using Amazon.Extensions.Configuration.SystemsManager.Internal;
 
 namespace Amazon.Extensions.Configuration.SystemsManager.AppConfig
 {
+    // Types that own disposable fields should be disposable. This warning is okay to ignore because
+    // the instance of IAmazonAppConfigData is meant to last for the length of the application.
+#pragma warning disable CA1001
     public class AppConfigProcessor : ISystemsManagerProcessor
+#pragma warning restore CA1001
     {
         private AppConfigConfigurationSource Source { get; }
         private IDictionary<string, string> LastConfig { get; set; }
