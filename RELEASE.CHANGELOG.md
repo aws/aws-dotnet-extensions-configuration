@@ -1,4 +1,8 @@
-﻿### Release 2024-07-30
+﻿### Release 2024-10-15
+* **Amazon.Extensions.Configuration.SystemsManager (6.2.2)**
+  * Update System.Text.Json for .NET Standard 2.0 target to version 8.0.5.
+
+### Release 2024-07-30
 * **Amazon.Extensions.Configuration.SystemsManager (6.2.1)**
   * For .NET Standard 2.0 target updated the dependency version of System.Text.Json to version 8.0.4
   
