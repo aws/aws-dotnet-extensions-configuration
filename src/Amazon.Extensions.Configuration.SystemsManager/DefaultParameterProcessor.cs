@@ -38,7 +38,11 @@ namespace Amazon.Extensions.Configuration.SystemsManager
             var name = parameter.Name.StartsWith(path, StringComparison.OrdinalIgnoreCase) 
                 ? parameter.Name.Substring(path.Length) 
                 : parameter.Name;
+#if NETCOREAPP3_1_OR_GREATER
+            return name.TrimStart('/').Replace("/", KeyDelimiter, StringComparison.InvariantCulture);
+#else
             return name.TrimStart('/').Replace("/", KeyDelimiter);
+#endif
         }
 
         public virtual string GetValue(Parameter parameter, string path) => parameter.Value;

@@ -76,7 +76,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
                     VisitPrimitive(element);
                     break;
                 case JsonValueKind.Null:
-                    VisitNull(element);
+                    VisitNull();
                     break;
             }
 
@@ -95,7 +95,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
             }
         }
 
-        private void VisitNull(JsonElement data)
+        private void VisitNull()
         {
             var key = _currentPath;
             _data[key] = null;
