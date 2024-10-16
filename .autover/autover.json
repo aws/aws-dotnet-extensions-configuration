@@ -1,0 +1,11 @@
+{
+    "Projects": [
+        {
+            "Name": "Amazon.Extensions.Configuration.SystemsManager",
+            "Path": "src/Amazon.Extensions.Configuration.SystemsManager/Amazon.Extensions.Configuration.SystemsManager.csproj"
+        }
+    ],
+    "UseCommitsForChangelog": false,
+    "DefaultIncrementType": "Patch",
+    "ChangeFilesDetermineIncrementType": true
+}
