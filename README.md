@@ -144,6 +144,35 @@ public class SampleLambda
 }
 ```
 
+# Hierarchical configuration data
+Let's assume we want to load configuration per the below class hierarchy:
+```csharp
+public class DemoConfig
+{
+    public string TestItem { get; set; }
+    public DemoSubConfig SubConfig { get; set; }
+}
+
+public class DemoSubConfig
+{
+    public string SubItem { get; set; }
+}
+```
+In System Manager parameter store, these hierarchical values could be represented with below names (notice the use of `/` delimiter):
+| Name    | Type |
+| :-------- | :------- |
+| /my-application/Config/TestItem  | String    |
+| /my-application/Config/SubConfig/SubItem | String     |
+
+Using `WebApplicationBuilder` as an example, the above configuration hierarchy could be loaded using below code:
+```csharp
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Configuration.AddSystemsManager($"/my-application/");
+
+builder.Services.Configure<DemoConfig>(builder.Configuration.GetSection("Config"));
+```
+
 ## Samples
 
 ### Custom ParameterProcessor Sample
@@ -209,7 +238,7 @@ For more information and other configurable options please refer to [Configuring
 
 # Permissions
 ## Parameter Store
-The AWS credentials used must have access to the `ssm:GetParameters` service operation from AWS System Manager. Below is an example IAM policy for this action.
+The AWS credentials used must have access to the `ssm:GetParametersByPath` service operation from AWS System Manager. Below is an example IAM policy for this action.
 ```JSON
 {
     "Version": "2012-10-17",
@@ -217,7 +246,7 @@ The AWS credentials used must have access to the `ssm:GetParameters` service ope
         {
             "Sid": "SSMPermissionStatement",
             "Effect": "Allow",
-            "Action": "ssm:GetParameters",
+            "Action": "ssm:GetParametersByPath",
             "Resource": "arn:aws:ssm:${Region}:${Account}:parameter/${ParameterNamePrefix}*"
         }
     ]

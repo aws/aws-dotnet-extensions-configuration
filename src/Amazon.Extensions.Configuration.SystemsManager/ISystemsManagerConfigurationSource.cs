@@ -27,7 +27,9 @@ namespace Amazon.Extensions.Configuration.SystemsManager
         /// <summary>
         /// Determines if loading configuration data from AWS Systems Manager Parameter Store is optional.
         /// </summary>
+#pragma warning disable CA1716 // Identifiers should not match keywords: This would be a breaking change to change this name now.
         bool Optional { get; set; }
+#pragma warning restore CA1716 // Identifiers should not match keywords
 
         /// <summary>
         /// Parameters will be reloaded from the AWS Systems Manager Parameter Store after the specified time frame
