@@ -126,7 +126,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.AppConfig
 
                     var response = await _appConfigDataClient.GetLatestConfigurationAsync(request).ConfigureAwait(false);
                     PollConfigurationToken = response.NextPollConfigurationToken;
-                    NextAllowedPollTime = DateTime.UtcNow.AddSeconds(response.NextPollIntervalInSeconds);
+                    NextAllowedPollTime = DateTime.UtcNow.AddSeconds(response.NextPollIntervalInSeconds ?? 0);
 
                     // Configuration is empty when the last received config is the latest
                     // so only attempt to parse the AppConfig response when it is not empty
