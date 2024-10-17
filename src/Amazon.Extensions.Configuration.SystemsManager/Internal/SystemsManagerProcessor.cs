@@ -63,7 +63,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
                 {
                     var response = await client.GetParametersByPathAsync(new GetParametersByPathRequest { Path = Source.Path, Recursive = true, WithDecryption = true, NextToken = nextToken, ParameterFilters = Source.Filters }).ConfigureAwait(false);
                     nextToken = response.NextToken;
-                    parameters.AddRange(response.Parameters);
+                    parameters.AddRange(response.Parameters ?? new List<Parameter>());
                 } while (!string.IsNullOrEmpty(nextToken));
 
                 return AddPrefix(Source.ParameterProcessor.ProcessParameters(parameters, Source.Path), Source.Prefix);
