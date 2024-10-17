@@ -1,4 +1,11 @@
-﻿## Release 2024-10-15
+## Release 2024-10-17
+
+### Amazon.Extensions.Configuration.SystemsManager (7.0.0-preview.1)
+* Updated the .NET SDK dependencies to the latest version 4.0.0-preview.4
+* Marked project as trimmable
+* Added SourceLink support
+
+## Release 2024-10-15
 
 ### Amazon.Extensions.Configuration.SystemsManager (6.2.2)
 * Update System.Text.Json for .NET Standard 2.0 target to version 8.0.5.
