@@ -84,11 +84,13 @@ namespace Amazon.Extensions.Configuration.SystemsManager.AppConfig
 
             if(_appConfigDataClient != null)
             {
-                return await GetDataFromServiceAsync().ConfigureAwait(false);
+                return await GetDataFromServiceAsync().ConfigureAwait(false) 
+                       ?? new Dictionary<string, string>();
             }
             else
             {
-                return await GetDataFromLambdaExtensionAsync().ConfigureAwait(false);
+                return await GetDataFromLambdaExtensionAsync().ConfigureAwait(false) 
+                       ?? new Dictionary<string, string>();
             }
         }
 
