@@ -1,4 +1,9 @@
-﻿## Release 2024-10-15
+## Release 2025-02-20
+
+### Amazon.Extensions.Configuration.SystemsManager (6.3.0)
+* Add opt-in JsonOrStringParameterProcessor processor supporting parameters being either strings or JSON
+
+## Release 2024-10-15
 
 ### Amazon.Extensions.Configuration.SystemsManager (6.2.2)
 * Update System.Text.Json for .NET Standard 2.0 target to version 8.0.5.
