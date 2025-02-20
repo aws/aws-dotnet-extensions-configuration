@@ -1,0 +1,11 @@
+{
+  "Projects": [
+    {
+      "Name": "Amazon.Extensions.Configuration.SystemsManager",
+      "Type": "Minor",
+      "ChangelogMessages": [
+        "Add opt-in JsonOrStringParameterProcessor processor supporting parameters being either strings or JSON"
+      ]
+    }
+  ]
+}
