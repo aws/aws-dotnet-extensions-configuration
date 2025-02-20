@@ -60,7 +60,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
             };
             var result = _parameterProcessor.ProcessParameters(parameters, "/test");
 
-            Assert.Equal(1, result.Count);
+            Assert.Single(result);
             Assert.True(result.ContainsKey("stringParam"));
             Assert.Equal("some string", result["stringParam"]);
         }
