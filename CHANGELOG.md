@@ -1,3 +1,8 @@
+## Release 2025-02-20
+
+### Amazon.Extensions.Configuration.SystemsManager (6.3.0)
+* Add opt-in JsonOrStringParameterProcessor processor supporting parameters being either strings or JSON
+
 ## Release 2024-10-17
 
 ### Amazon.Extensions.Configuration.SystemsManager (7.0.0-preview.1)
