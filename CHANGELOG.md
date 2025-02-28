@@ -1,3 +1,8 @@
+## Release 2025-02-28
+
+### Amazon.Extensions.Configuration.SystemsManager (7.0.0-preview.2)
+* Update .NET SDK dependencies to v4.0.0-preview.8
+
 ## Release 2025-02-20
 
 ### Amazon.Extensions.Configuration.SystemsManager (6.3.0)
