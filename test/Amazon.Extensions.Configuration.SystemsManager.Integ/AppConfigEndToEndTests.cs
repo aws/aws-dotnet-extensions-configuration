@@ -6,7 +6,6 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-using Amazon;
 using Amazon.AppConfig;
 using Amazon.AppConfig.Model;
 using Amazon.Extensions.NETCore.Setup;
