@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <!-- Included netstandard2.0 support for a .NET Framework use-case, see: https://github.com/aws/aws-dotnet-extensions-configuration/pull/150 -->
-    <TargetFrameworks>netstandard2.0;netcoreapp3.1;net6.0;net8.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;netcoreapp3.1;net8.0</TargetFrameworks>
     <AssemblyName>Amazon.Extensions.Configuration.SystemsManager</AssemblyName>
     <RootNamespace>Amazon.Extensions.Configuration.SystemsManager</RootNamespace>
     <OutputType>Library</OutputType>
