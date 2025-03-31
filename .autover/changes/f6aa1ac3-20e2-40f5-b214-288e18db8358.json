@@ -5,7 +5,8 @@
       "Type": "Minor",
       "ChangelogMessages": [
         "Update AWS SDK to Preview 11",
-        "Remove support for .NET 6"
+        "Remove support for .NET 6",
+        "Remove support for netcoreapp3.1"
       ]
     }
   ]
