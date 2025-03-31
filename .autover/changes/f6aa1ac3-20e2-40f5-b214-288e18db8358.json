@@ -2,7 +2,7 @@
   "Projects": [
     {
       "Name": "Amazon.Extensions.Configuration.SystemsManager",
-      "Type": "Minor",
+      "Type": "Major",
       "ChangelogMessages": [
         "Update AWS SDK to Preview 11",
         "Remove support for .NET 6",
