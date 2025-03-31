@@ -4,7 +4,8 @@
       "Name": "Amazon.Extensions.Configuration.SystemsManager",
       "Type": "Patch",
       "ChangelogMessages": [
-        "Update AWS SDK to Preview 11"
+        "Update AWS SDK to Preview 11",
+        "Remove support for .NET 6"
       ]
     }
   ]
