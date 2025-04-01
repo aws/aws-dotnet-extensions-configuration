@@ -30,7 +30,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
             if (e is WebServiceRequestEventArgs args)
             {
                 if (args.Headers.ContainsKey(UserAgentHeader) &&
-#if NETCOREAPP3_1_OR_GREATER
+#if NET8_0_OR_GREATER
                     !args.Headers[UserAgentHeader].Contains(UserAgentSuffix, System.StringComparison.InvariantCulture)
 #else
                     !args.Headers[UserAgentHeader].Contains(UserAgentSuffix)
