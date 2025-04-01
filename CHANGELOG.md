@@ -1,3 +1,10 @@
+## Release 2025-04-01 #2
+
+### Amazon.Extensions.Configuration.SystemsManager (7.0.0-preview.3)
+* Update AWS SDK to Preview 11
+* Remove support for .NET 6
+* Remove support for netcoreapp3.1
+
 ## Release 2025-02-28
 
 ### Amazon.Extensions.Configuration.SystemsManager (7.0.0-preview.2)
