@@ -44,9 +44,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AWSSDK.AppConfigData" Version="4.0.0-preview.11" />
-    <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="4.0.0-preview.11" />
-    <PackageReference Include="AWSSDK.SimpleSystemsManagement" Version="4.0.0-preview.11" />
+    <PackageReference Include="AWSSDK.AppConfigData" Version="4.0.0" />
+    <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="4.0.0" />
+    <PackageReference Include="AWSSDK.SimpleSystemsManagement" Version="4.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.*" />
     <PackageReference Include="System.Text.Json" Condition=" '$(TargetFramework)' == 'netstandard2.0' " Version="8.0.5" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
