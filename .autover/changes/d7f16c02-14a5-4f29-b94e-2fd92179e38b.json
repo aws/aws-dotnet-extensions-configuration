@@ -1,0 +1,11 @@
+{
+  "Projects": [
+    {
+      "Name": "Amazon.Extensions.Configuration.SystemsManager",
+      "Type": "Patch",
+      "ChangelogMessages": [
+        "Updated the .NET SDK dependencies to the latest version GA 4.0.0"
+      ]
+    }
+  ]
+}
