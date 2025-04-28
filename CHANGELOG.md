@@ -1,3 +1,8 @@
+## Release 2025-04-28
+
+### Amazon.Extensions.Configuration.SystemsManager (7.0.0)
+* Updated the .NET SDK dependencies to the latest version GA 4.0.0
+
 ## Release 2025-04-01 #2
 
 ### Amazon.Extensions.Configuration.SystemsManager (7.0.0-preview.3)
