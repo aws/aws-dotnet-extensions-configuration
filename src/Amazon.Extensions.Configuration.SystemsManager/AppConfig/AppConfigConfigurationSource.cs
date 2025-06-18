@@ -51,6 +51,11 @@ namespace Amazon.Extensions.Configuration.SystemsManager.AppConfig
 
         /// <inheritdoc />
         public TimeSpan? ReloadAfter { get; set; }
+        
+        /// <summary>
+        /// Name of the node to wrap the configuration data in.
+        /// </summary>
+        public string WrapperNodeName { get; set; }
 
         /// <summary>
         /// Indicates to use configured lambda extension HTTP client to retrieve AppConfig data.

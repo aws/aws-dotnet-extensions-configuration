@@ -93,6 +93,19 @@ namespace Amazon.Extensions.Configuration.SystemsManager.AppConfig
                        ?? new Dictionary<string, string>();
             }
         }
+        
+        private async Task AddWrapperNodeAsync(Stream configStream, Stream wrappedStream)
+        {
+            string wrappedConfig;
+            using (var reader = new StreamReader(configStream))
+            {
+                wrappedConfig = $"{{\"{Source.WrapperNodeName}\":{await reader.ReadToEndAsync().ConfigureAwait(false)}}}";
+            }
+
+            var wrappedConfigBytes = System.Text.Encoding.UTF8.GetBytes(wrappedConfig);
+            await wrappedStream.WriteAsync(wrappedConfigBytes, 0, wrappedConfigBytes.Length).ConfigureAwait(false);
+            wrappedStream.Position = 0;
+        }
 
         private async Task<IDictionary<string,string>> GetDataFromLambdaExtensionAsync()
         {
@@ -134,7 +147,18 @@ namespace Amazon.Extensions.Configuration.SystemsManager.AppConfig
                     // so only attempt to parse the AppConfig response when it is not empty
                     if (response.ContentLength > 0)
                     {
-                        LastConfig = ParseConfig(response.ContentType, response.Configuration);
+                        if (string.IsNullOrWhiteSpace(Source.WrapperNodeName))
+                        {
+                            LastConfig = ParseConfig(response.ContentType, response.Configuration);
+                        }
+                        else
+                        {
+                            using (var wrappedConfiguration = new MemoryStream())
+                            {
+                                await AddWrapperNodeAsync(response.Configuration, wrappedConfiguration).ConfigureAwait(false);
+                                LastConfig = ParseConfig(response.ContentType, wrappedConfiguration);
+                            }
+                        }
                     }
                 }
                 finally
