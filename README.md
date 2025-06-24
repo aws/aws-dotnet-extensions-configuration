@@ -214,6 +214,51 @@ namespace CustomParameterProcessorExample
 }
 ```
 
+### Simple AppConfig FeatureFlag Sample
+```csharp
+//
+// AppConfigFeatureFlag.cs
+//
+public class AppConfigFeatureFlag
+{
+    [JsonPropertyName("enabled")]
+    public bool Enabled { get; set; }
+}
+
+//
+// Program.cs
+//
+
+// Map feature flag configuration 
+builder.Services.Configure<Dictionary<string, AppConfigFeatureFlag>>(builder.Configuration.GetSection("FeatureFlags"));
+
+// Add AppConfig configuration source
+var awsAppConfigClient = new AmazonAppConfigDataClient();
+builder.Configuration
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddAppConfig(new AppConfigConfigurationSource()
+    {
+        ApplicationId = "application",
+        EnvironmentId = "Default",
+        ConfigProfileId = "my-appconfig-feature-profile",
+        AwsOptions = new AWSOptions(),
+        ReloadAfter = new TimeSpan(0, 0, 30),
+        WrapperNodeName = "FeatureFlags" // Nest AppConfig FeatureFlag data under this node
+    });
+
+//
+// TestApi.cs
+//
+public class TestApi : ITestApi
+{
+    private readonly IOptionsMonitor<Dictionary<string, AppConfigFeatureFlag>> _FeatureFlags;
+    public TestApi(IOptionsMonitor<Dictionary<string, AppConfigFeatureFlag>> featureFlags)
+    {
+        _FeatureFlags = featureFlags;
+    }
+}
+```
+
 For more complete examples, take a look at sample projects available in [samples directory](https://github.com/aws/aws-dotnet-extensions-configuration/tree/master/samples).
 
 # Configuring Systems Manager Client
