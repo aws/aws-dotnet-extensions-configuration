@@ -238,7 +238,8 @@ namespace Microsoft.Extensions.Configuration
             string configProfileId,
             AWSOptions awsOptions = null,
             bool optional = false,
-            TimeSpan? reloadAfter = null
+            TimeSpan? reloadAfter = null,
+            string wrapperNodeName = null
         )
         {
             return new AppConfigConfigurationSource
@@ -248,7 +249,8 @@ namespace Microsoft.Extensions.Configuration
                 ConfigProfileId = configProfileId,
                 AwsOptions = awsOptions,
                 Optional = optional,
-                ReloadAfter = reloadAfter
+                ReloadAfter = reloadAfter,
+                WrapperNodeName = wrapperNodeName
             };
         }
     }
