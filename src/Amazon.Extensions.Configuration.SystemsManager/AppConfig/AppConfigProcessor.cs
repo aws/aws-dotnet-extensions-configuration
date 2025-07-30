@@ -163,7 +163,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.AppConfig
             return (await appConfigClient.StartConfigurationSessionAsync(request).ConfigureAwait(false)).InitialConfigurationToken;
         }
 
-        public static IDictionary<string, string> ParseConfig(string contentType, Stream configuration)
+        internal static IDictionary<string, string> ParseConfig(string contentType, Stream configuration)
         {
             try
             {
