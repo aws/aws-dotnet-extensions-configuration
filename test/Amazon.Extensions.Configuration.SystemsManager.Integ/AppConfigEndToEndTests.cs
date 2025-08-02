@@ -84,6 +84,42 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Integ
             }
         }
 
+        [Fact]
+        public async Task AppConfigWithOctetStreamContentType()
+        {
+            var configSettings = new Dictionary<string, string>
+            {
+                { "key1", "value1" },
+                { "key2", "value2" },
+                { "database:connectionString", "server=localhost;database=test" },
+                { "api:timeout", "30" }
+            };
+            
+            // Create AppConfig with application/octet-stream content type (simulates Parameter Store backend)
+            (string applicationId, string environmentId, string configProfileId) = 
+                await CreateAppConfigResourcesAsync("OctetStreamTest", configSettings, "application/octet-stream");
+            
+            try
+            {
+                var builder = new ConfigurationBuilder()
+                                .AddAppConfig(applicationId, environmentId, configProfileId, 
+                                            new AWSOptions { Region = RegionEndpoint.USWest2 }, 
+                                            TimeSpan.FromSeconds(5));
+
+                var configuration = builder.Build();
+
+                // Verify configuration loads correctly despite application/octet-stream content type
+                Assert.Equal("value1", configuration["key1"]);
+                Assert.Equal("value2", configuration["key2"]);
+                Assert.Equal("server=localhost;database=test", configuration["database:connectionString"]);
+                Assert.Equal("30", configuration["api:timeout"]);
+            }
+            finally
+            {
+                await CleanupAppConfigResourcesAsync(applicationId, environmentId, configProfileId);
+            }
+        }
+
         private async Task CleanupAppConfigResourcesAsync(string applicationId, string environmentId, string configProfileId)
         {
             await _appConfigClient.DeleteEnvironmentAsync(new DeleteEnvironmentRequest {ApplicationId = applicationId, EnvironmentId = environmentId });

@@ -1,0 +1,11 @@
+{
+  "Projects": [
+    {
+      "Name": "Amazon.Extensions.Configuration.SystemsManager",
+      "Type": "Patch",
+      "ChangelogMessages": [
+        "Removed content type check for app config. We now always try to parse json first"
+      ]
+    }
+  ]
+}
