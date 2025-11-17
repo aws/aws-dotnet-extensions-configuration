@@ -1,3 +1,9 @@
+## Release 2025-11-17
+
+### Amazon.Extensions.Configuration.SystemsManager (7.0.1)
+* Update AWS SDK Dependencies
+* Removed content type check for app config. We now always try to parse json first
+
 ## Release 2025-04-28
 
 ### Amazon.Extensions.Configuration.SystemsManager (7.0.0)

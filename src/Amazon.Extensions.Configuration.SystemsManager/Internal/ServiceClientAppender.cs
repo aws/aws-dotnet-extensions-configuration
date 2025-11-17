@@ -21,24 +21,21 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
 {
     public static class ServiceClientAppender
     {
-        private const string UserAgentHeader = "User-Agent";
         private static readonly string AssemblyVersion = typeof(AppConfigProcessor).GetTypeInfo().Assembly.GetName().Version.ToString();
         private static readonly string UserAgentSuffix = $"lib/SSMConfigProvider#{AssemblyVersion}";
 
         public static void ServiceClientBeforeRequestEvent(object sender, RequestEventArgs e)
         {
-            if (e is WebServiceRequestEventArgs args)
-            {
-                if (args.Headers.ContainsKey(UserAgentHeader) &&
+            WebServiceRequestEventArgs args = e as WebServiceRequestEventArgs;
+            if (args != null && args.Request is Amazon.Runtime.Internal.IAmazonWebServiceRequest internalRequest &&
 #if NET8_0_OR_GREATER
-                    !args.Headers[UserAgentHeader].Contains(UserAgentSuffix, System.StringComparison.InvariantCulture)
+                !internalRequest.UserAgentDetails.GetCustomUserAgentComponents().Contains(UserAgentSuffix, System.StringComparison.InvariantCulture)
 #else
-                    !args.Headers[UserAgentHeader].Contains(UserAgentSuffix)
+                !internalRequest.UserAgentDetails.GetCustomUserAgentComponents().Contains(UserAgentSuffix)
 #endif
-                    )
-                {
-                    args.Headers[UserAgentHeader] = args.Headers[UserAgentHeader] + " " + UserAgentSuffix;
-                }
+                )
+            {
+                internalRequest.UserAgentDetails.AddUserAgentComponent(UserAgentSuffix);
             }
         }
     }

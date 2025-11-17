@@ -26,7 +26,7 @@
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     
-    <Version>7.0.0</Version>
+    <Version>7.0.1</Version>
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
@@ -38,15 +38,19 @@
     <None Include="../../icon.png" Pack="true" PackagePath="" />
   </ItemGroup>
 
-  <PropertyGroup>
+  <ItemGroup>
+	<InternalsVisibleTo Include="Amazon.Extensions.Configuration.SystemsManager.Tests,PublicKey=0024000004800000940000000602000000240000525341310004000001000100db5f59f098d27276c7833875a6263a3cc74ab17ba9a9df0b52aedbe7252745db7274d5271fd79c1f08f668ecfa8eaab5626fa76adc811d3c8fc55859b0d09d3bc0a84eecd0ba891f2b8a2fc55141cdcc37c2053d53491e650a479967c3622762977900eddbf1252ed08a2413f00a28f3a0752a81203f03ccb7f684db373518b4" />
+  </ItemGroup>
+
+	<PropertyGroup>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\public.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AWSSDK.AppConfigData" Version="4.0.0" />
-    <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="4.0.0" />
-    <PackageReference Include="AWSSDK.SimpleSystemsManagement" Version="4.0.0" />
+    <PackageReference Include="AWSSDK.AppConfigData" Version="4.0.2.4" />
+    <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="4.0.3.11" />
+    <PackageReference Include="AWSSDK.SimpleSystemsManagement" Version="4.0.6.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.*" />
     <PackageReference Include="System.Text.Json" Condition=" '$(TargetFramework)' == 'netstandard2.0' " Version="8.0.5" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />

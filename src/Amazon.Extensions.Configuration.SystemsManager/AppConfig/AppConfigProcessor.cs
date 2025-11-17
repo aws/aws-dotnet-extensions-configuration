@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.AppConfigData;
@@ -162,20 +163,17 @@ namespace Amazon.Extensions.Configuration.SystemsManager.AppConfig
             return (await appConfigClient.StartConfigurationSessionAsync(request).ConfigureAwait(false)).InitialConfigurationToken;
         }
 
-        private static IDictionary<string, string> ParseConfig(string contentType, Stream configuration)
+        internal static IDictionary<string, string> ParseConfig(string contentType, Stream configuration)
         {
-            // Content-Type has format "media-type; charset" or "media-type; boundary" (for multipart entities).
-            if (contentType != null)
+            try
             {
-                contentType = contentType.Split(';')[0];
+                return JsonConfigurationParser.Parse(configuration);
             }
-
-            switch (contentType)
+            catch (JsonException ex)
             {
-                case "application/json":
-                    return JsonConfigurationParser.Parse(configuration);
-                default:
-                    throw new NotImplementedException($"Not implemented AppConfig type: {contentType}");
+                throw new InvalidOperationException(
+                    $"Failed to parse AppConfig content as JSON. Content-Type was '{contentType}'. {ex.Message}", 
+                    ex);
             }
         }
     }
