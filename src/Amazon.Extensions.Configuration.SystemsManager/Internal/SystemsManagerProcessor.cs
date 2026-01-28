@@ -43,9 +43,18 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
 
         public async Task<IDictionary<string, string>> GetDataAsync()
         {
-            return IsSecretsManagerPath(Source.Path)
-                ? await GetParameterAsync().ConfigureAwait(false)
-                : await GetParametersByPathAsync().ConfigureAwait(false);
+            if (IsSecretsManagerPath(Source.Path))
+            {
+                return await GetParameterAsync().ConfigureAwait(false);
+            }
+            else if (Source.ParameterNames != null && Source.ParameterNames.Any())
+            {
+                return await GetParametersByNamesAsync().ConfigureAwait(false);
+            }
+            else
+            {
+                return await GetParametersByPathAsync().ConfigureAwait(false);
+            }
         }
 
         private async Task<IDictionary<string, string>> GetParametersByPathAsync()
@@ -67,6 +76,54 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
                 } while (!string.IsNullOrEmpty(nextToken));
 
                 return AddPrefix(Source.ParameterProcessor.ProcessParameters(parameters, Source.Path), Source.Prefix);
+            }
+        }
+
+        private async Task<IDictionary<string, string>> GetParametersByNamesAsync()
+        {
+            using (var client = Source.AwsOptions.CreateServiceClient<IAmazonSimpleSystemsManagement>())
+            {
+                if (client is AmazonSimpleSystemsManagementClient impl)
+                {
+                    impl.BeforeRequestEvent += ServiceClientAppender.ServiceClientBeforeRequestEvent;
+                }
+
+                var allParameters = new List<Parameter>();
+                
+                // Construct full parameter names by combining path prefix with relative names
+                var fullParameterNames = Source.ParameterNames
+                    .Select(name => CombinePathAndName(Source.Path, name))
+                    .ToList();
+                
+                // Batch requests into groups of 10 (AWS API limit)
+                for (int i = 0; i < fullParameterNames.Count; i += 10)
+                {
+                    var batch = fullParameterNames.Skip(i).Take(10).ToList();
+                    
+                    var request = new GetParametersRequest
+                    {
+                        Names = batch,
+                        WithDecryption = true
+                    };
+                    
+                    var response = await client.GetParametersAsync(request).ConfigureAwait(false);
+                    
+                    // Handle invalid parameters
+                    if (response.InvalidParameters != null && response.InvalidParameters.Any())
+                    {
+                        if (!Source.Optional)
+                        {
+                            throw new ParameterNotFoundException(
+                                $"The following parameters were not found: {string.Join(", ", response.InvalidParameters)}");
+                        }
+                    }
+                    
+                    allParameters.AddRange(response.Parameters ?? new List<Parameter>());
+                }
+                
+                // Process parameters using the configured processor
+                // Pass the path so it can be stripped, just like GetParametersByPath
+                return AddPrefix(Source.ParameterProcessor.ProcessParameters(allParameters, Source.Path), Source.Prefix);
             }
         }
 
@@ -94,6 +151,36 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
                 ? input
                 : input.ToDictionary(pair => $"{prefix}{ConfigurationPath.KeyDelimiter}{pair.Key}", pair => pair.Value, StringComparer.OrdinalIgnoreCase);
 
+        }
+
+        private static string CombinePathAndName(string path, string name)
+        {
+            // Validate that name doesn't start with /
+            if (name.StartsWith("/", StringComparison.Ordinal))
+            {
+                throw new ArgumentException(
+                    $"Parameter name '{name}' must be relative (cannot start with /)", 
+                    nameof(name));
+            }
+            
+            // Ensure path ends with / for proper combination
+            if (!path.EndsWith("/", StringComparison.Ordinal))
+            {
+                path += "/";
+            }
+            
+            // Combine path and name
+            string combined = path + name;
+            
+            // Validate combined name doesn't exceed 2048 characters
+            if (combined.Length > 2048)
+            {
+                throw new ArgumentException(
+                    $"Full parameter name exceeds maximum length of 2048 characters: {combined.Length} characters",
+                    nameof(name));
+            }
+            
+            return combined;
         }
     }
 }
