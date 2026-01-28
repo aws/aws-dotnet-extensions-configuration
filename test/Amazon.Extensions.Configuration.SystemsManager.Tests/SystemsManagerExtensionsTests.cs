@@ -13,6 +13,7 @@
  * permissions and limitations under the License.
  */
 using System;
+using System.Linq;
 using Amazon.Extensions.NETCore.Setup;
 using Microsoft.Extensions.Configuration;
 using Xunit;
@@ -53,9 +54,9 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
 
         public static TheoryData<Func<IConfigurationBuilder, IConfigurationBuilder>, Type, string> WithAWSOptionsExtensionData => new TheoryData<Func<IConfigurationBuilder, IConfigurationBuilder>, Type, string>
         {
-            {builder => builder.AddSystemsManager(null, (AWSOptions)null), typeof(ArgumentNullException), "path"},
-            {builder => builder.AddSystemsManager("/path", (AWSOptions)null), typeof(ArgumentNullException), "awsOptions"},
-            {builder => builder.AddSystemsManager(null, new AWSOptions()), typeof(ArgumentNullException), "path"},
+            {builder => builder.AddSystemsManager(path: null, awsOptions: null), typeof(ArgumentNullException), "path"},
+            {builder => builder.AddSystemsManager(path: "/path", awsOptions: null), typeof(ArgumentNullException), "awsOptions"},
+            {builder => builder.AddSystemsManager(path: null, awsOptions: new AWSOptions()), typeof(ArgumentNullException), "path"},
             {builder => builder.AddSystemsManager("/aws/reference/secretsmanager/somevalue", new AWSOptions()), null, null},
             {builder => builder.AddSystemsManager("/path", new AWSOptions(), true), null, null},
             {builder => builder.AddSystemsManager("/path", new AWSOptions(), false), null, null},
@@ -169,7 +170,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
             var source = builder.Sources[builder.Sources.Count - 1] as SystemsManagerConfigurationSource;
             Assert.NotNull(source);
             Assert.NotNull(source.ParameterNames);
-            Assert.Equal(2, source.ParameterNames.Count); // Should only have "param1" and "param2" (case-insensitive)
+            Assert.Equal(2, source.ParameterNames.Count()); // Should only have "param1" and "param2" (case-insensitive)
             
             // Verify the actual names are preserved (first occurrence wins)
             Assert.Contains("param1", source.ParameterNames);
@@ -238,7 +239,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
             Assert.NotNull(source);
             Assert.Equal(path, source.Path);
             Assert.NotNull(source.ParameterNames);
-            Assert.Equal(3, source.ParameterNames.Count);
+            Assert.Equal(3, source.ParameterNames.Count());
             Assert.Contains("param1", source.ParameterNames);
             Assert.Contains("param2", source.ParameterNames);
             Assert.Contains("param3", source.ParameterNames);
@@ -307,7 +308,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
             var source = builder.Sources[builder.Sources.Count - 1] as SystemsManagerConfigurationSource;
             Assert.NotNull(source);
             Assert.Equal(path, source.Path);
-            Assert.Equal(2, source.ParameterNames.Count);
+            Assert.Equal(2, source.ParameterNames.Count());
             Assert.Equal(awsOptions, source.AwsOptions);
             Assert.Equal(optional, source.Optional);
             Assert.Equal(reloadAfter, source.ReloadAfter);
@@ -326,6 +327,59 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
             Assert.NotNull(source.AwsOptions); // Should have default AWS options
             Assert.Equal("/path", source.Path);
             Assert.Single(source.ParameterNames);
+        }
+
+        [Fact]
+        public void AddSystemsManager_WithParameterNames_SecretsManagerPath_ThrowsArgumentException()
+        {
+            var builder = new ConfigurationBuilder();
+            var parameterNames = new System.Collections.Generic.List<string> { "param1", "param2" };
+
+            var ex = Assert.Throws<ArgumentException>(() => 
+                builder.AddSystemsManager("/aws/reference/secretsmanager/mysecret", parameterNames, new AWSOptions(), false, TimeSpan.Zero));
+            Assert.Contains("Cannot use Secrets Manager path", ex.Message, StringComparison.Ordinal);
+            Assert.Contains("path", ex.ParamName, StringComparison.Ordinal);
+        }
+
+        [Fact]
+        public void AddSystemsManager_WithParameterNames_SecretsManagerPathCaseInsensitive_ThrowsArgumentException()
+        {
+            var builder = new ConfigurationBuilder();
+            var parameterNames = new System.Collections.Generic.List<string> { "param1" };
+
+            // Test various case combinations
+            var ex1 = Assert.Throws<ArgumentException>(() => 
+                builder.AddSystemsManager("/AWS/REFERENCE/SECRETSMANAGER/mysecret", parameterNames));
+            Assert.Contains("Cannot use Secrets Manager path", ex1.Message, StringComparison.Ordinal);
+
+            var ex2 = Assert.Throws<ArgumentException>(() => 
+                builder.AddSystemsManager("/Aws/Reference/SecretsManager/mysecret", parameterNames));
+            Assert.Contains("Cannot use Secrets Manager path", ex2.Message, StringComparison.Ordinal);
+
+            var ex3 = Assert.Throws<ArgumentException>(() => 
+                builder.AddSystemsManager("/aws/reference/SECRETSMANAGER/mysecret", parameterNames));
+            Assert.Contains("Cannot use Secrets Manager path", ex3.Message, StringComparison.Ordinal);
+        }
+
+        [Fact]
+        public void AddSystemsManager_WithParameterNames_NonSecretsManagerPath_Succeeds()
+        {
+            var builder = new ConfigurationBuilder();
+            var parameterNames = new System.Collections.Generic.List<string> { "param1", "param2" };
+
+            // These should all succeed
+            var result1 = builder.AddSystemsManager("/myapp/config", parameterNames);
+            Assert.NotNull(result1);
+
+            var result2 = builder.AddSystemsManager("/aws/myapp", parameterNames);
+            Assert.NotNull(result2);
+
+            var result3 = builder.AddSystemsManager("/reference/myapp", parameterNames);
+            Assert.NotNull(result3);
+
+            // Path that contains "secretsmanager" but doesn't start with the full Secrets Manager path
+            var result4 = builder.AddSystemsManager("/myapp/secretsmanager/config", parameterNames);
+            Assert.NotNull(result4);
         }
     }
 }

@@ -75,9 +75,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager
         /// with the <see cref="Path"/> to form full parameter names (e.g., "/gamma/connections/db").
         /// If not set, the provider will use GetParametersByPath to load all parameters under <see cref="Path"/>.
         /// </summary>
-#pragma warning disable CA2227 // Collection properties should be read-only - This property needs to be settable from extension methods
-        public List<string> ParameterNames { get; set; }
-#pragma warning restore CA2227
+        public IEnumerable<string> ParameterNames { get; set; }
 
         /// <inheritdoc />
         public IConfigurationProvider Build(IConfigurationBuilder builder)

@@ -109,13 +109,10 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
                     var response = await client.GetParametersAsync(request).ConfigureAwait(false);
                     
                     // Handle invalid parameters
-                    if (response.InvalidParameters != null && response.InvalidParameters.Any())
+                    if (response.InvalidParameters != null && response.InvalidParameters.Any() && !Source.Optional)
                     {
-                        if (!Source.Optional)
-                        {
-                            throw new ParameterNotFoundException(
-                                $"The following parameters were not found: {string.Join(", ", response.InvalidParameters)}");
-                        }
+                        throw new ParameterNotFoundException(
+                            $"The following parameters were not found: {string.Join(", ", response.InvalidParameters)}");
                     }
                     
                     allParameters.AddRange(response.Parameters ?? new List<Parameter>());

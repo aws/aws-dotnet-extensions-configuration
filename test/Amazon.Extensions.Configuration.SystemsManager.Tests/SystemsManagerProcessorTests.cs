@@ -211,7 +211,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
         {
             // Arrange
             var source = CreateTestSource("/aws/reference/secretsmanager/my-secret");
-            var processor = new SystemsManagerProcessor(source);
+            _ = new SystemsManagerProcessor(source);
 
             // Act & Assert
             // Verify that the path is recognized as a Secrets Manager path
@@ -224,7 +224,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
             // Arrange
             var source = CreateTestSource("/myapp");
             source.ParameterNames = new List<string> { "param1", "param2" };
-            var processor = new SystemsManagerProcessor(source);
+            _ = new SystemsManagerProcessor(source);
 
             // Act & Assert
             // Verify that ParameterNames is set and not empty
@@ -239,7 +239,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
             // Arrange
             var source = CreateTestSource("/myapp");
             // ParameterNames is null by default
-            var processor = new SystemsManagerProcessor(source);
+            _ = new SystemsManagerProcessor(source);
 
             // Act & Assert
             // Verify that ParameterNames is not set and path is not Secrets Manager
@@ -253,7 +253,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
             // Arrange
             var source = CreateTestSource("/myapp");
             source.ParameterNames = new List<string>(); // Empty list
-            var processor = new SystemsManagerProcessor(source);
+            _ = new SystemsManagerProcessor(source);
 
             // Act & Assert
             // Verify that ParameterNames is empty (should use path-based mode)

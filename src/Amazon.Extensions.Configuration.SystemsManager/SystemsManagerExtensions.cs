@@ -163,37 +163,52 @@ namespace Microsoft.Extensions.Configuration
         /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from AWS Systems Manager Parameter Store by loading specific parameter names.
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
-        /// <param name="path">The path prefix that will be prepended to each parameter name. The path will be removed from the variable names during processing.</param>
+        /// <param name="path">The path prefix that will be prepended to each parameter name. The path will be removed from the variable names during processing. Cannot be a Secrets Manager path (/aws/reference/secretsmanager).</param>
         /// <param name="parameterNames">A collection of relative parameter names to load. Names must be relative paths (e.g., "connections/db") and cannot start with "/".</param>
         /// <param name="awsOptions"><see cref="AWSOptions"/> used to create an AWS Systems Manager Client connection</param>
         /// <param name="optional">Whether the AWS Systems Manager Parameters are optional.</param>
         /// <param name="reloadAfter">Initiate reload after TimeSpan</param>
         /// <exception cref="ArgumentNullException"><paramref name="path"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><paramref name="parameterNames"/> cannot be null</exception>
+        /// <exception cref="ArgumentException"><paramref name="path"/> cannot be a Secrets Manager path (/aws/reference/secretsmanager)</exception>
         /// <exception cref="ArgumentException"><paramref name="parameterNames"/> cannot be empty after filtering</exception>
         /// <exception cref="ArgumentException">Parameter names cannot start with "/"</exception>
         /// <exception cref="ArgumentException">Parameter names cannot be null, empty, or whitespace</exception>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
-        public static IConfigurationBuilder AddSystemsManager(this IConfigurationBuilder builder, string path, List<string> parameterNames, AWSOptions awsOptions, bool optional, TimeSpan reloadAfter)
+        public static IConfigurationBuilder AddSystemsManager(this IConfigurationBuilder builder, string path, IEnumerable<string> parameterNames, AWSOptions awsOptions, bool optional, TimeSpan reloadAfter)
         {
             if (path == null) throw new ArgumentNullException(nameof(path));
             if (parameterNames == null) throw new ArgumentNullException(nameof(parameterNames));
 
+            // Validate that Secrets Manager paths are not used with parameter names
+            if (path.StartsWith("/aws/reference/secretsmanager", StringComparison.OrdinalIgnoreCase))
+            {
+                throw new ArgumentException("Cannot use Secrets Manager path (/aws/reference/secretsmanager) with parameter names. Secrets Manager references must be loaded individually without specifying parameter names.", nameof(path));
+            }
+
             // Filter out null, empty, or whitespace parameter names
             var validNames = new List<string>();
+            var validationErrors = new List<string>();
             foreach (var name in parameterNames)
             {
                 if (string.IsNullOrWhiteSpace(name))
                 {
-                    throw new ArgumentException("Parameter name cannot be null, empty, or whitespace", nameof(parameterNames));
+                    validationErrors.Add("Parameter name cannot be null, empty, or whitespace.");
+                    continue;
                 }
 
                 if (name.StartsWith("/", StringComparison.Ordinal))
                 {
-                    throw new ArgumentException($"Parameter name '{name}' must be relative (cannot start with /)", nameof(parameterNames));
+                    validationErrors.Add($"Parameter name '{name}' must be relative (cannot start with /).");
+                    continue;
                 }
 
                 validNames.Add(name);
+            }
+
+            if (validationErrors.Count > 0)
+            {
+                throw new ArgumentException("One or more parameter names are invalid: " + string.Join(" ", validationErrors), nameof(parameterNames));
             }
 
             if (validNames.Count == 0)
@@ -228,17 +243,18 @@ namespace Microsoft.Extensions.Configuration
         /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from AWS Systems Manager Parameter Store by loading specific parameter names.
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
-        /// <param name="path">The path prefix that will be prepended to each parameter name. The path will be removed from the variable names during processing.</param>
+        /// <param name="path">The path prefix that will be prepended to each parameter name. The path will be removed from the variable names during processing. Cannot be a Secrets Manager path (/aws/reference/secretsmanager).</param>
         /// <param name="parameterNames">A collection of relative parameter names to load. Names must be relative paths (e.g., "connections/db") and cannot start with "/".</param>
         /// <param name="awsOptions"><see cref="AWSOptions"/> used to create an AWS Systems Manager Client connection</param>
         /// <param name="optional">Whether the AWS Systems Manager Parameters are optional.</param>
         /// <exception cref="ArgumentNullException"><paramref name="path"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><paramref name="parameterNames"/> cannot be null</exception>
+        /// <exception cref="ArgumentException"><paramref name="path"/> cannot be a Secrets Manager path (/aws/reference/secretsmanager)</exception>
         /// <exception cref="ArgumentException"><paramref name="parameterNames"/> cannot be empty after filtering</exception>
         /// <exception cref="ArgumentException">Parameter names cannot start with "/"</exception>
         /// <exception cref="ArgumentException">Parameter names cannot be null, empty, or whitespace</exception>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
-        public static IConfigurationBuilder AddSystemsManager(this IConfigurationBuilder builder, string path, List<string> parameterNames, AWSOptions awsOptions, bool optional)
+        public static IConfigurationBuilder AddSystemsManager(this IConfigurationBuilder builder, string path, IEnumerable<string> parameterNames, AWSOptions awsOptions, bool optional)
         {
             return builder.AddSystemsManager(path, parameterNames, awsOptions, optional, TimeSpan.Zero);
         }
@@ -247,17 +263,18 @@ namespace Microsoft.Extensions.Configuration
         /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from AWS Systems Manager Parameter Store by loading specific parameter names.
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
-        /// <param name="path">The path prefix that will be prepended to each parameter name. The path will be removed from the variable names during processing.</param>
+        /// <param name="path">The path prefix that will be prepended to each parameter name. The path will be removed from the variable names during processing. Cannot be a Secrets Manager path (/aws/reference/secretsmanager).</param>
         /// <param name="parameterNames">A collection of relative parameter names to load. Names must be relative paths (e.g., "connections/db") and cannot start with "/".</param>
         /// <param name="awsOptions"><see cref="AWSOptions"/> used to create an AWS Systems Manager Client connection</param>
         /// <param name="reloadAfter">Initiate reload after TimeSpan</param>
         /// <exception cref="ArgumentNullException"><paramref name="path"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><paramref name="parameterNames"/> cannot be null</exception>
+        /// <exception cref="ArgumentException"><paramref name="path"/> cannot be a Secrets Manager path (/aws/reference/secretsmanager)</exception>
         /// <exception cref="ArgumentException"><paramref name="parameterNames"/> cannot be empty after filtering</exception>
         /// <exception cref="ArgumentException">Parameter names cannot start with "/"</exception>
         /// <exception cref="ArgumentException">Parameter names cannot be null, empty, or whitespace</exception>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
-        public static IConfigurationBuilder AddSystemsManager(this IConfigurationBuilder builder, string path, List<string> parameterNames, AWSOptions awsOptions, TimeSpan reloadAfter)
+        public static IConfigurationBuilder AddSystemsManager(this IConfigurationBuilder builder, string path, IEnumerable<string> parameterNames, AWSOptions awsOptions, TimeSpan reloadAfter)
         {
             return builder.AddSystemsManager(path, parameterNames, awsOptions, false, reloadAfter);
         }
@@ -266,16 +283,17 @@ namespace Microsoft.Extensions.Configuration
         /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from AWS Systems Manager Parameter Store by loading specific parameter names.
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
-        /// <param name="path">The path prefix that will be prepended to each parameter name. The path will be removed from the variable names during processing.</param>
+        /// <param name="path">The path prefix that will be prepended to each parameter name. The path will be removed from the variable names during processing. Cannot be a Secrets Manager path (/aws/reference/secretsmanager).</param>
         /// <param name="parameterNames">A collection of relative parameter names to load. Names must be relative paths (e.g., "connections/db") and cannot start with "/".</param>
         /// <param name="awsOptions"><see cref="AWSOptions"/> used to create an AWS Systems Manager Client connection</param>
         /// <exception cref="ArgumentNullException"><paramref name="path"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><paramref name="parameterNames"/> cannot be null</exception>
+        /// <exception cref="ArgumentException"><paramref name="path"/> cannot be a Secrets Manager path (/aws/reference/secretsmanager)</exception>
         /// <exception cref="ArgumentException"><paramref name="parameterNames"/> cannot be empty after filtering</exception>
         /// <exception cref="ArgumentException">Parameter names cannot start with "/"</exception>
         /// <exception cref="ArgumentException">Parameter names cannot be null, empty, or whitespace</exception>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
-        public static IConfigurationBuilder AddSystemsManager(this IConfigurationBuilder builder, string path, List<string> parameterNames, AWSOptions awsOptions)
+        public static IConfigurationBuilder AddSystemsManager(this IConfigurationBuilder builder, string path, IEnumerable<string> parameterNames, AWSOptions awsOptions)
         {
             return builder.AddSystemsManager(path, parameterNames, awsOptions, false, TimeSpan.Zero);
         }
@@ -284,17 +302,18 @@ namespace Microsoft.Extensions.Configuration
         /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from AWS Systems Manager Parameter Store by loading specific parameter names.
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
-        /// <param name="path">The path prefix that will be prepended to each parameter name. The path will be removed from the variable names during processing.</param>
+        /// <param name="path">The path prefix that will be prepended to each parameter name. The path will be removed from the variable names during processing. Cannot be a Secrets Manager path (/aws/reference/secretsmanager).</param>
         /// <param name="parameterNames">A collection of relative parameter names to load. Names must be relative paths (e.g., "connections/db") and cannot start with "/".</param>
         /// <param name="optional">Whether the AWS Systems Manager Parameters are optional.</param>
         /// <param name="reloadAfter">Initiate reload after TimeSpan</param>
         /// <exception cref="ArgumentNullException"><paramref name="path"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><paramref name="parameterNames"/> cannot be null</exception>
+        /// <exception cref="ArgumentException"><paramref name="path"/> cannot be a Secrets Manager path (/aws/reference/secretsmanager)</exception>
         /// <exception cref="ArgumentException"><paramref name="parameterNames"/> cannot be empty after filtering</exception>
         /// <exception cref="ArgumentException">Parameter names cannot start with "/"</exception>
         /// <exception cref="ArgumentException">Parameter names cannot be null, empty, or whitespace</exception>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
-        public static IConfigurationBuilder AddSystemsManager(this IConfigurationBuilder builder, string path, List<string> parameterNames, bool optional, TimeSpan reloadAfter)
+        public static IConfigurationBuilder AddSystemsManager(this IConfigurationBuilder builder, string path, IEnumerable<string> parameterNames, bool optional, TimeSpan reloadAfter)
         {
             return builder.AddSystemsManager(path, parameterNames, null, optional, reloadAfter);
         }
@@ -303,16 +322,17 @@ namespace Microsoft.Extensions.Configuration
         /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from AWS Systems Manager Parameter Store by loading specific parameter names.
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
-        /// <param name="path">The path prefix that will be prepended to each parameter name. The path will be removed from the variable names during processing.</param>
+        /// <param name="path">The path prefix that will be prepended to each parameter name. The path will be removed from the variable names during processing. Cannot be a Secrets Manager path (/aws/reference/secretsmanager).</param>
         /// <param name="parameterNames">A collection of relative parameter names to load. Names must be relative paths (e.g., "connections/db") and cannot start with "/".</param>
         /// <param name="optional">Whether the AWS Systems Manager Parameters are optional.</param>
         /// <exception cref="ArgumentNullException"><paramref name="path"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><paramref name="parameterNames"/> cannot be null</exception>
+        /// <exception cref="ArgumentException"><paramref name="path"/> cannot be a Secrets Manager path (/aws/reference/secretsmanager)</exception>
         /// <exception cref="ArgumentException"><paramref name="parameterNames"/> cannot be empty after filtering</exception>
         /// <exception cref="ArgumentException">Parameter names cannot start with "/"</exception>
         /// <exception cref="ArgumentException">Parameter names cannot be null, empty, or whitespace</exception>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
-        public static IConfigurationBuilder AddSystemsManager(this IConfigurationBuilder builder, string path, List<string> parameterNames, bool optional)
+        public static IConfigurationBuilder AddSystemsManager(this IConfigurationBuilder builder, string path, IEnumerable<string> parameterNames, bool optional)
         {
             return builder.AddSystemsManager(path, parameterNames, null, optional, TimeSpan.Zero);
         }
@@ -321,16 +341,17 @@ namespace Microsoft.Extensions.Configuration
         /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from AWS Systems Manager Parameter Store by loading specific parameter names.
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
-        /// <param name="path">The path prefix that will be prepended to each parameter name. The path will be removed from the variable names during processing.</param>
+        /// <param name="path">The path prefix that will be prepended to each parameter name. The path will be removed from the variable names during processing. Cannot be a Secrets Manager path (/aws/reference/secretsmanager).</param>
         /// <param name="parameterNames">A collection of relative parameter names to load. Names must be relative paths (e.g., "connections/db") and cannot start with "/".</param>
         /// <param name="reloadAfter">Initiate reload after TimeSpan</param>
         /// <exception cref="ArgumentNullException"><paramref name="path"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><paramref name="parameterNames"/> cannot be null</exception>
+        /// <exception cref="ArgumentException"><paramref name="path"/> cannot be a Secrets Manager path (/aws/reference/secretsmanager)</exception>
         /// <exception cref="ArgumentException"><paramref name="parameterNames"/> cannot be empty after filtering</exception>
         /// <exception cref="ArgumentException">Parameter names cannot start with "/"</exception>
         /// <exception cref="ArgumentException">Parameter names cannot be null, empty, or whitespace</exception>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
-        public static IConfigurationBuilder AddSystemsManager(this IConfigurationBuilder builder, string path, List<string> parameterNames, TimeSpan reloadAfter)
+        public static IConfigurationBuilder AddSystemsManager(this IConfigurationBuilder builder, string path, IEnumerable<string> parameterNames, TimeSpan reloadAfter)
         {
             return builder.AddSystemsManager(path, parameterNames, null, false, reloadAfter);
         }
@@ -339,15 +360,16 @@ namespace Microsoft.Extensions.Configuration
         /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from AWS Systems Manager Parameter Store by loading specific parameter names.
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
-        /// <param name="path">The path prefix that will be prepended to each parameter name. The path will be removed from the variable names during processing.</param>
+        /// <param name="path">The path prefix that will be prepended to each parameter name. The path will be removed from the variable names during processing. Cannot be a Secrets Manager path (/aws/reference/secretsmanager).</param>
         /// <param name="parameterNames">A collection of relative parameter names to load. Names must be relative paths (e.g., "connections/db") and cannot start with "/".</param>
         /// <exception cref="ArgumentNullException"><paramref name="path"/> cannot be null</exception>
         /// <exception cref="ArgumentNullException"><paramref name="parameterNames"/> cannot be null</exception>
+        /// <exception cref="ArgumentException"><paramref name="path"/> cannot be a Secrets Manager path (/aws/reference/secretsmanager)</exception>
         /// <exception cref="ArgumentException"><paramref name="parameterNames"/> cannot be empty after filtering</exception>
         /// <exception cref="ArgumentException">Parameter names cannot start with "/"</exception>
         /// <exception cref="ArgumentException">Parameter names cannot be null, empty, or whitespace</exception>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
-        public static IConfigurationBuilder AddSystemsManager(this IConfigurationBuilder builder, string path, List<string> parameterNames)
+        public static IConfigurationBuilder AddSystemsManager(this IConfigurationBuilder builder, string path, IEnumerable<string> parameterNames)
         {
             return builder.AddSystemsManager(path, parameterNames, null, false, TimeSpan.Zero);
         }
