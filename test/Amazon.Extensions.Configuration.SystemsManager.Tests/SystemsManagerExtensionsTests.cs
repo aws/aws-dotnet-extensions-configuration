@@ -159,12 +159,21 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
         public void AddSystemsManager_WithParameterNames_RemovesDuplicates()
         {
             var builder = new ConfigurationBuilder();
-            var parameterNames = new System.Collections.Generic.List<string> { "param1", "param2", "Param1", "param2" };
+            var parameterNames = new System.Collections.Generic.List<string> { "param1", "param2", "Param1", "param2", "PARAM1" };
 
             var result = builder.AddSystemsManager("/path", parameterNames);
 
             Assert.Equal(builder, result);
-            // The actual duplicate removal will be verified in the configuration source
+            
+            // Verify that the configuration source has the correct number of unique parameter names
+            var source = builder.Sources[builder.Sources.Count - 1] as SystemsManagerConfigurationSource;
+            Assert.NotNull(source);
+            Assert.NotNull(source.ParameterNames);
+            Assert.Equal(2, source.ParameterNames.Count); // Should only have "param1" and "param2" (case-insensitive)
+            
+            // Verify the actual names are preserved (first occurrence wins)
+            Assert.Contains("param1", source.ParameterNames);
+            Assert.Contains("param2", source.ParameterNames);
         }
 
         [Fact]
@@ -181,6 +190,142 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
             Assert.NotNull(builder.AddSystemsManager("/path", parameterNames, true));
             Assert.NotNull(builder.AddSystemsManager("/path", parameterNames, TimeSpan.FromMinutes(5)));
             Assert.NotNull(builder.AddSystemsManager("/path", parameterNames, true, TimeSpan.FromMinutes(5)));
+        }
+
+        [Fact]
+        public void AddSystemsManager_WithParameterNames_NullParameterName_ThrowsArgumentException()
+        {
+            var builder = new ConfigurationBuilder();
+            var parameterNames = new System.Collections.Generic.List<string> { "param1", null, "param2" };
+
+            var ex = Assert.Throws<ArgumentException>(() => 
+                builder.AddSystemsManager("/path", parameterNames, new AWSOptions(), false, TimeSpan.Zero));
+            Assert.Contains("Parameter name cannot be null, empty, or whitespace", ex.Message, StringComparison.Ordinal);
+        }
+
+        [Fact]
+        public void AddSystemsManager_WithParameterNames_EmptyParameterName_ThrowsArgumentException()
+        {
+            var builder = new ConfigurationBuilder();
+            var parameterNames = new System.Collections.Generic.List<string> { "param1", "", "param2" };
+
+            var ex = Assert.Throws<ArgumentException>(() => 
+                builder.AddSystemsManager("/path", parameterNames, new AWSOptions(), false, TimeSpan.Zero));
+            Assert.Contains("Parameter name cannot be null, empty, or whitespace", ex.Message, StringComparison.Ordinal);
+        }
+
+        [Fact]
+        public void AddSystemsManager_WithParameterNames_OnlyWhitespaceNames_ThrowsArgumentException()
+        {
+            var builder = new ConfigurationBuilder();
+            var parameterNames = new System.Collections.Generic.List<string> { "   ", "\t", "\n" };
+
+            var ex = Assert.Throws<ArgumentException>(() => 
+                builder.AddSystemsManager("/path", parameterNames, new AWSOptions(), false, TimeSpan.Zero));
+            Assert.Contains("Parameter name cannot be null, empty, or whitespace", ex.Message, StringComparison.Ordinal);
+        }
+
+        [Fact]
+        public void AddSystemsManager_WithParameterNames_SetsPathAndParameterNamesCorrectly()
+        {
+            var builder = new ConfigurationBuilder();
+            var parameterNames = new System.Collections.Generic.List<string> { "param1", "param2", "param3" };
+            var path = "/myapp/config";
+
+            builder.AddSystemsManager(path, parameterNames);
+
+            var source = builder.Sources[builder.Sources.Count - 1] as SystemsManagerConfigurationSource;
+            Assert.NotNull(source);
+            Assert.Equal(path, source.Path);
+            Assert.NotNull(source.ParameterNames);
+            Assert.Equal(3, source.ParameterNames.Count);
+            Assert.Contains("param1", source.ParameterNames);
+            Assert.Contains("param2", source.ParameterNames);
+            Assert.Contains("param3", source.ParameterNames);
+        }
+
+        [Fact]
+        public void AddSystemsManager_WithParameterNames_SetsOptionalCorrectly()
+        {
+            var builder = new ConfigurationBuilder();
+            var parameterNames = new System.Collections.Generic.List<string> { "param1" };
+
+            // Test Optional = true
+            builder.AddSystemsManager("/path", parameterNames, new AWSOptions(), true);
+            var source1 = builder.Sources[builder.Sources.Count - 1] as SystemsManagerConfigurationSource;
+            Assert.NotNull(source1);
+            Assert.True(source1.Optional);
+
+            // Test Optional = false
+            builder.AddSystemsManager("/path", parameterNames, new AWSOptions(), false);
+            var source2 = builder.Sources[builder.Sources.Count - 1] as SystemsManagerConfigurationSource;
+            Assert.NotNull(source2);
+            Assert.False(source2.Optional);
+        }
+
+        [Fact]
+        public void AddSystemsManager_WithParameterNames_SetsReloadAfterCorrectly()
+        {
+            var builder = new ConfigurationBuilder();
+            var parameterNames = new System.Collections.Generic.List<string> { "param1" };
+            var reloadAfter = TimeSpan.FromMinutes(10);
+
+            builder.AddSystemsManager("/path", parameterNames, new AWSOptions(), false, reloadAfter);
+
+            var source = builder.Sources[builder.Sources.Count - 1] as SystemsManagerConfigurationSource;
+            Assert.NotNull(source);
+            Assert.Equal(reloadAfter, source.ReloadAfter);
+        }
+
+        [Fact]
+        public void AddSystemsManager_WithParameterNames_SetsAwsOptionsCorrectly()
+        {
+            var builder = new ConfigurationBuilder();
+            var parameterNames = new System.Collections.Generic.List<string> { "param1" };
+            var awsOptions = new AWSOptions { Region = Amazon.RegionEndpoint.USWest2 };
+
+            builder.AddSystemsManager("/path", parameterNames, awsOptions);
+
+            var source = builder.Sources[builder.Sources.Count - 1] as SystemsManagerConfigurationSource;
+            Assert.NotNull(source);
+            Assert.Equal(awsOptions, source.AwsOptions);
+            Assert.Equal(Amazon.RegionEndpoint.USWest2, source.AwsOptions.Region);
+        }
+
+        [Fact]
+        public void AddSystemsManager_WithParameterNames_AllPropertiesSetCorrectly()
+        {
+            var builder = new ConfigurationBuilder();
+            var parameterNames = new System.Collections.Generic.List<string> { "param1", "param2" };
+            var path = "/myapp";
+            var awsOptions = new AWSOptions { Region = Amazon.RegionEndpoint.EUWest1 };
+            var optional = true;
+            var reloadAfter = TimeSpan.FromMinutes(15);
+
+            builder.AddSystemsManager(path, parameterNames, awsOptions, optional, reloadAfter);
+
+            var source = builder.Sources[builder.Sources.Count - 1] as SystemsManagerConfigurationSource;
+            Assert.NotNull(source);
+            Assert.Equal(path, source.Path);
+            Assert.Equal(2, source.ParameterNames.Count);
+            Assert.Equal(awsOptions, source.AwsOptions);
+            Assert.Equal(optional, source.Optional);
+            Assert.Equal(reloadAfter, source.ReloadAfter);
+        }
+
+        [Fact]
+        public void AddSystemsManager_WithParameterNames_ConvenienceOverload_WithoutAwsOptions_UsesDefaultAwsOptions()
+        {
+            var builder = new ConfigurationBuilder();
+            var parameterNames = new System.Collections.Generic.List<string> { "param1" };
+
+            builder.AddSystemsManager("/path", parameterNames);
+
+            var source = builder.Sources[builder.Sources.Count - 1] as SystemsManagerConfigurationSource;
+            Assert.NotNull(source);
+            Assert.NotNull(source.AwsOptions); // Should have default AWS options
+            Assert.Equal("/path", source.Path);
+            Assert.Single(source.ParameterNames);
         }
     }
 }
