@@ -53,8 +53,8 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
 
         public static TheoryData<Func<IConfigurationBuilder, IConfigurationBuilder>, Type, string> WithAWSOptionsExtensionData => new TheoryData<Func<IConfigurationBuilder, IConfigurationBuilder>, Type, string>
         {
-            {builder => builder.AddSystemsManager(null, null), typeof(ArgumentNullException), "path"},
-            {builder => builder.AddSystemsManager("/path", null), typeof(ArgumentNullException), "awsOptions"},
+            {builder => builder.AddSystemsManager(null, (AWSOptions)null), typeof(ArgumentNullException), "path"},
+            {builder => builder.AddSystemsManager("/path", (AWSOptions)null), typeof(ArgumentNullException), "awsOptions"},
             {builder => builder.AddSystemsManager(null, new AWSOptions()), typeof(ArgumentNullException), "path"},
             {builder => builder.AddSystemsManager("/aws/reference/secretsmanager/somevalue", new AWSOptions()), null, null},
             {builder => builder.AddSystemsManager("/path", new AWSOptions(), true), null, null},
@@ -88,6 +88,99 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
                 source.ReloadAfter = reloadAfter;
                 source.OnLoadException = onLoadException;
             };
+        }
+
+        [Fact]
+        public void AddSystemsManager_WithParameterNames_NullPath_ThrowsArgumentNullException()
+        {
+            var builder = new ConfigurationBuilder();
+            var parameterNames = new System.Collections.Generic.List<string> { "param1", "param2" };
+
+            var ex = Assert.Throws<ArgumentNullException>(() => 
+                builder.AddSystemsManager(null, parameterNames, new AWSOptions(), false, TimeSpan.Zero));
+            Assert.Contains("path", ex.Message, StringComparison.Ordinal);
+        }
+
+        [Fact]
+        public void AddSystemsManager_WithParameterNames_NullParameterNames_ThrowsArgumentNullException()
+        {
+            var builder = new ConfigurationBuilder();
+
+            var ex = Assert.Throws<ArgumentNullException>(() => 
+                builder.AddSystemsManager("/path", null, new AWSOptions(), false, TimeSpan.Zero));
+            Assert.Contains("parameterNames", ex.Message, StringComparison.Ordinal);
+        }
+
+        [Fact]
+        public void AddSystemsManager_WithParameterNames_EmptyParameterNames_ThrowsArgumentException()
+        {
+            var builder = new ConfigurationBuilder();
+            var parameterNames = new System.Collections.Generic.List<string>();
+
+            var ex = Assert.Throws<ArgumentException>(() => 
+                builder.AddSystemsManager("/path", parameterNames, new AWSOptions(), false, TimeSpan.Zero));
+            Assert.Contains("Parameter names collection cannot be empty", ex.Message, StringComparison.Ordinal);
+        }
+
+        [Fact]
+        public void AddSystemsManager_WithParameterNames_ParameterNameStartsWithSlash_ThrowsArgumentException()
+        {
+            var builder = new ConfigurationBuilder();
+            var parameterNames = new System.Collections.Generic.List<string> { "/param1", "param2" };
+
+            var ex = Assert.Throws<ArgumentException>(() => 
+                builder.AddSystemsManager("/path", parameterNames, new AWSOptions(), false, TimeSpan.Zero));
+            Assert.Contains("must be relative", ex.Message, StringComparison.Ordinal);
+        }
+
+        [Fact]
+        public void AddSystemsManager_WithParameterNames_WhitespaceParameterName_ThrowsArgumentException()
+        {
+            var builder = new ConfigurationBuilder();
+            var parameterNames = new System.Collections.Generic.List<string> { "param1", "   ", "param2" };
+
+            var ex = Assert.Throws<ArgumentException>(() => 
+                builder.AddSystemsManager("/path", parameterNames, new AWSOptions(), false, TimeSpan.Zero));
+            Assert.Contains("Parameter name cannot be null, empty, or whitespace", ex.Message, StringComparison.Ordinal);
+        }
+
+        [Fact]
+        public void AddSystemsManager_WithParameterNames_ValidParameters_Succeeds()
+        {
+            var builder = new ConfigurationBuilder();
+            var parameterNames = new System.Collections.Generic.List<string> { "param1", "param2" };
+
+            var result = builder.AddSystemsManager("/path", parameterNames, new AWSOptions(), false, TimeSpan.Zero);
+
+            Assert.Equal(builder, result);
+        }
+
+        [Fact]
+        public void AddSystemsManager_WithParameterNames_RemovesDuplicates()
+        {
+            var builder = new ConfigurationBuilder();
+            var parameterNames = new System.Collections.Generic.List<string> { "param1", "param2", "Param1", "param2" };
+
+            var result = builder.AddSystemsManager("/path", parameterNames);
+
+            Assert.Equal(builder, result);
+            // The actual duplicate removal will be verified in the configuration source
+        }
+
+        [Fact]
+        public void AddSystemsManager_WithParameterNames_ConvenienceOverloads_Succeed()
+        {
+            var builder = new ConfigurationBuilder();
+            var parameterNames = new System.Collections.Generic.List<string> { "param1", "param2" };
+
+            // Test all convenience overloads
+            Assert.NotNull(builder.AddSystemsManager("/path", parameterNames));
+            Assert.NotNull(builder.AddSystemsManager("/path", parameterNames, new AWSOptions()));
+            Assert.NotNull(builder.AddSystemsManager("/path", parameterNames, new AWSOptions(), true));
+            Assert.NotNull(builder.AddSystemsManager("/path", parameterNames, new AWSOptions(), TimeSpan.FromMinutes(5)));
+            Assert.NotNull(builder.AddSystemsManager("/path", parameterNames, true));
+            Assert.NotNull(builder.AddSystemsManager("/path", parameterNames, TimeSpan.FromMinutes(5)));
+            Assert.NotNull(builder.AddSystemsManager("/path", parameterNames, true, TimeSpan.FromMinutes(5)));
         }
     }
 }
