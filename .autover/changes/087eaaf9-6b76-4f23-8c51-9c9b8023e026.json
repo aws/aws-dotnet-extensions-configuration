@@ -1,0 +1,11 @@
+{
+  "Projects": [
+    {
+      "Name": "Amazon.Extensions.Configuration.SystemsManager",
+      "Type": "Minor",
+      "ChangelogMessages": [
+        "Add support for loading specific parameters from SSM Parameter Store. This will use the GetParameters instead of GetParametersByPath to load parameters which has a higher throttling limit."
+      ]
+    }
+  ]
+}

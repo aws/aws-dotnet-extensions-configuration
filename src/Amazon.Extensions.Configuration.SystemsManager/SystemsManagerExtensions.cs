@@ -218,7 +218,9 @@ namespace Microsoft.Extensions.Configuration
                 configureSource.ParameterNames = uniqueNames;
                 configureSource.AwsOptions = awsOptions;
                 configureSource.Optional = optional;
-                configureSource.ReloadAfter = reloadAfter;
+
+                if (reloadAfter != TimeSpan.Zero)
+                    configureSource.ReloadAfter = reloadAfter;
             });
         }
 
