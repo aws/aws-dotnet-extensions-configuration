@@ -173,6 +173,52 @@ builder.Configuration.AddSystemsManager($"/my-application/");
 builder.Services.Configure<DemoConfig>(builder.Configuration.GetSection("Config"));
 ```
 
+# Loading Specific Parameters
+
+When you know exactly which parameters you need, you can load them by name instead of loading all parameters under a path. This is useful for avoiding throttling issues when you only need a few parameters from a large parameter hierarchy.
+
+```csharp
+public class Program
+{
+    public static void Main(string[] args)
+    {
+        CreateWebHostBuilder(args).Build().Run();
+    }
+
+    public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+        WebHost.CreateDefaultBuilder(args)
+            .ConfigureAppConfiguration(builder =>
+            {
+                builder.AddSystemsManager("/my-application/", new List<string>
+                {
+                    "database/connection",
+                    "api/key",
+                    "cache/host"
+                });
+            })
+            .UseStartup<Startup>();
+}
+```
+
+In this example, only three specific parameters are loaded:
+- `/my-application/database/connection` → accessible as `database:connection`
+- `/my-application/api/key` → accessible as `api:key`
+- `/my-application/cache/host` → accessible as `cache:host`
+
+The path prefix (`/my-application/`) is automatically stripped from parameter names when creating configuration keys, just like when loading by path. This means you can switch between environments by changing only the prefix:
+
+```csharp
+// Development
+builder.AddSystemsManager("/dev/", new List<string> { "database/connection" });
+// Loads: /dev/database/connection → key: database:connection
+
+// Production
+builder.AddSystemsManager("/prod/", new List<string> { "database/connection" });
+// Loads: /prod/database/connection → key: database:connection
+```
+
+This approach uses the AWS `GetParameters` API instead of `GetParametersByPath`, which can help reduce API throttling when you have many parameters but only need a few specific ones.
+
 ## Samples
 
 ### Custom ParameterProcessor Sample
