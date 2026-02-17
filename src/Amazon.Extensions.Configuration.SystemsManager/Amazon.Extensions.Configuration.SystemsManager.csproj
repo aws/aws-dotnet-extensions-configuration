@@ -26,7 +26,7 @@
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     
-    <Version>7.0.1</Version>
+    <Version>7.1.0</Version>
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
@@ -48,9 +48,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AWSSDK.AppConfigData" Version="4.0.2.4" />
-    <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="4.0.3.11" />
-    <PackageReference Include="AWSSDK.SimpleSystemsManagement" Version="4.0.6.1" />
+    <PackageReference Include="AWSSDK.AppConfigData" Version="4.0.2.14" />
+    <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="4.0.3.21" />
+    <PackageReference Include="AWSSDK.SimpleSystemsManagement" Version="4.0.6.11" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.*" />
     <PackageReference Include="System.Text.Json" Condition=" '$(TargetFramework)' == 'netstandard2.0' " Version="8.0.5" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />

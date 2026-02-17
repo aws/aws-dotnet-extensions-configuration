@@ -1,3 +1,8 @@
+## Release 2026-02-17
+
+### Amazon.Extensions.Configuration.SystemsManager (7.1.0)
+* Add support for loading specific parameters from SSM Parameter Store. This will use the GetParameters instead of GetParametersByPath to load parameters which has a higher throttling limit.
+
 ## Release 2025-11-17
 
 ### Amazon.Extensions.Configuration.SystemsManager (7.0.1)
