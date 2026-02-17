@@ -67,6 +67,16 @@ namespace Amazon.Extensions.Configuration.SystemsManager
         /// </summary>
         public List<ParameterStringFilter> Filters { get; }
 
+        /// <summary>
+        /// A collection of relative parameter names to load from Parameter Store.
+        /// When set, the configuration provider will use the GetParameters API to retrieve
+        /// specific parameters by combining the <see cref="Path"/> prefix with each relative name.
+        /// Parameter names must be relative paths (e.g., "connections/db") and will be combined
+        /// with the <see cref="Path"/> to form full parameter names (e.g., "/gamma/connections/db").
+        /// If not set, the provider will use GetParametersByPath to load all parameters under <see cref="Path"/>.
+        /// </summary>
+        public IEnumerable<string> ParameterNames { get; set; }
+
         /// <inheritdoc />
         public IConfigurationProvider Build(IConfigurationBuilder builder)
         {
