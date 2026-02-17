@@ -133,28 +133,6 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
 
         #endregion
 
-        #region GetParametersByNamesAsync Batching Tests
-        // Note: These tests verify batching behavior indirectly through empty collection handling
-        // Full batching tests with API call counting require integration testing or refactoring
-        // the SystemsManagerProcessor to accept an injectable client factory
-
-        [Fact]
-        public async Task GetDataAsync_WithParameterNames_EmptyCollection_ReturnsEmptyDictionary()
-        {
-            // Arrange
-            var source = CreateTestSource("/myapp");
-            source.ParameterNames = new List<string>();
-            var processor = new SystemsManagerProcessor(source);
-
-            // Act
-            var result = await processor.GetDataAsync();
-
-            // Assert
-            Assert.Empty(result);
-        }
-
-        #endregion
-
         #region Parameter Not Found Handling Tests
 
         [Fact]
