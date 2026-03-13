@@ -167,7 +167,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.AppConfig
         {
             try
             {
-                return JsonConfigurationParser.Parse(configuration);
+                return JsonConfigurationParser.Parse(keyPrefix: null, configuration);
             }
             catch (JsonException ex)
             {
