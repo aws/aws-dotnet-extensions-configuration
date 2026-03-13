@@ -1,0 +1,11 @@
+{
+  "Projects": [
+    {
+      "Name": "Amazon.Extensions.Configuration.SystemsManager",
+      "Type": "Patch",
+      "ChangelogMessages": [
+        "Fixed ArgumentNullException in JsonOrStringParameterProcessor when a parameter value is a JSON primitive (true, false, number, null). JsonConfigurationParser.Parse() now throws JsonException for root-level primitives, correctly activating the string fallback."
+      ]
+    }
+  ]
+}

@@ -119,5 +119,32 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
             Assert.True(result.ContainsKey("stringList:1"));
             Assert.Equal("value2", result["stringList:1"]);
         }
+
+        /// <summary>
+        /// Regression test for: when a parameter value is a JSON primitive (boolean, number, string, null),
+        /// JsonDocument.Parse() succeeds (primitives are valid JSON) but JsonConfigurationParser previously
+        /// crashed with ArgumentNullException because _currentPath was null at the root level.
+        /// Since ArgumentNullException is not JsonException, the fallback to string processing was never reached.
+        /// The fix makes JsonConfigurationParser.Parse() throw JsonException for root primitives, so the
+        /// fallback correctly treats the value as a plain string — matching DefaultParameterProcessor behaviour.
+        /// </summary>
+        [Theory]
+        [InlineData("true")]
+        [InlineData("false")]
+        [InlineData("42")]
+        [InlineData("3.14")]
+        [InlineData("null")]
+        public void ProcessParameters_FallsBackToString_WhenValueIsJsonPrimitive(string primitiveValue)
+        {
+            var parameters = new List<Parameter>
+            {
+                new Parameter() { Name = "/test/value", Type = ParameterType.String, Value = primitiveValue }
+            };
+            var result = _parameterProcessor.ProcessParameters(parameters, "/test");
+
+            Assert.Single(result);
+            Assert.True(result.ContainsKey("value"));
+            Assert.Equal(primitiveValue, result["value"]);
+        }
     }
 }

@@ -36,6 +36,11 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
         {
             using (var doc = JsonDocument.Parse(input))
             {
+                if (doc.RootElement.ValueKind != JsonValueKind.Object && doc.RootElement.ValueKind != JsonValueKind.Array)
+                {
+                    throw new JsonException($"The root JSON element must be an object or array, but was '{doc.RootElement.ValueKind}'. A JSON primitive at the root cannot be represented as a configuration key-value structure.");
+                }
+
                 var parser = new JsonConfigurationParser();
                 parser.VisitElement(doc.RootElement);
                 return parser._data;
@@ -46,6 +51,11 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
         {
             using (var doc = JsonDocument.Parse(input))
             {
+                if (doc.RootElement.ValueKind != JsonValueKind.Object && doc.RootElement.ValueKind != JsonValueKind.Array)
+                {
+                    throw new JsonException($"The root JSON element must be an object or array, but was '{doc.RootElement.ValueKind}'. A JSON primitive at the root cannot be represented as a configuration key-value structure.");
+                }
+
                 var parser = new JsonConfigurationParser();
                 parser.VisitElement(doc.RootElement);
                 return parser._data;
