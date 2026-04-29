@@ -144,5 +144,38 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
             
             Assert.Contains("Failed to parse AppConfig content as JSON", exception.Message);
         }
+
+        [Fact]
+        public void ParseConfig_EmptyArray_ReturnsEmptyDictionary()
+        {
+            var jsonContent = "[]";
+            using var stream = new MemoryStream(Encoding.UTF8.GetBytes(jsonContent));
+
+            var result = AppConfigProcessor.ParseConfig("application/json", stream);
+
+            Assert.Empty(result);
+        }
+
+        [Fact]
+        public void ParseConfig_JsonWithEmptyArrayAndObjectProps_ReturnsNullValuesForThoseProps()
+        {
+            var jsonContent = """
+                {
+                    "empty_array": [],
+                    "empty_object": {}
+                }
+                """;
+            using var stream = new MemoryStream(Encoding.UTF8.GetBytes(jsonContent));
+
+            var result = AppConfigProcessor.ParseConfig("application/json", stream);
+
+            Assert.Equivalent(
+                new Dictionary<string, string>
+                {
+                    { "empty_array", null },
+                    { "empty_object", null }
+                },
+                result);
+        }
     }
 }

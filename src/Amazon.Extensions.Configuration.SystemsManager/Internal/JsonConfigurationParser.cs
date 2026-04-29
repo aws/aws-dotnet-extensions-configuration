@@ -59,12 +59,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
                 case JsonValueKind.Undefined:
                     break;
                 case JsonValueKind.Object:
-                    foreach (var property in element.EnumerateObject())
-                    {
-                        EnterContext(property.Name);
-                        VisitElement(property.Value);
-                        ExitContext();
-                    }
+                    VisitObject(element);
                     break;
                 case JsonValueKind.Array:
                     VisitArray(element);
@@ -82,8 +77,31 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
 
         }
 
+        private void VisitObject(JsonElement element)
+        {
+            var isEmpty = !element.EnumerateObject().Any();
+            if (isEmpty)
+            {
+                VisitEmpty();
+                return;
+            }
+
+            foreach (var property in element.EnumerateObject())
+            {
+                EnterContext(property.Name);
+                VisitElement(property.Value);
+                ExitContext();
+            }
+        }
+
         private void VisitArray(JsonElement array)
         {
+            if (array.GetArrayLength() is 0)
+            {
+                VisitEmpty();
+                return;
+            }
+
             int index = 0;
             foreach (var item in array.EnumerateArray())
             {
@@ -98,6 +116,18 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
         private void VisitNull()
         {
             var key = _currentPath;
+            _data[key] = null;
+        }
+
+        private void VisitEmpty()
+        {
+            var key = _currentPath;
+
+            if (key is null)
+            {
+                return;
+            }
+
             _data[key] = null;
         }
 
