@@ -29,9 +29,9 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
         {
             var jsonContent = "{\"key1\":\"value1\",\"key2\":\"value2\"}";
             using var stream = new MemoryStream(Encoding.UTF8.GetBytes(jsonContent));
-            
+
             var result = AppConfigProcessor.ParseConfig("application/json", stream);
-            
+
             Assert.Equal("value1", result["key1"]);
             Assert.Equal("value2", result["key2"]);
         }
@@ -41,9 +41,9 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
         {
             var jsonContent = "{\"key1\":\"value1\",\"key2\":\"value2\"}";
             using var stream = new MemoryStream(Encoding.UTF8.GetBytes(jsonContent));
-            
+
             var result = AppConfigProcessor.ParseConfig("application/octet-stream", stream);
-            
+
             Assert.Equal("value1", result["key1"]);
             Assert.Equal("value2", result["key2"]);
         }
@@ -53,9 +53,9 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
         {
             var jsonContent = "{\"key1\":\"value1\",\"key2\":\"value2\"}";
             using var stream = new MemoryStream(Encoding.UTF8.GetBytes(jsonContent));
-            
+
             var result = AppConfigProcessor.ParseConfig("application/json; charset=utf-8", stream);
-            
+
             Assert.Equal("value1", result["key1"]);
             Assert.Equal("value2", result["key2"]);
         }
@@ -65,9 +65,9 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
         {
             var jsonContent = "{\"key1\":\"value1\",\"key2\":\"value2\"}";
             using var stream = new MemoryStream(Encoding.UTF8.GetBytes(jsonContent));
-            
+
             var result = AppConfigProcessor.ParseConfig("application/unknown", stream);
-            
+
             Assert.Equal("value1", result["key1"]);
             Assert.Equal("value2", result["key2"]);
         }
@@ -77,9 +77,9 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
         {
             var jsonContent = "{\"key1\":\"value1\",\"key2\":\"value2\"}";
             using var stream = new MemoryStream(Encoding.UTF8.GetBytes(jsonContent));
-            
+
             var result = AppConfigProcessor.ParseConfig(null, stream);
-            
+
             Assert.Equal("value1", result["key1"]);
             Assert.Equal("value2", result["key2"]);
         }
@@ -89,9 +89,9 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
         {
             var jsonContent = "{\"section1\":{\"key1\":\"value1\",\"key2\":\"value2\"},\"section2\":{\"key3\":\"value3\"}}";
             using var stream = new MemoryStream(Encoding.UTF8.GetBytes(jsonContent));
-            
+
             var result = AppConfigProcessor.ParseConfig("application/octet-stream", stream);
-            
+
             Assert.Equal("value1", result["section1:key1"]);
             Assert.Equal("value2", result["section1:key2"]);
             Assert.Equal("value3", result["section2:key3"]);
@@ -102,10 +102,10 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
         {
             var invalidJsonContent = "{ invalid json content }";
             using var stream = new MemoryStream(Encoding.UTF8.GetBytes(invalidJsonContent));
-            
-            var exception = Assert.Throws<InvalidOperationException>(() => 
+
+            var exception = Assert.Throws<InvalidOperationException>(() =>
                 AppConfigProcessor.ParseConfig("application/json", stream));
-            
+
             Assert.Contains("Failed to parse AppConfig content as JSON", exception.Message);
             Assert.Contains("Content-Type was 'application/json'", exception.Message);
         }
@@ -115,10 +115,10 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
         {
             var invalidJsonContent = "not json at all";
             using var stream = new MemoryStream(Encoding.UTF8.GetBytes(invalidJsonContent));
-            
-            var exception = Assert.Throws<InvalidOperationException>(() => 
+
+            var exception = Assert.Throws<InvalidOperationException>(() =>
                 AppConfigProcessor.ParseConfig("application/octet-stream", stream));
-            
+
             Assert.Contains("Failed to parse AppConfig content as JSON", exception.Message);
             Assert.Contains("Content-Type was 'application/octet-stream'", exception.Message);
         }
@@ -128,21 +128,10 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
         {
             var jsonContent = "{}";
             using var stream = new MemoryStream(Encoding.UTF8.GetBytes(jsonContent));
-            
-            var result = AppConfigProcessor.ParseConfig("application/json", stream);
-            
-            Assert.Empty(result);
-        }
 
-        [Fact]
-        public void ParseConfig_EmptyStream_ThrowsInvalidOperationException()
-        {
-            using var stream = new MemoryStream();
-            
-            var exception = Assert.Throws<InvalidOperationException>(() => 
-                AppConfigProcessor.ParseConfig("application/json", stream));
-            
-            Assert.Contains("Failed to parse AppConfig content as JSON", exception.Message);
+            var result = AppConfigProcessor.ParseConfig("application/json", stream);
+
+            Assert.Empty(result);
         }
 
         [Fact]
@@ -155,6 +144,18 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
 
             Assert.Empty(result);
         }
+
+        [Fact]
+        public void ParseConfig_EmptyStream_ThrowsInvalidOperationException()
+        {
+            using var stream = new MemoryStream();
+
+            var exception = Assert.Throws<InvalidOperationException>(() =>
+                AppConfigProcessor.ParseConfig("application/json", stream));
+
+            Assert.Contains("Failed to parse AppConfig content as JSON", exception.Message);
+        }
+
 
         [Fact]
         public void ParseConfig_JsonWithEmptyArrayAndObjectProps_ReturnsNullValuesForThoseProps()
@@ -172,7 +173,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
             Assert.Equivalent(
                 new Dictionary<string, string>
                 {
-                    { "empty_array", null },
+                    { "empty_array", string.Empty},
                     { "empty_object", null }
                 },
                 result);

@@ -18,7 +18,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.Json;
 using Microsoft.Extensions.Configuration;
 
@@ -74,34 +73,25 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
                     VisitNull();
                     break;
             }
-
         }
 
         private void VisitObject(JsonElement element)
         {
-            var isEmpty = !element.EnumerateObject().Any();
-            if (isEmpty)
-            {
-                VisitEmpty();
-                return;
-            }
+            var isEmpty = true;
 
             foreach (var property in element.EnumerateObject())
             {
+                isEmpty = false;
                 EnterContext(property.Name);
                 VisitElement(property.Value);
                 ExitContext();
             }
+
+            SetIfEmpty(isEmpty, null);
         }
 
         private void VisitArray(JsonElement array)
         {
-            if (array.GetArrayLength() is 0)
-            {
-                VisitEmpty();
-                return;
-            }
-
             int index = 0;
             foreach (var item in array.EnumerateArray())
             {
@@ -111,6 +101,8 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
 
                 index++;
             }
+
+            SetIfEmpty(isEmpty: index == 0, string.Empty);
         }
 
         private void VisitNull()
@@ -119,16 +111,13 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
             _data[key] = null;
         }
 
-        private void VisitEmpty()
+        private void SetIfEmpty(bool isEmpty, string value)
         {
             var key = _currentPath;
-
-            if (key is null)
+            if (isEmpty && key != null)
             {
-                return;
+                _data[key] = value;
             }
-
-            _data[key] = null;
         }
 
         private void VisitPrimitive(JsonElement data)
