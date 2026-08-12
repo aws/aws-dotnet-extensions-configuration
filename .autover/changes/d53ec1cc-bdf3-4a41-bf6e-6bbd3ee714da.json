@@ -1,0 +1,11 @@
+{
+  "Projects": [
+    {
+      "Name": "Amazon.Extensions.Configuration.SystemsManager",
+      "Type": "Patch",
+      "ChangelogMessages": [
+        "Fix issue with SSM parameters using primitive values with JSON processor enabled"
+      ]
+    }
+  ]
+}
