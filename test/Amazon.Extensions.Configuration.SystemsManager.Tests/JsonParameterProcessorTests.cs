@@ -66,5 +66,26 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
             const string path = "/";
             Assert.ThrowsAny<JsonException>(() => _parameterProcessor.ProcessParameters(parameters, path));
         }
+
+        [Fact]
+        public void PrimitiveParametersTest()
+        {
+            var parameters = new List<Parameter>
+            {
+                new Parameter {Name = "p1", Value = "{\"p1\": \"p1\"}"},
+                new Parameter {Name = "p2", Value = "12"}
+            };
+
+            var expected = new Dictionary<string, string>() {
+                { "p1:p1", "p1" },
+                { "p2", "12" }
+            };
+
+            const string path = "/";
+            var data = _parameterProcessor.ProcessParameters(parameters, path);
+            Assert.NotNull(data);
+
+            Assert.All(expected, item => Assert.Equal(item.Value, data[item.Key]));
+        }
     }
 }

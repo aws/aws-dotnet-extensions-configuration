@@ -18,15 +18,14 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Utils
         /// <exception cref="JsonException"><paramref name="value" /> does not represent a valid single JSON value.</exception>
         public static void ParseJsonParameter(string keyPrefix, string value, IDictionary<string, string> result)
         {
-            foreach (var kv in JsonConfigurationParser.Parse(value))
+            foreach (var kv in JsonConfigurationParser.Parse(keyPrefix, value))
             {
-                var key = !string.IsNullOrEmpty(keyPrefix) ? ConfigurationPath.Combine(keyPrefix, kv.Key) : kv.Key;
-                if (result.ContainsKey(key))
+                if (result.ContainsKey(kv.Key))
                 {
-                    throw new DuplicateParameterException($"Duplicate parameter '{key}' found. Parameter keys are case-insensitive.");
+                    throw new DuplicateParameterException($"Duplicate parameter '{kv.Key}' found. Parameter keys are case-insensitive.");
                 }
 
-                result.Add(key, kv.Value);
+                result.Add(kv.Key, kv.Value);
             }
         }
 

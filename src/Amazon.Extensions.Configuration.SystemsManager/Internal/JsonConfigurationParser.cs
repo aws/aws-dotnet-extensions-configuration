@@ -26,27 +26,33 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
 {
     public class JsonConfigurationParser
     {
-        private JsonConfigurationParser() { }
+        private JsonConfigurationParser(string currentPath) 
+        {
+            if (!string.IsNullOrEmpty(currentPath))
+            {
+                EnterContext(currentPath);
+            }
+        }
 
         private readonly IDictionary<string, string> _data = new SortedDictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         private readonly Stack<string> _context = new Stack<string>();
         private string _currentPath;
 
-        public static IDictionary<string, string> Parse(Stream input)
+        public static IDictionary<string, string> Parse(string keyPrefix, Stream input)
         {
             using (var doc = JsonDocument.Parse(input))
             {
-                var parser = new JsonConfigurationParser();
+                var parser = new JsonConfigurationParser(keyPrefix);
                 parser.VisitElement(doc.RootElement);
                 return parser._data;
             }
         }
 
-        public static IDictionary<string, string> Parse(string input)
+        public static IDictionary<string, string> Parse(string keyPrefix, string input)
         {
             using (var doc = JsonDocument.Parse(input))
             {
-                var parser = new JsonConfigurationParser();
+                var parser = new JsonConfigurationParser(keyPrefix);
                 parser.VisitElement(doc.RootElement);
                 return parser._data;
             }

@@ -1,3 +1,8 @@
+## Release 2026-08-12
+
+### Amazon.Extensions.Configuration.SystemsManager (7.1.1)
+* Fix issue with SSM parameters using primitive values with JSON processor enabled
+
 ## Release 2026-02-17
 
 ### Amazon.Extensions.Configuration.SystemsManager (7.1.0)
