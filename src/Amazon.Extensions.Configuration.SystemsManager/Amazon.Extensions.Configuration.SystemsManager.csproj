@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <!-- Included netstandard2.0 support for a .NET Framework use-case, see: https://github.com/aws/aws-dotnet-extensions-configuration/pull/150 -->
@@ -26,7 +26,7 @@
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     
-    <Version>7.1.0</Version>
+    <Version>7.1.1</Version>
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
