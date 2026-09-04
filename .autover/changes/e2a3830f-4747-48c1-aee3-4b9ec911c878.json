@@ -1,0 +1,11 @@
+{
+  "Projects": [
+    {
+      "Name": "Amazon.Extensions.Configuration.SystemsManager",
+      "Type": "Patch",
+      "ChangelogMessages": [
+        "Add deterministic build and Source Link parity settings (RepositoryType, Deterministic, ContinuousIntegrationBuild, SourceRoot mapping) for reproducible builds and debugging"
+      ]
+    }
+  ]
+}
