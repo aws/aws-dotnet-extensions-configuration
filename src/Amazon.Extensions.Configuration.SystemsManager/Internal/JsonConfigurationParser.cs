@@ -18,7 +18,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.Json;
 using Microsoft.Extensions.Configuration;
 
@@ -65,12 +64,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
                 case JsonValueKind.Undefined:
                     break;
                 case JsonValueKind.Object:
-                    foreach (var property in element.EnumerateObject())
-                    {
-                        EnterContext(property.Name);
-                        VisitElement(property.Value);
-                        ExitContext();
-                    }
+                    VisitObject(element);
                     break;
                 case JsonValueKind.Array:
                     VisitArray(element);
@@ -85,7 +79,21 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
                     VisitNull();
                     break;
             }
+        }
 
+        private void VisitObject(JsonElement element)
+        {
+            var isEmpty = true;
+
+            foreach (var property in element.EnumerateObject())
+            {
+                isEmpty = false;
+                EnterContext(property.Name);
+                VisitElement(property.Value);
+                ExitContext();
+            }
+
+            SetIfEmpty(isEmpty, null);
         }
 
         private void VisitArray(JsonElement array)
@@ -99,12 +107,23 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Internal
 
                 index++;
             }
+
+            SetIfEmpty(isEmpty: index == 0, string.Empty);
         }
 
         private void VisitNull()
         {
             var key = _currentPath;
             _data[key] = null;
+        }
+
+        private void SetIfEmpty(bool isEmpty, string value)
+        {
+            var key = _currentPath;
+            if (isEmpty && key != null)
+            {
+                _data[key] = value;
+            }
         }
 
         private void VisitPrimitive(JsonElement data)
