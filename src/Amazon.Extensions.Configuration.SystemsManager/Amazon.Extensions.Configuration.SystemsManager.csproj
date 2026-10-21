@@ -14,7 +14,7 @@
     <Authors>Amazon Web Services</Authors>
     <PackageTags>AWS;Amazon;aws-sdk-v4;SimpleSystemsManagement;configuration</PackageTags>
     <PackageProjectUrl>https://github.com/aws/aws-dotnet-extensions-configuration/</PackageProjectUrl>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageIcon>icon.png</PackageIcon>
     <RepositoryUrl>https://github.com/aws/aws-dotnet-extensions-configuration/</RepositoryUrl>
     <Company>Amazon Web Services</Company>
