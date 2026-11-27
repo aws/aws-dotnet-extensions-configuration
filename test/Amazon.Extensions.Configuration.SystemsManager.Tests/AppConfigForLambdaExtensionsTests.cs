@@ -77,5 +77,32 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
             var ex = Assert.Throws<ArgumentNullException>(func);
             Assert.Contains("configProfileId", ex.Message);
         }
+
+        [Fact]
+        public void AddAppConfigForLambdaWithSectionShouldSetSectionOnSource()
+        {
+            var builder = new ConfigurationBuilder();
+            builder.AddAppConfigUsingLambdaExtension("appId", "envId", "profileId", "MyProfile");
+
+            var configurationSource = builder.Sources.FirstOrDefault(source => source is AppConfigConfigurationSource) as AppConfigConfigurationSource;
+            Assert.NotNull(configurationSource);
+            Assert.Equal("MyProfile", configurationSource.Section);
+        }
+
+        [Fact]
+        public void AddAppConfigForLambdaWithSourceWithInvalidSectionShouldThrowException()
+        {
+            var builder = new ConfigurationBuilder();
+            Func<IConfigurationBuilder> func = () => builder.AddAppConfigUsingLambdaExtension(new AppConfigConfigurationSource
+            {
+                ApplicationId = "appId",
+                EnvironmentId = "envId",
+                ConfigProfileId = "profileId",
+                Section = "  "
+            });
+
+            var ex = Assert.Throws<ArgumentException>(func);
+            Assert.Contains("section", ex.Message);
+        }
     }
 }

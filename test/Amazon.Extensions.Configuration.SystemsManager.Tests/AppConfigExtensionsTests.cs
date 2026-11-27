@@ -83,5 +83,80 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
             var ex = Assert.Throws<ArgumentNullException>(func);
             Assert.Contains("configProfileId", ex.Message);
         }
+
+        [Fact]
+        public void AddAppConfigWithSectionShouldSetSectionOnSource()
+        {
+            var builder = new ConfigurationBuilder();
+            builder.AddAppConfig("appId", "envId", "profileId", "MyProfile");
+
+            Assert.Contains(
+                builder.Sources,
+                source => source is AppConfigConfigurationSource configurationSource
+                       && configurationSource.Section == "MyProfile"
+            );
+        }
+
+        [Fact]
+        public void AddAppConfigWithAwsOptionsAndSectionShouldSetSectionOnSource()
+        {
+            var builder = new ConfigurationBuilder();
+            builder.AddAppConfig("appId", "envId", "profileId", new Amazon.Extensions.NETCore.Setup.AWSOptions(), "MyProfile");
+
+            Assert.Contains(
+                builder.Sources,
+                source => source is AppConfigConfigurationSource configurationSource
+                       && configurationSource.Section == "MyProfile"
+            );
+        }
+
+        [Fact]
+        public void AddAppConfigWithSourceWithSectionShouldKeepSection()
+        {
+            var builder = new ConfigurationBuilder();
+            builder.AddAppConfig(new AppConfigConfigurationSource
+            {
+                ApplicationId = "appId",
+                EnvironmentId = "envId",
+                ConfigProfileId = "profileId",
+                Section = "MyProfile"
+            });
+
+            Assert.Contains(
+                builder.Sources,
+                source => source is AppConfigConfigurationSource configurationSource
+                       && configurationSource.Section == "MyProfile"
+            );
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData("   ")]
+        [InlineData(":MyProfile")]
+        [InlineData("MyProfile:")]
+        public void AddAppConfigWithInvalidSectionShouldThrowException(string section)
+        {
+            var builder = new ConfigurationBuilder();
+            Func<IConfigurationBuilder> func = () => builder.AddAppConfig("appId", "envId", "profileId", section);
+
+            var ex = Assert.Throws<ArgumentException>(func);
+            Assert.Contains("section", ex.Message);
+        }
+
+        [Fact]
+        public void AddAppConfigWithSourceWithInvalidSectionShouldThrowException()
+        {
+            var builder = new ConfigurationBuilder();
+            Func<IConfigurationBuilder> func = () => builder.AddAppConfig(new AppConfigConfigurationSource
+            {
+                ApplicationId = "appId",
+                EnvironmentId = "envId",
+                ConfigProfileId = "profileId",
+                Section = "MyProfile:"
+            });
+
+            var ex = Assert.Throws<ArgumentException>(func);
+            Assert.Contains("section", ex.Message);
+        }
     }
 }

@@ -100,7 +100,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.AppConfig
             using (var response = await _lambdaExtensionClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, _lambdaExtensionUri)).ConfigureAwait(false))
             using (var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
             {
-                LastConfig = ParseConfig(response.Content.Headers.ContentType.ToString(), stream);
+                LastConfig = ParseConfig(response.Content.Headers.ContentType.ToString(), stream, Source.Section);
             }
 
             return LastConfig;
@@ -135,7 +135,7 @@ namespace Amazon.Extensions.Configuration.SystemsManager.AppConfig
                     // so only attempt to parse the AppConfig response when it is not empty
                     if (response.ContentLength > 0)
                     {
-                        LastConfig = ParseConfig(response.ContentType, response.Configuration);
+                        LastConfig = ParseConfig(response.ContentType, response.Configuration, Source.Section);
                     }
                 }
                 finally
@@ -163,11 +163,16 @@ namespace Amazon.Extensions.Configuration.SystemsManager.AppConfig
             return (await appConfigClient.StartConfigurationSessionAsync(request).ConfigureAwait(false)).InitialConfigurationToken;
         }
 
-        internal static IDictionary<string, string> ParseConfig(string contentType, Stream configuration)
+        internal static IDictionary<string, string> ParseConfig(string contentType, Stream configuration, string section = null)
         {
+            AppConfigConfigurationSource.ValidateSection(section);
+
             try
             {
-                return JsonConfigurationParser.Parse(keyPrefix: null, configuration);
+                // The JSON is parsed as JSON and the section is applied as a key
+                // prefix by the parser, so array items, nested objects and values
+                // all land under the section without rewriting the JSON text.
+                return JsonConfigurationParser.Parse(keyPrefix: section, configuration);
             }
             catch (JsonException ex)
             {

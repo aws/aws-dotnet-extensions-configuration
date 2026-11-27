@@ -58,6 +58,15 @@ namespace Amazon.Extensions.Configuration.SystemsManager.AppConfig
         internal bool UseLambdaExtension { get; set; }
 
         /// <summary>
+        /// Optional section the AppConfig content is nested under. For example, with
+        /// <c>Section = "MyProfile"</c> a JSON profile of <c>["Ironman", "Hulk", "Thor"]</c>
+        /// is exposed as <c>MyProfile:0</c>, <c>MyProfile:1</c> and <c>MyProfile:2</c>
+        /// instead of <c>0</c>, <c>1</c> and <c>2</c> at the root. When null (the default)
+        /// the content is added at the root, as before.
+        /// </summary>
+        public string Section { get; set; }
+
+        /// <summary>
         /// Used only when integrating with the AWS AppConfig Lambda extension.
         /// 
         /// This property allows customizing the HttpClient connecting to the AWS AppConfig Lambda extension. This is useful
@@ -72,6 +81,33 @@ namespace Amazon.Extensions.Configuration.SystemsManager.AppConfig
         public IConfigurationProvider Build(IConfigurationBuilder builder)
         {
             return new SystemsManagerConfigurationProvider(this);
+        }
+
+        /// <summary>
+        /// Validates a <see cref="Section"/> value. Null means no encapsulation.
+        /// A non-null section must not be empty or whitespace, and must not contain
+        /// empty segments (no leading, trailing or doubled <c>:</c> separators).
+        /// </summary>
+        /// <exception cref="ArgumentException">The section is empty or malformed.</exception>
+        internal static void ValidateSection(string section)
+        {
+            if (section == null)
+            {
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(section))
+            {
+                throw new ArgumentException("Section must not be empty or whitespace when set.", nameof(section));
+            }
+
+            foreach (var segment in section.Split(':'))
+            {
+                if (segment.Length == 0)
+                {
+                    throw new ArgumentException("Section must not contain empty segments (no leading, trailing or doubled ':' separators).", nameof(section));
+                }
+            }
         }
     }
 }
