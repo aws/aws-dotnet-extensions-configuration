@@ -53,6 +53,35 @@ namespace Microsoft.Extensions.Configuration
         }
 
         /// <summary>
+        /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from AWS Systems Manager AppConfig,
+        /// nested under the specified <paramref name="section"/> instead of at the root.
+        /// </summary>
+        /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
+        /// <param name="applicationId">The AppConfig application id.</param>
+        /// <param name="environmentId">The AppConfig environment id.</param>
+        /// <param name="configProfileId">The AppConfig configuration profile id.</param>
+        /// <param name="awsOptions"><see cref="AWSOptions"/> used to create an AWS Systems Manager AppConfig Client connection</param>
+        /// <param name="optional">Whether the AWS Systems Manager AppConfig is optional.</param>
+        /// <param name="reloadAfter">Initiate reload after TimeSpan</param>
+        /// <param name="section">Section to nest the AppConfig content under. Must not be empty or contain empty segments.</param>
+        /// <exception cref="ArgumentNullException"><see cref="applicationId"/> cannot be null</exception>
+        /// <exception cref="ArgumentNullException"><see cref="environmentId"/> cannot be null</exception>
+        /// <exception cref="ArgumentNullException"><see cref="configProfileId"/> cannot be null</exception>
+        /// <exception cref="ArgumentNullException"><see cref="awsOptions"/> cannot be null</exception>
+        /// <exception cref="ArgumentException"><see cref="section"/> is empty or malformed</exception>
+        /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
+        public static IConfigurationBuilder AddAppConfig(this IConfigurationBuilder builder, string applicationId, string environmentId, string configProfileId, AWSOptions awsOptions, bool optional, TimeSpan? reloadAfter, string section)
+        {
+            if (applicationId == null) throw new ArgumentNullException(nameof(applicationId));
+            if (environmentId == null) throw new ArgumentNullException(nameof(environmentId));
+            if (configProfileId == null) throw new ArgumentNullException(nameof(configProfileId));
+            if (awsOptions == null) throw new ArgumentNullException(nameof(awsOptions));
+            AppConfigConfigurationSource.ValidateSection(section);
+
+            return builder.AddAppConfig(ConfigureSource(applicationId, environmentId, configProfileId, awsOptions, optional, reloadAfter, section));
+        }
+
+        /// <summary>
         /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from AWS Systems Manager AppConfig.
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
@@ -74,6 +103,33 @@ namespace Microsoft.Extensions.Configuration
             if (awsOptions == null) throw new ArgumentNullException(nameof(awsOptions));
 
             return builder.AddAppConfig(ConfigureSource(applicationId, environmentId, configProfileId, awsOptions, optional));
+        }
+
+        /// <summary>
+        /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from AWS Systems Manager AppConfig,
+        /// nested under the specified <paramref name="section"/> instead of at the root.
+        /// </summary>
+        /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
+        /// <param name="applicationId">The AppConfig application id.</param>
+        /// <param name="environmentId">The AppConfig environment id.</param>
+        /// <param name="configProfileId">The AppConfig configuration profile id.</param>
+        /// <param name="awsOptions"><see cref="AWSOptions"/> used to create an AWS Systems Manager AppConfig Client connection</param>
+        /// <param name="section">Section to nest the AppConfig content under. Must not be empty or contain empty segments.</param>
+        /// <exception cref="ArgumentNullException"><see cref="applicationId"/> cannot be null</exception>
+        /// <exception cref="ArgumentNullException"><see cref="environmentId"/> cannot be null</exception>
+        /// <exception cref="ArgumentNullException"><see cref="configProfileId"/> cannot be null</exception>
+        /// <exception cref="ArgumentNullException"><see cref="awsOptions"/> cannot be null</exception>
+        /// <exception cref="ArgumentException"><see cref="section"/> is empty or malformed</exception>
+        /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
+        public static IConfigurationBuilder AddAppConfig(this IConfigurationBuilder builder, string applicationId, string environmentId, string configProfileId, AWSOptions awsOptions, string section)
+        {
+            if (applicationId == null) throw new ArgumentNullException(nameof(applicationId));
+            if (environmentId == null) throw new ArgumentNullException(nameof(environmentId));
+            if (configProfileId == null) throw new ArgumentNullException(nameof(configProfileId));
+            if (awsOptions == null) throw new ArgumentNullException(nameof(awsOptions));
+            AppConfigConfigurationSource.ValidateSection(section);
+
+            return builder.AddAppConfig(ConfigureSource(applicationId, environmentId, configProfileId, awsOptions, section: section));
         }
 
         /// <summary>
@@ -146,6 +202,31 @@ namespace Microsoft.Extensions.Configuration
         }
 
         /// <summary>
+        /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from AWS Systems Manager AppConfig,
+        /// nested under the specified <paramref name="section"/> instead of at the root.
+        /// </summary>
+        /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
+        /// <param name="applicationId">The AppConfig application id.</param>
+        /// <param name="environmentId">The AppConfig environment id.</param>
+        /// <param name="configProfileId">The AppConfig configuration profile id.</param>
+        /// <param name="optional">Whether the AWS Systems Manager AppConfig is optional.</param>
+        /// <param name="section">Section to nest the AppConfig content under. Must not be empty or contain empty segments.</param>
+        /// <exception cref="ArgumentNullException"><see cref="applicationId"/> cannot be null</exception>
+        /// <exception cref="ArgumentNullException"><see cref="environmentId"/> cannot be null</exception>
+        /// <exception cref="ArgumentNullException"><see cref="configProfileId"/> cannot be null</exception>
+        /// <exception cref="ArgumentException"><see cref="section"/> is empty or malformed</exception>
+        /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
+        public static IConfigurationBuilder AddAppConfig(this IConfigurationBuilder builder, string applicationId, string environmentId, string configProfileId, bool optional, string section)
+        {
+            if (applicationId == null) throw new ArgumentNullException(nameof(applicationId));
+            if (environmentId == null) throw new ArgumentNullException(nameof(environmentId));
+            if (configProfileId == null) throw new ArgumentNullException(nameof(configProfileId));
+            AppConfigConfigurationSource.ValidateSection(section);
+
+            return builder.AddAppConfig(ConfigureSource(applicationId, environmentId, configProfileId, optional: optional, section: section));
+        }
+
+        /// <summary>
         /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from AWS Systems Manager AppConfig.
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
@@ -208,6 +289,30 @@ namespace Microsoft.Extensions.Configuration
         }
 
         /// <summary>
+        /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from AWS Systems Manager AppConfig,
+        /// nested under the specified <paramref name="section"/> instead of at the root.
+        /// </summary>
+        /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
+        /// <param name="applicationId">The AppConfig application id.</param>
+        /// <param name="environmentId">The AppConfig environment id.</param>
+        /// <param name="configProfileId">The AppConfig configuration profile id.</param>
+        /// <param name="section">Section to nest the AppConfig content under. Must not be empty or contain empty segments.</param>
+        /// <exception cref="ArgumentNullException"><see cref="applicationId"/> cannot be null</exception>
+        /// <exception cref="ArgumentNullException"><see cref="environmentId"/> cannot be null</exception>
+        /// <exception cref="ArgumentNullException"><see cref="configProfileId"/> cannot be null</exception>
+        /// <exception cref="ArgumentException"><see cref="section"/> is empty or malformed</exception>
+        /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
+        public static IConfigurationBuilder AddAppConfig(this IConfigurationBuilder builder, string applicationId, string environmentId, string configProfileId, string section)
+        {
+            if (applicationId == null) throw new ArgumentNullException(nameof(applicationId));
+            if (environmentId == null) throw new ArgumentNullException(nameof(environmentId));
+            if (configProfileId == null) throw new ArgumentNullException(nameof(configProfileId));
+            AppConfigConfigurationSource.ValidateSection(section);
+
+            return builder.AddAppConfig(ConfigureSource(applicationId, environmentId, configProfileId, section: section));
+        }
+
+        /// <summary>
         /// Adds an <see cref="IConfigurationProvider"/> that reads configuration values from AWS Systems Manager AppConfig.
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
@@ -223,6 +328,7 @@ namespace Microsoft.Extensions.Configuration
             if (source.ApplicationId == null) throw new ArgumentNullException(nameof(source.ApplicationId));
             if (source.EnvironmentId == null) throw new ArgumentNullException(nameof(source.EnvironmentId));
             if (source.ConfigProfileId == null) throw new ArgumentNullException(nameof(source.ConfigProfileId));
+            AppConfigConfigurationSource.ValidateSection(source.Section);
 
             if (source.AwsOptions == null)
             {
@@ -238,7 +344,8 @@ namespace Microsoft.Extensions.Configuration
             string configProfileId,
             AWSOptions awsOptions = null,
             bool optional = false,
-            TimeSpan? reloadAfter = null
+            TimeSpan? reloadAfter = null,
+            string section = null
         )
         {
             return new AppConfigConfigurationSource
@@ -248,7 +355,8 @@ namespace Microsoft.Extensions.Configuration
                 ConfigProfileId = configProfileId,
                 AwsOptions = awsOptions,
                 Optional = optional,
-                ReloadAfter = reloadAfter
+                ReloadAfter = reloadAfter,
+                Section = section
             };
         }
     }

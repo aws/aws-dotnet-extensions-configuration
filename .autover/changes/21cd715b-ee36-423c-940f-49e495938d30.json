@@ -1,0 +1,11 @@
+{
+  "Projects": [
+    {
+      "Name": "Amazon.Extensions.Configuration.SystemsManager",
+      "Type": "Minor",
+      "ChangelogMessages": [
+        "Add support for nesting AppConfig content under a section via new AddAppConfig and AddAppConfigUsingLambdaExtension overloads and AppConfigConfigurationSource.Section"
+      ]
+    }
+  ]
+}

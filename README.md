@@ -78,6 +78,14 @@ public class Program
 }
 ```
 
+By default the AppConfig content is added at the root of the configuration. If the profile holds JSON and you want it under its own section instead — for example so an array profile does not land as `0`, `1`, `2` at the root, or so two profiles do not overwrite each other — pass a section name:
+
+```csharp
+builder.AddAppConfig("AppConfigApplicationId", "AppConfigEnvironmentId", "AppConfigConfigurationProfileId", "MyProfile");
+```
+
+With a profile of `["Ironman", "Hulk", "Thor"]` the values are then available as `MyProfile:0`, `MyProfile:1` and `MyProfile:2`. The same section support is available on `AddAppConfigUsingLambdaExtension` and on `AppConfigConfigurationSource.Section`.
+
 ## HostBuilder Example
 
 Microsoft introduced [.NET Generic Host](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/generic-host?view=aspnetcore-2.1) to de-couple HTTP pipeline from the Web Host API. The Generic Host library allows you to write non-HTTP services using configuration, dependency injection, and logging features. The sample code below shows you how to use the AWS .NET Configuration Extension library:

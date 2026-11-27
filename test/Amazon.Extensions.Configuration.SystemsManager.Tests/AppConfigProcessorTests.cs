@@ -144,5 +144,84 @@ namespace Amazon.Extensions.Configuration.SystemsManager.Tests
             
             Assert.Contains("Failed to parse AppConfig content as JSON", exception.Message);
         }
+
+        [Fact]
+        public void ParseConfig_ArrayWithSection_NestsItemsUnderSection()
+        {
+            // The example from the issue: an array profile should come back as
+            // MyProfile:0, MyProfile:1, MyProfile:2 instead of 0, 1, 2 at the root.
+            var jsonContent = "[\"Ironman\", \"Hulk\", \"Thor\"]";
+            using var stream = new MemoryStream(Encoding.UTF8.GetBytes(jsonContent));
+
+            var result = AppConfigProcessor.ParseConfig("application/json", stream, "MyProfile");
+
+            Assert.Equal(3, result.Count);
+            Assert.Equal("Ironman", result["MyProfile:0"]);
+            Assert.Equal("Hulk", result["MyProfile:1"]);
+            Assert.Equal("Thor", result["MyProfile:2"]);
+        }
+
+        [Fact]
+        public void ParseConfig_ObjectWithSection_NestsKeysUnderSection()
+        {
+            var jsonContent = "{\"key1\":\"value1\",\"key2\":\"value2\"}";
+            using var stream = new MemoryStream(Encoding.UTF8.GetBytes(jsonContent));
+
+            var result = AppConfigProcessor.ParseConfig("application/json", stream, "MyProfile");
+
+            Assert.Equal("value1", result["MyProfile:key1"]);
+            Assert.Equal("value2", result["MyProfile:key2"]);
+            Assert.DoesNotContain(result, pair => pair.Key == "key1");
+        }
+
+        [Fact]
+        public void ParseConfig_NestedJsonWithSection_NestsKeysUnderSection()
+        {
+            var jsonContent = "{\"section1\":{\"key1\":\"value1\"}}";
+            using var stream = new MemoryStream(Encoding.UTF8.GetBytes(jsonContent));
+
+            var result = AppConfigProcessor.ParseConfig("application/json", stream, "MyProfile");
+
+            Assert.Equal("value1", result["MyProfile:section1:key1"]);
+        }
+
+        [Fact]
+        public void ParseConfig_NestedSection_NestsKeysUnderEachSegment()
+        {
+            var jsonContent = "{\"key1\":\"value1\"}";
+            using var stream = new MemoryStream(Encoding.UTF8.GetBytes(jsonContent));
+
+            var result = AppConfigProcessor.ParseConfig("application/json", stream, "Parent:Child");
+
+            Assert.Equal("value1", result["Parent:Child:key1"]);
+        }
+
+        [Fact]
+        public void ParseConfig_NullSection_KeepsContentAtRoot()
+        {
+            var jsonContent = "{\"key1\":\"value1\"}";
+            using var stream = new MemoryStream(Encoding.UTF8.GetBytes(jsonContent));
+
+            var result = AppConfigProcessor.ParseConfig("application/json", stream, section: null);
+
+            Assert.Equal("value1", result["key1"]);
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData("   ")]
+        [InlineData(":MyProfile")]
+        [InlineData("MyProfile:")]
+        [InlineData("MyProfile::Nested")]
+        public void ParseConfig_InvalidSection_ThrowsArgumentException(string section)
+        {
+            var jsonContent = "{\"key1\":\"value1\"}";
+            using var stream = new MemoryStream(Encoding.UTF8.GetBytes(jsonContent));
+
+            var exception = Assert.Throws<ArgumentException>(() =>
+                AppConfigProcessor.ParseConfig("application/json", stream, section));
+
+            Assert.Contains("section", exception.Message);
+        }
     }
 }
